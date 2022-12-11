@@ -44,7 +44,7 @@ Module({
   use: 'download'
 }, (async (message, match) => {
 if (!match[1]) return message.sendReply("_Need song name, eg: .play starboy_")
-let sr = (await searchYT(match[1]))[0];
+let sr = (await searchYT(match[1])).videos[0];
 try {
      var {
       thumbnail,title,size,url
