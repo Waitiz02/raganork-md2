@@ -9,8 +9,11 @@ const {promisify} = require('util');
 const pipeline = promisify(stream.pipeline);
 const {saveMessage} = require('./misc/saveMessage');
 Module({pattern: 'removebg ?(.*)', fromMe: w,use: 'edit', desc: "Removes image background"}, (async (message, match) => {    
-if (message.reply_message === false || message.reply_message.image === false) return await message.send("*Reply to a photo*");
-if (!RBG_KEY) return await message.sendReply("_Get an API key from *https://remove.bg*_\n_Set var *RBG_KEY*_");
+if (!message.reply_message?.image) return await message.send("_Reply to a photo_");
+if (!RBG_KEY) {
+    const {link} = await require('raganork-bot').upload(await message.reply_message.download());
+    return await message.sendReply({url:'https://raganork.ml/api/removebg?url='+link},'image')
+    }
         var location = await message.reply_message.download();
         var form = new FormData();
         form.append('image_file', fs.createReadStream(location));
