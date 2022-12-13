@@ -15,8 +15,12 @@ return audioTo;
 async function downloadYT(vid,type = 'video',quality = '360p'){
  try { 
 var result = (await require("axios")(`https://y2mate.souravkl11.xyz/get?vid=${vid}&type=${type}&resolution=${quality}`)).data
+if (!result.url) result = (await require("axios")(`https://y2mate.souravkl11.xyz/get?vid=${vid}&type=${type}&resolution=${quality}`)).data
+if (!result.url) result = (await require("axios")(`https://y2mate.souravkl11.xyz/get?vid=${vid}&type=${type}&resolution=${quality}`)).data
 } catch {
 var result = (await require("axios")(`https://y2mate-2.souravkl11.xyz/get?vid=${vid}&type=${type}&resolution=${quality}`)).data
+if (!result.url) result = (await require("axios")(`https://y2mate-2.souravkl11.xyz/get?vid=${vid}&type=${type}&resolution=${quality}`)).data
+if (!result.url) result = (await require("axios")(`https://y2mate-2.souravkl11.xyz/get?vid=${vid}&type=${type}&resolution=${quality}`)).data
 } 
 return result 
 }
