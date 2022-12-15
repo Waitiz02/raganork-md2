@@ -96,8 +96,9 @@ Module({
   } = await downloadYT(link[0],'audio');
   // Method 1: Via y2mate
   if (url!== "http://app.y2mate.com/download"){
+  if (!(title && size)) throw "error"
   await message.sendReply(`*Downloading:* _${title} *[${size}]*_`)
- await fs.writeFileSync('./song.mp3',await skbuffer(url))
+  await fs.writeFileSync('./song.mp3',await skbuffer(url))
   var song_data = await addInfo('./song.mp3',title,BOT_INFO.split(";")[0],"Raganork audio downloader",await skbuffer(thumbnail))
   return await message.client.sendMessage(message.jid, {
       audio:song_data,
