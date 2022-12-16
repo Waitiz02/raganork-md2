@@ -51,7 +51,7 @@ let sr = (await searchYT(match[1])).videos[0];
   console.log(typeof song)
   return await message.client.sendMessage(message.jid, {
       audio:song,
-      mimetype: 'audio/m4a'
+      mimetype: 'audio/mp4'
   }, {
       quoted: message.data
   });
