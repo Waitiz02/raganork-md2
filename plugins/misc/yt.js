@@ -16,7 +16,7 @@ async function dlSong(vid){
   for await (const chunk of streamToIterable(stream)) {
     file.write(chunk);
   }
-  return true;
+  return `./temp/song.m4a`;
 }
 
 async function downloadYT(vid,type = 'video',quality = '360p'){

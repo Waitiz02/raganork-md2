@@ -48,8 +48,8 @@ let sr = (await searchYT(match[1])).videos[0];
   const yt = await new core({ gl: 'US' });
   var {title} = await downloadYT(sr.id);
   await message.sendReply(`*Downloading:* _${title}_`)
-  await dlSong(link[0].match(getID)[1]);
-  var song = await addInfo('./temp/song.m4a',title,BOT_INFO.split(";")[0],"Raganork audio downloader",await skbuffer(`https://i3.ytimg.com/vi/${link[0].match(getID)[1]}/maxresdefault.jpg`))
+  let sdl = await dlSong(link[0].match(getID)[1]);
+  var song = await addInfo(sdl,title,BOT_INFO.split(";")[0],"Raganork audio downloader",await skbuffer(`https://i3.ytimg.com/vi/${link[0].match(getID)[1]}/maxresdefault.jpg`))
   return await message.client.sendMessage(message.jid, {
       audio:song,
       mimetype: 'audio/m4a'
@@ -69,9 +69,9 @@ Module({
   let v_id = link[0].match(getID)[1]
   var {title} = await downloadYT(v_id);
   await message.sendReply(`*Downloading:* _${title}_`)
-  await dlSong(v_id);
-  var song = await addInfo('./temp/song.m4a',title,BOT_INFO.split(";")[0],"Raganork audio downloader",await skbuffer(`https://i3.ytimg.com/vi/${link[0].match(getID)[1]}/maxresdefault.jpg`))
-  return await message.client.sendMessage(message.jid, {
+  let sdl = await dlSong(v_id);
+  var song = await addInfo(sdl,title,BOT_INFO.split(";")[0],"Raganork audio downloader",await skbuffer(`https://i3.ytimg.com/vi/${link[0].match(getID)[1]}/maxresdefault.jpg`))
+  await message.client.sendMessage(message.jid, {
       audio:song,
       mimetype: 'audio/m4a'
   }, {
