@@ -31,7 +31,7 @@
     "node-webpmux": "^3.1.0",
     "pm2": "^5.2.2",
     "pg": "^8.5.1",
-    "raganork-bot": "3.0.0",
+    "raganork-bot": "^3.0.1",
     "sqlite3": "^5.0.0",
     "string-crypto": "2.0.2"
   }
