@@ -44,8 +44,6 @@ Module({
 }, (async (message, match) => {
 if (!match[1]) return message.sendReply("_Need song name, eg: .play starboy_")
 let sr = (await searchYT(match[1])).videos[0];
-  const core = require('youtubei.js');
-  const yt = await new core({ gl: 'US' });
   var {title} = await downloadYT(sr.id);
   await message.sendReply(`*Downloading:* _${title}_`)
   let sdl = await dlSong(link[0].match(getID)[1]);
