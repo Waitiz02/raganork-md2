@@ -73,8 +73,8 @@ Module({
   await message.sendReply(`*Downloading:* _${title}_`)
   let sdl = await dlSong(v_id);
   ffmpeg(sdl)
- .save('./temp/song.mp3')
- .on('end', async () => {
+  .save('./temp/song.mp3')
+  .on('end', async () => { 
   var song = await addInfo('./temp/song.mp3',title,BOT_INFO.split(";")[0],"Raganork audio downloader",await skbuffer(`https://i3.ytimg.com/vi/${link[0].match(getID)[1]}/maxresdefault.jpg`))
   return await message.client.sendMessage(message.jid, {
       audio:song,
