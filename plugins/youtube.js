@@ -47,13 +47,17 @@ let sr = (await searchYT(match[1])).videos[0];
   var {title} = await downloadYT(sr.id);
   await message.sendReply(`*Downloading:* _${title}_`)
   let sdl = await dlSong(sr.id);
-  var song = await addInfo(sdl,title,BOT_INFO.split(";")[0],"Raganork audio downloader",await skbuffer(`https://i3.ytimg.com/vi/${sr.id}/maxresdefault.jpg`))
+  ffmpeg(sdl)
+  .save('./temp/song.mp3')
+  .on('end', async () => { 
+  var song = await addInfo('./temp/song.mp3',title,BOT_INFO.split(";")[0],"Raganork audio downloader",await skbuffer(`https://i3.ytimg.com/vi/${sr.id}/maxresdefault.jpg`))
   return await message.client.sendMessage(message.jid, {
       audio:song,
       mimetype: 'audio/mp4'
   }, {
       quoted: message.data
   });
+});
 }));
 Module({
   pattern: 'song ?(.*)',
@@ -68,14 +72,18 @@ Module({
   var {title} = await downloadYT(v_id);
   await message.sendReply(`*Downloading:* _${title}_`)
   let sdl = await dlSong(v_id);
-  var song = await addInfo(sdl,title,BOT_INFO.split(";")[0],"Raganork audio downloader",await skbuffer(`https://i3.ytimg.com/vi/${link[0].match(getID)[1]}/maxresdefault.jpg`))
+  ffmpeg(sdl)
+ .save('./temp/song.mp3')
+ .on('end', async () => {
+  var song = await addInfo('./temp/song.mp3',title,BOT_INFO.split(";")[0],"Raganork audio downloader",await skbuffer(`https://i3.ytimg.com/vi/${link[0].match(getID)[1]}/maxresdefault.jpg`))
   return await message.client.sendMessage(message.jid, {
       audio:song,
       mimetype: 'audio/mp4'
   }, {
       quoted: message.data
   });
- }
+ }); 
+}
   var myid = message.client.user.id.split("@")[0].split(":")[0]
   let sr = await searchYT(match[1]);
   sr = sr.videos;
