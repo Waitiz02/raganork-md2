@@ -66,9 +66,10 @@ Module({
   if (!match[1]) return message.sendReply(Lang.NEED_TEXT_SONG)
   var link = match[1].match(/\bhttps?:\/\/\S+/gi)
   if (link !== null && getID.test(link[0])) {
-  var {title} = await downloadYT(sr.id);
+  let v_id = link[0].match(getID)[1]
+  var {title} = await downloadYT(v_id);
   await message.sendReply(`*Downloading:* _${title}_`)
-  await dlSong(link[0].match(getID)[1]);
+  await dlSong(v_id);
   var song = await addInfo('./temp/song.m4a',title,BOT_INFO.split(";")[0],"Raganork audio downloader",await skbuffer(`https://i3.ytimg.com/vi/${link[0].match(getID)[1]}/maxresdefault.jpg`))
   return await message.client.sendMessage(message.jid, {
       audio:song,
