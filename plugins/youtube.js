@@ -90,42 +90,15 @@ Module({
   if (!match[1]) return message.sendReply(Lang.NEED_TEXT_SONG)
   var link = match[1].match(/\bhttps?:\/\/\S+/gi)
   if (link !== null && getID.test(link[0])) {
-  try {
-     var {
-      thumbnail,title,size,url
-  } = await downloadYT(link[0],'audio');
-  // Method 1: Via y2mate
-  if (url!== "http://app.y2mate.com/download"){
-  if (!(title && size)) throw "error"
-  await message.sendReply(`*Downloading:* _${title} *[${size}]*_`)
-  await fs.writeFileSync('./song.mp3',await skbuffer(url))
-  var song_data = await addInfo('./song.mp3',title,BOT_INFO.split(";")[0],"Raganork audio downloader",await skbuffer(thumbnail))
-  return await message.client.sendMessage(message.jid, {
-      audio:song_data,
-      mimetype: 'audio/mp4'
-  }, {
-      quoted: message.data
-  });  
-}
-} catch {
-  // Method 2: Direct Download from YT
-  const core = require('youtubei.js');
-  const yt = await new core({ gl: 'US' });
-  var {title} = await yt.getDetails(link[0].match(getID)[1]);
-  await message.sendReply(`*Downloading:* _${title}_`)
-  var song = await dlSong(link[0].match(getID)[1]);
-  ffmpeg(song)
- .save('./song.mp3')
- .on('end', async () => {
-  var song = await addInfo('./song.mp3',title,BOT_INFO.split(";")[0],"Raganork audio downloader",await skbuffer(`https://i3.ytimg.com/vi/${link[0].match(getID)[1]}/maxresdefault.jpg`))
+  
+  var song = await addInfo('./temp/song.m4a',title,BOT_INFO.split(";")[0],"Raganork audio downloader",await skbuffer(`https://i3.ytimg.com/vi/${link[0].match(getID)[1]}/maxresdefault.jpg`))
   return await message.client.sendMessage(message.jid, {
       audio:song,
-      mimetype: 'audio/mp4'
+      mimetype: 'audio/m4a'
   }, {
       quoted: message.data
   });
-});    
-  }}
+ }
   var myid = message.client.user.id.split("@")[0].split(":")[0]
   let sr = await searchYT(match[1]);
   sr = sr.videos;
@@ -133,7 +106,7 @@ Module({
   var SongData = []
   for (var i in sr){
     SongData.push({
-      title: sr[i].title,
+      title: sr[i].title.text,
       description: sr[i].artist,
       rowId: handler+"song https://youtu.be/" + sr[i].id
   })
@@ -145,7 +118,7 @@ Module({
   const listMessage = {
       text: "and "+(sr.length-1)+" more results..",
       footer: "user: " + message.data.pushName,
-      title: sr[0].title,
+      title: sr[0].title.text,
       buttonText: "Select song",
       sections
   }
@@ -183,7 +156,7 @@ return await message.client.sendMessage(message.jid, buttonMessage)
   var videos = [];
   for (var index = 0; index < sr.length; index++) {
       videos.push({
-          title: sr[index].title,
+          title: sr[index].title.text,
           description: sr[index].metadata.duration.accessibility_label,
           rowId: handler+"yts https://youtu.be/" + sr[index].id
       });
@@ -195,7 +168,7 @@ return await message.client.sendMessage(message.jid, buttonMessage)
   const listMessage = {
       text: "and " + (sr.length - 1) + " more results...",
       footer: "user: " + message.data.pushName,
-      title: sr[0].title,
+      title: sr[0].title.text,
       buttonText: "Select a video",
       sections
   }
