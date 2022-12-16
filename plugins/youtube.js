@@ -46,7 +46,7 @@ if (!match[1]) return message.sendReply("_Need song name, eg: .play starboy_")
 let sr = (await searchYT(match[1])).videos[0];
   const core = require('youtubei.js');
   const yt = await new core({ gl: 'US' });
-  var {title} = await yt.getDetails(sr.id);
+  var {title} = await downloadYT(sr.id);
   await message.sendReply(`*Downloading:* _${title}_`)
   await dlSong(link[0].match(getID)[1]);
   var song = await addInfo('./temp/song.m4a',title,BOT_INFO.split(";")[0],"Raganork audio downloader",await skbuffer(`https://i3.ytimg.com/vi/${link[0].match(getID)[1]}/maxresdefault.jpg`))
@@ -66,6 +66,8 @@ Module({
   if (!match[1]) return message.sendReply(Lang.NEED_TEXT_SONG)
   var link = match[1].match(/\bhttps?:\/\/\S+/gi)
   if (link !== null && getID.test(link[0])) {
+  var {title} = await downloadYT(sr.id);
+  await message.sendReply(`*Downloading:* _${title}_`)
   await dlSong(link[0].match(getID)[1]);
   var song = await addInfo('./temp/song.m4a',title,BOT_INFO.split(";")[0],"Raganork audio downloader",await skbuffer(`https://i3.ytimg.com/vi/${link[0].match(getID)[1]}/maxresdefault.jpg`))
   return await message.client.sendMessage(message.jid, {
