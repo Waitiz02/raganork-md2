@@ -83,7 +83,7 @@ Module({
       quoted: message.data
   });
  }); 
-}
+} else {
   var myid = message.client.user.id.split("@")[0].split(":")[0]
   let sr = await searchYT(match[1]);
   sr = sr.videos;
@@ -107,7 +107,8 @@ Module({
       buttonText: "Select song",
       sections
   }
-  await message.client.sendMessage(message.jid, listMessage,{quoted: message.data})
+ return await message.client.sendMessage(message.jid, listMessage,{quoted: message.data})
+}
 }));
 Module({
   pattern: 'yts ?(.*)',
