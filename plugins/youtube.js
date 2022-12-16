@@ -47,7 +47,7 @@ let sr = (await searchYT(match[1])).videos[0];
   var {title} = await downloadYT(sr.id);
   await message.sendReply(`*Downloading:* _${title}_`)
   let sdl = await dlSong(sr.id);
-  var song = await addInfo(sdl,title,BOT_INFO.split(";")[0],"Raganork audio downloader",await skbuffer(`https://i3.ytimg.com/vi/${link[0].match(getID)[1]}/maxresdefault.jpg`))
+  var song = await addInfo(sdl,title,BOT_INFO.split(";")[0],"Raganork audio downloader",await skbuffer(`https://i3.ytimg.com/vi/${sr.id}/maxresdefault.jpg`))
   console.log(typeof song)
   return await message.client.sendMessage(message.jid, {
       audio:song,
