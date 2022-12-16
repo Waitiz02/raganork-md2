@@ -142,7 +142,7 @@ return await message.client.sendMessage(message.jid, buttonMessage)
   for (var index = 0; index < sr.length; index++) {
       videos.push({
           title: sr[index].title.text,
-          description: sr[index].metadata.duration.accessibility_label,
+          description: sr[index].duration.text,
           rowId: handler+"yts https://youtu.be/" + sr[index].id
       });
   }
