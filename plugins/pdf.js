@@ -29,6 +29,7 @@ Module({
     }
   else if (match[1]?.toLowerCase() == 'get'){
     const pages = (await fs.readdirSync(pdfPath)).filter(e=>e.includes('topdf')).map(e=>pdfPath+'/'+e)  
+    if (!pages.length) return await message.sendReply('_No files inputted_')
     imgToPDF(pages, imgToPDF.sizes.A4).pipe(fs.createWriteStream(res)).on('finish',async()=>{
         await message.client.sendMessage(message.jid,{document: {url:res},mimetype:'application/pdf',fileName:'converted.pdf'},{quoted: message.data})
         for (const file of await Fs.readdir(pdfPath)) {
