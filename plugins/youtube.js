@@ -105,7 +105,6 @@ Module({
   }];
   const listMessage = {
       text: "and "+(sr.length-1)+" more results..",
-      footer: "user: " + message.data.pushName,
       title: sr[0].title.text,
       buttonText: "Select song",
       sections
@@ -158,7 +157,6 @@ return await message.client.sendMessage(message.jid, buttonMessage)
   }]
   const listMessage = {
       text: "and " + (sr.length - 1) + " more results...",
-      footer: "user: " + message.data.pushName,
       title: sr[0].title.text,
       buttonText: "Select a video",
       sections
