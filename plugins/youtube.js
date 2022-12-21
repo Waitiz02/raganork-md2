@@ -86,7 +86,7 @@ Module({
 } else {
   var myid = message.client.user.id.split("@")[0].split(":")[0]
   let sr = await searchYT(match[1]);
-  sr = sr.videos;
+  sr = sr.videos.splice(0,21);
   if (sr.length < 1) return await message.sendReply(Lang.NO_RESULT);
   var SongData = []
   for (var i in sr){
