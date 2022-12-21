@@ -144,7 +144,7 @@ return await message.client.sendMessage(message.jid, buttonMessage)
   if (sr.length < 1) return await message.sendReply("*No results found!*");
   var videos = [];
   for (var index in sr) {
-    const title = sr[i].title?.text  
+    const title = sr[index].title?.text  
     if (title){
     videos.push({
           title,
