@@ -361,6 +361,7 @@ async function sendButton(buttons,text,footer,message){
         if (!checker.includes(true)){
         if (!(await isAdmin(message,message.sender))) {
         var usr = message.sender.includes(":") ? message.sender.split(":")[0]+"@s.whatsapp.net" : message.sender
+        await message.client.sendMessage(message.jid, { delete: message.data.key })
         await message.sendReply("_Link not allowed!_");
         await message.client.groupParticipantsUpdate(message.jid, [usr], "remove")
         }
