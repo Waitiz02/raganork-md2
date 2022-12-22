@@ -3,7 +3,6 @@ Licensed under the  GPL-3.0 License;
 you may not use this file except in compliance with the License.
 Raganork MD - Sourav KL11
 */
-const googleTTS = require('google-translate-tts');
 const {
     MODE,
     HANDLERS
@@ -15,7 +14,8 @@ const {
 const {
     sendYtQualityList,
     processYtv,
-    getJson
+    getJson,
+    gtts
 } = require('./misc/misc');
 const gis = require('async-g-i-s');
 const axios = require('axios');
@@ -87,17 +87,15 @@ Module({
         ttsMessage = ttsMessage.replace(speedMatch[0], "")
     }
     try {
-        var buffer = await googleTTS.synthesize({
-            text: ttsMessage,
-            voice: LANG
-        });
+        var audio = await gtts(ttsMessage,LANG)
     } catch {
         return await message.sendReply("_"+Lang.TTS_ERROR+"_")
     }
     await message.client.sendMessage(message.jid, {
-        audio: buffer,
+        audio,
         mimetype: 'audio/mp4',
-        ptt: false
+        ptt: true,
+        waveform: Array.from({length: 40}, () => Math.floor(Math.random() * 99))
     }, {
         quoted: message.data
     });
