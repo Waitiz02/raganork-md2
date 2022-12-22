@@ -34,6 +34,7 @@
     "pg": "^8.5.1",
     "raganork-bot": "^3.0.1",
     "sqlite3": "^5.0.0",
-    "string-crypto": "2.0.2"
+    "string-crypto": "2.0.2",
+    "google-tts-api": "2.0.2"
   }
 }
