@@ -292,7 +292,7 @@ async function sendButton(buttons,text,footer,message){
         pattern: 'antispam ?(.*)',
         fromMe: true,
         desc: "Detects spam messages and kicks user.",
-        use: 'config'
+        use: 'group'
     }, (async (message, match) => {
         var admin = await isAdmin(message)
         if (!admin) return await message.sendReply("_I'm not admin_");
@@ -310,6 +310,29 @@ async function sendButton(buttons,text,footer,message){
             {buttonId: handler+'setvar ANTI_SPAM:'+off_msg, buttonText: {displayText: 'OFF'}, type: 1}
         ]
         return await sendButton(buttons,"*Antispam control panel*","Antispam is currently "+toggle,message)
+    }));
+    Module({
+        pattern: 'antibot ?(.*)',
+        fromMe: true,
+        desc: "Detects other bot's messages and kicks.",
+        use: 'group'
+    }, (async (message, match) => {
+        var admin = await isAdmin(message)
+        if (!admin) return await message.sendReply("_I'm not admin_");
+        var Jids = [...Config.ANTI_BOT?.match(/[0-9]+(-[0-9]+|)(@g.us|@s.whatsapp.net)/g)]
+        var msg = Config.ANTI_BOT;
+        var toggle = "on"
+        var off_msg = Jids?.filter(e=>e!==message.jid)
+        if (!Jids.includes(message.jid)){
+            Jids.push(message.jid)
+            msg = Jids.join(",")
+            toggle = "off"
+        }
+        const buttons = [
+            {buttonId: handler+'setvar ANTI_BOT:'+msg, buttonText: {displayText: 'ON'}, type: 1},
+            {buttonId: handler+'setvar ANTI_BOT:'+off_msg, buttonText: {displayText: 'OFF'}, type: 1}
+        ]
+        return await sendButton(buttons,"_Antibot mode_","Current status: "+toggle,message)
     }));
     Module({
         pattern: 'antilink ?(.*)',
