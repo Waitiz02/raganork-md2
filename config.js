@@ -13,7 +13,7 @@ module.exports = {
     ALWAYS_ONLINE: convertToBool(process.env.ALWAYS_ONLINE) || false,
     AUTOMUTE_MSG: process.env.AUTOMUTE_MSG || '_Group automuted!_\n_(Change this by setting var AUTOMUTE_MSG)_',
     ANTI_SPAM: process.env.ANTI_SPAM || '919074309534-1632403322@g.us',
-    ANTI_BOT: process.env.ANTI_BOT || [],
+    ANTI_BOT: process.env.ANTI_BOT || 'group_jid',
     ANTISPAM_COUNT: process.env.ANTISPAM_COUNT || '7/10',
     AUTOUNMUTE_MSG: process.env.AUTOUNMUTE_MSG || '_Group auto unmuted!_\n_(Change this by setting var AUTOUNMUTE_MSG)_',
     AUTO_READ_STATUS: convertToBool(process.env.AUTO_READ_STATUS) || false,
