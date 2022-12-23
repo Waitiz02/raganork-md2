@@ -319,7 +319,7 @@ async function sendButton(buttons,text,footer,message){
     }, (async (message, match) => {
         var admin = await isAdmin(message)
         if (!admin) return await message.sendReply("_I'm not admin_");
-        var Jids = [...Config.ANTI_BOT?.match(/[0-9]+(-[0-9]+|)(@g.us|@s.whatsapp.net)/g)]
+        var Jids = [...Config.ANTI_BOT?.match(/[0-9]+(-[0-9]+|)(@g.us|@s.whatsapp.net)/g)] || []
         var msg = Config.ANTI_BOT;
         var toggle = "on"
         var off_msg = Jids?.filter(e=>e!==message.jid)
