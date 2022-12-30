@@ -71,6 +71,9 @@ Module({
 }, async (message, match) => {
     var query = match[1] || message.reply_message.text
     if (!query) return await message.sendReply(Lang.TTS_NEED_REPLY);
+    if (!fs.existsSync("./temp/tts")) {
+        fs.mkdirSync("./temp/tts")
+    }
     query = query.replace("tts","")
     var lng = 'en';
     if (/[^\x00-\x7F]+/.test(query)) lng = 'ml';
