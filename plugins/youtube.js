@@ -23,7 +23,7 @@ const {
   searchSong
 } = require('./misc/misc');
 const {
-    downloadYT, dlSong
+    downloadYT, dlSong, ytdlv2
   } = require('./misc/yt');
 const Lang = getString('scrapers');
 const {
@@ -58,6 +58,38 @@ let sr = (await searchYT(match[1])).videos[0];
       quoted: message.data
   });
 });
+}));
+Module({
+  pattern: 'ytv ?(.*)',
+  fromMe: fm,
+  desc: Lang.YTV_DESC,
+  use: 'download'
+}, (async (message, match) => {
+  if (!match[1]) return message.sendReply("_Need YouTube video link!_")
+  if (match[1].includes('dl;')){
+    const link = match[1].split(';')[2]
+    const res_ = match[1].split(';')[1]
+    const url = await ytdlv2(link,res_)
+    const {title} = (await downloadYT(`https://youtu.be/${link}`))
+    return await message.client.sendMessage(message.jid,{video:{url},caption:`_${title} *[${res_}p]*_`},{quoted:message.data}) 
+  }
+  var link = match[1].match(/\bhttps?:\/\/\S+/gi)
+  if (link !== null && getID.test(link[0])) {
+  link = link[0].match(getID)[1]
+  const buttons = [
+    {buttonId: 'ytv dl;360;'+link, buttonText: {displayText: '360p'}, type: 1},
+    {buttonId: 'ytv dl;720;'+link, buttonText: {displayText: '720p'}, type: 1}
+  ]
+  
+  const buttonMessage = {
+      image: {url: `https://i.ytimg.com/vi/${link}/maxresdefault.jpg`},
+      caption: (await downloadYT(`https://youtu.be/${link}`)).title,
+      footer: 'Select a quality',
+      buttons: buttons,
+      headerType: 4
+  }
+   
+  }
 }));
 Module({
   pattern: 'song ?(.*)',
@@ -112,6 +144,7 @@ Module({
  return await message.client.sendMessage(message.jid, listMessage,{quoted: message.data})
 }
 }));
+
 Module({
   pattern: 'yts ?(.*)',
   fromMe: fm,

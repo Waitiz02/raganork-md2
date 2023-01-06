@@ -12,8 +12,6 @@ const {
     getString
 } = require('./misc/lang');
 const {
-    sendYtQualityList,
-    processYtv,
     getJson,
     gtts
 } = require('./misc/misc');
