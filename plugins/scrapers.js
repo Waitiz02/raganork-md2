@@ -102,20 +102,6 @@ Module({
     });
 });
 Module({
-    pattern: 'ytv ?(.*)',
-    fromMe: w,
-    desc: Lang.YTV_DESC,
-    use: 'download'
-}, (async (message, match) => {
-    await sendYtQualityList(message, match);
-}));
-Module({
-    on: 'button',
-    fromMe: w
-}, (async (message, match) => {
-    await processYtv(message);
-}));
-Module({
     pattern: 'img ?(.*)',
     fromMe: w,
     desc: Lang.IMG_DESC,
