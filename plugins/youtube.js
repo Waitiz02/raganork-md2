@@ -88,7 +88,7 @@ Module({
       buttons: buttons,
       headerType: 4
   }
-   
+   return await message.client.sendMessage(message.jid,buttonMessage,{quoted:message.data})
   }
 }));
 Module({
