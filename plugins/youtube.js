@@ -78,8 +78,8 @@ Module({
   if (link !== null && getID.test(link[0])) {
   link = link[0].match(getID)[1]
   const buttons = [
-    {buttonId: handler+'ytv dl;360;'+link, buttonText: {displayText: '360p'}, type: 1},
-    {buttonId: handler+'ytv dl;720;'+link, buttonText: {displayText: '720p'}, type: 1}
+    {buttonId: handler+'ytv dl;360;'+link, buttonText: {displayText: '360p SD'}, type: 1},
+    {buttonId: handler+'ytv dl;720;'+link, buttonText: {displayText: '720p HD'}, type: 1}
   ]
   
   const buttonMessage = {
