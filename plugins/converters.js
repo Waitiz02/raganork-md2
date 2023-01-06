@@ -53,7 +53,7 @@ Module({
     use: 'edit',
     desc: Lang.MP3_DESC
 }, (async (message, match) => {
-    if (message.reply_message === false) return await message.sendReply(Lang.MP3_NEED_REPLY)
+    if (!message.reply_message || (!message.reply_message.video && !message.reply_message.audio)) return await message.sendReply(Lang.MP3_NEED_REPLY)
     var {seconds} = message.quoted.message[Object.keys(message.quoted.message)[0]];
     if (seconds>120) await message.sendReply(`_Alert: Duration more than 2 mins. This process may fail or take much more time!_`)
     var savedFile = await message.reply_message.download();
