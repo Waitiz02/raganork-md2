@@ -1,11 +1,11 @@
 let fetch = require('node-fetch')
 const axios = require("axios")
 let { JSDOM } = require('jsdom')
+const { Innertube, UniversalCache } = require('youtubei.js');
+const { readFileSync, existsSync, mkdirSync, createWriteStream } = require('fs');
+const {streamToIterable} = require('youtubei.js/dist/src/utils/Utils');
 
 async function dlSong(vid){
-  const { Innertube, UniversalCache } = require('youtubei.js');
-  const { readFileSync, existsSync, mkdirSync, createWriteStream } = require('fs');
-  const {streamToIterable} = require('youtubei.js/dist/src/utils/Utils');
   const yt = await Innertube.create({ cache: new UniversalCache() });
   const stream = await yt.download(vid, {
     type: 'audio', 
@@ -17,6 +17,11 @@ async function dlSong(vid){
     file.write(chunk);
   }
   return `./temp/song.m4a`;
+}
+async function ytTitle(vid){
+  const yt = await Innertube.create({ cache: new UniversalCache() });
+  const video = await yt.getBasicInfo(vid);
+  return video.basic_info.title
 }
 async function downloadYT(vid,type = 'video',quality = '360p'){
  try { 
@@ -33,6 +38,7 @@ async function ytdlv2(vid,res_){
 module.exports = {
   ytdlv2,
   dlSong ,
+  ytTitle,
   downloadYT,
   servers: ['en154','en136', 'id4', 'en60', 'en61', 'en68']
 };

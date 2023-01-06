@@ -23,7 +23,7 @@ const {
   searchSong
 } = require('./misc/misc');
 const {
-    downloadYT, dlSong, ytdlv2
+    ytTitle,downloadYT, dlSong, ytdlv2
   } = require('./misc/yt');
 const Lang = getString('scrapers');
 const {
@@ -71,7 +71,7 @@ Module({
     const res_ = match[1].split(';')[1]
     const url = await ytdlv2(link,res_)
     if (!url) return await message.sendReply("_Sorry, the requested quality wasn't found on the server!_");
-    const {title} = (await downloadYT(`https://youtu.be/${link}`))
+    const title = await ytTitle(link)
     return await message.client.sendMessage(message.jid,{video:{url},caption:`_${title} *[${res_}p]*_`},{quoted:message.data}) 
   }
   var link = match[1].match(/\bhttps?:\/\/\S+/gi)
@@ -84,7 +84,7 @@ Module({
   
   const buttonMessage = {
       image: {url: `https://i.ytimg.com/vi/${link}/maxresdefault.jpg`},
-      caption: '*_'+(await downloadYT(`https://youtu.be/${link}`)).title+'_*',
+      caption: '*_'+(await ytTitle(link))+'_*',
       footer: '_Select a quality_',
       buttons: buttons,
       headerType: 4
