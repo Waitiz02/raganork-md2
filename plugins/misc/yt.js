@@ -20,7 +20,7 @@ async function getVideo(vid,res_='360p'){
   return `./temp/ytv.mp4`
 };
 async function ytv(vid,res_='360p'){
-  const video = await ytDownload(vid,res_);
+  const video = await getVideo(vid,res_);
   const audio = await dlSong(vid)
   return await avMix(video,audio)
 }
