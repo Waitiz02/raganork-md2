@@ -4,7 +4,30 @@ let { JSDOM } = require('jsdom')
 const { Innertube, UniversalCache } = require('youtubei.js');
 const { readFileSync, existsSync, mkdirSync, createWriteStream } = require('fs');
 const {streamToIterable} = require('youtubei.js/dist/src/utils/Utils');
-
+const {avMix} = require('./misc');
+async function getVideo(vid,res_='360p'){
+  const yt = await Innertube.create({ cache: new UniversalCache() });
+  const time1 = new Date().getTime()
+  const stream = await yt.download(vid, {
+    type: 'video', 
+    quality: res_,
+    format: 'mp4'
+  });
+  const file = createWriteStream(`./temp/ytv.mp4`);
+  for await (const chunk of streamToIterable(stream)) {
+    file.write(chunk);
+  }
+  return `./temp/ytv.mp4`
+};
+async function ytv(vid,res_='360p'){
+  const video = await ytDownload(vid,res_);
+  const audio = await dlSong(vid)
+  return await avMix(video,audio)
+}
+async function getResolutions(vid){
+  const yt = await Innertube.create({ cache: new UniversalCache() });
+  return (await yt.getInfo(vid)).streaming_data.adaptive_formats.filter(e=>e.has_video).map(e=>e.quality_label+' '+e.mime_type.split(';')[0])
+}
 async function dlSong(vid){
   const yt = await Innertube.create({ cache: new UniversalCache() });
   const stream = await yt.download(vid, {
@@ -39,6 +62,7 @@ module.exports = {
   ytdlv2,
   dlSong ,
   ytTitle,
+  ytv, getResolutions,
   downloadYT,
   servers: ['en154','en136', 'id4', 'en60', 'en61', 'en68']
 };
