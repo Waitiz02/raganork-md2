@@ -70,9 +70,8 @@ Module({
     const link = match[1].split(';')[2]
     const res_ = match[1].split(';')[1]
     const result__ = await ytv(link,res_)
-    if (!url) return await message.sendReply("_Sorry, the requested quality wasn't found on the server!_");
     const title = await ytTitle(link)
-    return await message.client.sendMessage(message.jid,{video:{url},caption:`_${title} *[${res_}p]*_`},{quoted:message.data}) 
+    return await message.client.sendMessage(message.jid,{video:result__,caption:`_${title} *[${res_}p]*_`},{quoted:message.data}) 
   }
   var link = match[1].match(/\bhttps?:\/\/\S+/gi)
   if (link !== null && getID.test(link[0])) {
