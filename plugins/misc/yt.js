@@ -15,7 +15,7 @@ async function getVideo(vid,res_='360p'){
   const yt = await Innertube.create({ cache: new UniversalCache() });
   const time1 = new Date().getTime()
   const stream = await yt.download(vid, {
-    type: fix, 
+    type: 'video', 
     quality: res_,
     format: 'mp4'
   });
