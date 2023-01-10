@@ -71,7 +71,7 @@ Module({
     const res_ = match[1].split(';')[1]
     const result__ = await ytv(link,res_)
     const title = await ytTitle(link)
-    return await message.client.sendMessage(message.jid,{video:result__,caption:`_${title} *[${res_}p]*_`},{quoted:message.data}) 
+    return await message.client.sendMessage(message.jid,{video:result__,caption:`_${title} *[${res_}]*_`},{quoted:message.data}) 
   }
   var link = match[1].match(/\bhttps?:\/\/\S+/gi)
   if (link !== null && getID.test(link[0])) {

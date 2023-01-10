@@ -214,19 +214,14 @@ Module({
     if (!s1) return await message.sendReply("*"+Lang.NEED_VIDEO+"*");
     if (!s1.includes('youtu')) return await message.sendReply("*"+Lang.NEED_VIDEO+"*");
     const getID = /(?:http(?:s|):\/\/|)(?:(?:www\.|)youtube(?:\-nocookie|)\.com\/(?:watch\?.*(?:|\&)v=|embed|shorts\/|v\/)|youtu\.be\/)([-_0-9A-Za-z]{11})/
-    var qq = getID.exec(s1)
-        var {
-            url,
-            thumbnail,
-            title
-        } = await downloadYT(qq[1]);
-        return await message.client.sendMessage(message.jid, {
-            video: {
-                url: url
-            },
+    var vid = getID.exec(s1)[1]
+    const video = await ytv(vid)
+    const caption = await ytTitle(vid)    
+    return await message.client.sendMessage(message.jid, {
+            video,
             mimetype: "video/mp4",
-            caption: title,
-            thumbnail: await skbuffer(thumbnail)
+            caption,
+            thumbnail: await skbuffer(`https://i.ytimg.com/vi/${vid}/maxresdefault.jpg`)
         },{quoted:message.data});
     });
 Module({
