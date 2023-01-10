@@ -5,6 +5,12 @@ const { Innertube, UniversalCache } = require('youtubei.js');
 const { readFileSync, existsSync, mkdirSync, createWriteStream } = require('fs');
 const {streamToIterable} = require('youtubei.js/dist/src/utils/Utils');
 const {avMix} = require('./misc');
+function bytesToSize(bytes) {
+  var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+  if (bytes == 0) return '0 Byte';
+  var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
+  return Math.round(bytes / Math.pow(1024, i), 2) + ' ' + sizes[i];
+}
 async function getVideo(vid,res_='360p'){
   const yt = await Innertube.create({ cache: new UniversalCache() });
   const time1 = new Date().getTime()
