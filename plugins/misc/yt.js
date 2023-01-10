@@ -28,8 +28,7 @@ async function getVideo(vid,res_='360p'){
 async function ytv(vid,res_='360p'){
   const video = await getVideo(vid,res_);
   const audio = await dlSong(vid)
-  console.log(require('./misc'))
-  return await avMix(video,audio)
+  return (await avMix(video,audio))
 }
 async function getResolutions(vid){
   const yt = await Innertube.create({ cache: new UniversalCache() });
