@@ -23,7 +23,7 @@ const {
   searchSong
 } = require('./misc/misc');
 const {
-    ytTitle,downloadYT, dlSong, ytdlv2, ytv, getResolutions
+    ytTitle,downloadYT, dlSong, ytv, getResolutions
   } = require('./misc/yt');
 const Lang = getString('scrapers');
 const {
