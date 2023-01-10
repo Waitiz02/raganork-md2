@@ -28,6 +28,7 @@ async function getVideo(vid,res_='360p'){
 async function ytv(vid,res_='360p'){
   const video = await getVideo(vid,res_);
   const audio = await dlSong(vid)
+  console.log(misc.avMix)
   return await misc.avMix(video,audio)
 }
 async function getResolutions(vid){
