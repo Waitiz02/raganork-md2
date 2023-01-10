@@ -12,11 +12,10 @@ function bytesToSize(bytes) {
   return Math.round(bytes / Math.pow(1024, i), 2) + ' ' + sizes[i];
 }
 async function getVideo(vid,res_='360p'){
-  let type = res_=='360p'?'videoandaudio':'video'
   const yt = await Innertube.create({ cache: new UniversalCache() });
   const time1 = new Date().getTime()
   const stream = await yt.download(vid, {
-    type, 
+    type: fix, 
     quality: res_,
     format: 'mp4'
   });
@@ -27,14 +26,9 @@ async function getVideo(vid,res_='360p'){
   return `./temp/ytv.mp4`
 };
 async function ytv(vid,res_='360p'){
-  return new Promise(async (resolve, reject) => {
   const video = await getVideo(vid,res_);
-  if (res_=='360p') {
-   return resolve(readFileSync(video));
-  }
   const audio = await dlSong(vid)
-    return resolve(await require('./misc').avMix(video,audio));
-  })
+  return await require('./misc').avMix(video,audio)
 }
 async function getResolutions(vid){
   const yt = await Innertube.create({ cache: new UniversalCache() });
