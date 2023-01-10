@@ -4,7 +4,7 @@ let { JSDOM } = require('jsdom')
 const { Innertube, UniversalCache } = require('youtubei.js');
 const { readFileSync, existsSync, mkdirSync, createWriteStream } = require('fs');
 const {streamToIterable} = require('youtubei.js/dist/src/utils/Utils');
-const misc = require('./misc.js');
+const misc = require('./misc/misc');
 function bytesToSize(bytes) {
   var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
   if (bytes == 0) return '0 Byte';
