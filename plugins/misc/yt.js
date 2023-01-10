@@ -26,7 +26,12 @@ async function ytv(vid,res_='360p'){
 }
 async function getResolutions(vid){
   const yt = await Innertube.create({ cache: new UniversalCache() });
-  return (await yt.getInfo(vid)).streaming_data.adaptive_formats.filter(e=>e.has_video).map(e=>e.quality_label+' '+e.mime_type.split(';')[0])
+  const result_ =  (await yt.getInfo(vid)).streaming_data.adaptive_formats.filter(e=>e.has_video && e.mime_type.includes('mp4'))
+  const result = []
+  for (x of result_){
+      result.push({size:bytesToSize(x.content_length),quality:x.quality_label.split('p')[0]+'p',fps60:x.quality_label.endsWith('p60')})
+  }
+  return result;
 }
 async function dlSong(vid){
   const yt = await Innertube.create({ cache: new UniversalCache() });

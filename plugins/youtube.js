@@ -23,7 +23,7 @@ const {
   searchSong
 } = require('./misc/misc');
 const {
-    ytTitle,downloadYT, dlSong, ytdlv2
+    ytTitle,downloadYT, dlSong, ytdlv2, ytv, getResolutions
   } = require('./misc/yt');
 const Lang = getString('scrapers');
 const {
@@ -66,10 +66,10 @@ Module({
   use: 'download'
 }, (async (message, match) => {
   if (!match[1]) return message.sendReply("_Need YouTube video link!_")
-  if (match[1].includes('dl;')){
+  if (match[1].startsWith('dl;')){
     const link = match[1].split(';')[2]
     const res_ = match[1].split(';')[1]
-    const url = await ytdlv2(link,res_)
+    const result__ = await ytv(link,res_)
     if (!url) return await message.sendReply("_Sorry, the requested quality wasn't found on the server!_");
     const title = await ytTitle(link)
     return await message.client.sendMessage(message.jid,{video:{url},caption:`_${title} *[${res_}p]*_`},{quoted:message.data}) 
@@ -77,20 +77,26 @@ Module({
   var link = match[1].match(/\bhttps?:\/\/\S+/gi)
   if (link !== null && getID.test(link[0])) {
   link = link[0].match(getID)[1]
-  const buttons = [
-    {buttonId: handler+'ytv dl;360;'+link, buttonText: {displayText: '360p SD'}, type: 1},
-    {buttonId: handler+'ytv dl;720;'+link, buttonText: {displayText: '720p HD'}, type: 1}
-  ]
-  
-  const buttonMessage = {
-      image: {url: `https://i.ytimg.com/vi/${link}/maxresdefault.jpg`},
-      caption: '*_'+(await ytTitle(link))+'_*',
-      footer: '_Select a quality_',
-      buttons: buttons,
-      headerType: 4
+  var rows = []
+  const result_ = await getResolutions(link)
+  for (var i in result_){
+    rows.push({
+      title:i.fps60?i.quality+' 60fps':i.quality,
+      rowId: handler+"ytv dl;"+(i.fps60?i.quality+'60':i.quality)+';'+sr[i].id
+  })
   }
-   return await message.client.sendMessage(message.jid,buttonMessage,{quoted:message.data})
+  const sections = [{
+      title:'Select a resolution',
+      rows
+  }];
+  const listMessage = {
+      text: " ",
+      title: "Select a quality",
+      buttonText: "View all",
+      sections
   }
+ return await message.client.sendMessage(message.jid, listMessage,{quoted: message.data})
+}
 }));
 Module({
   pattern: 'song ?(.*)',

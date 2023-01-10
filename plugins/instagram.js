@@ -11,6 +11,7 @@ const {
 } = require('@adiwajshing/baileys');
 const fs = require('fs');
 const got = require("got");
+const { fromBuffer } = require('file-type');
 const axios = require('axios');
 const setting = require('../config');
 const {
@@ -58,7 +59,9 @@ Module({
         if (res == false) return await msg.sendReply("*Download failed*");
         var quoted = msg.reply_message ? msg.quoted : msg.data
         for (var i in res) {
-        await msg.client.sendMessage(msg.jid,{[res[i].includes("mp4")?'video':'image']:{url:res[i]}},{quoted})
+            let media = await skbuffer(res[i])
+            let {mime} = await fromBuffer(media)
+            await msg.client.sendMessage(msg.jid,{[mime.includes("video")?'video':'image']:media},{quoted})
         };
     }
 }));
