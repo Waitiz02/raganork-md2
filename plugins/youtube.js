@@ -87,7 +87,7 @@ Module({
   }
   const sections = [{
       title:'Select a resolution',
-      rows
+      rows:rows
   }];
   const listMessage = {
       text: " ",
