@@ -79,7 +79,7 @@ Module({
   link = link[0].match(getID)[1]
   var rows = []
   const result_ = await getResolutions(link)
-  for (var i in result_){
+  for (var i of result_){
     rows.push({
       title:i.fps60?i.quality+' 60fps':i.quality,
       description:i.size,
