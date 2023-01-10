@@ -12,6 +12,7 @@ const {
     getString
 } = require('./misc/lang');
 const {
+    ytv,
     getJson,
     gtts
 } = require('./misc/misc');
