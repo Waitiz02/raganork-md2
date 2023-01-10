@@ -82,6 +82,7 @@ Module({
   for (var i in result_){
     rows.push({
       title:i.fps60?i.quality+' 60fps':i.quality,
+      description:i.size,
       rowId: handler+"ytv dl;"+(i.fps60?i.quality+'60':i.quality)+';'+link
   })
   }
