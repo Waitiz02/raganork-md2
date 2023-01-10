@@ -27,10 +27,14 @@ async function getVideo(vid,res_='360p'){
   return `./temp/ytv.mp4`
 };
 async function ytv(vid,res_='360p'){
+  return new Promise(async (resolve, reject) => {
   const video = await getVideo(vid,res_);
-  if (res_=='360p') return readFileSync(video);
+  if (res_=='360p') {
+   resolve(readFileSync(video));
+  }
   const audio = await dlSong(vid)
-  return await require('./misc').avMix(video,audio)
+    resolve(await require('./misc').avMix(video,audio))
+  })
 }
 async function getResolutions(vid){
   const yt = await Innertube.create({ cache: new UniversalCache() });
