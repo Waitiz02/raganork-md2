@@ -30,10 +30,10 @@ async function ytv(vid,res_='360p'){
   return new Promise(async (resolve, reject) => {
   const video = await getVideo(vid,res_);
   if (res_=='360p') {
-   resolve(readFileSync(video));
+   return resolve(readFileSync(video));
   }
   const audio = await dlSong(vid)
-    resolve(await require('./misc').avMix(video,audio))
+    return resolve(await require('./misc').avMix(video,audio));
   })
 }
 async function getResolutions(vid){
