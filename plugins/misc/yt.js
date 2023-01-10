@@ -5,7 +5,7 @@ const { Innertube, UniversalCache } = require('youtubei.js');
 const { readFileSync, existsSync, mkdirSync, createWriteStream } = require('fs');
 const {streamToIterable} = require('youtubei.js/dist/src/utils/Utils');
 var path = require('path')
-const misc = require(path.resolve( __dirname, "./misc.js" ));
+const {avMix} = require(path.resolve( __dirname, "./misc.js" ));
 function bytesToSize(bytes) {
   var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
   if (bytes == 0) return '0 Byte';
@@ -29,8 +29,8 @@ async function getVideo(vid,res_='360p'){
 async function ytv(vid,res_='360p'){
   const video = await getVideo(vid,res_);
   const audio = await dlSong(vid)
-  console.log(misc)
-  return await misc.avMix(video,audio)
+  console.log(require('./misc'))
+  return await avMix(video,audio)
 }
 async function getResolutions(vid){
   const yt = await Innertube.create({ cache: new UniversalCache() });
