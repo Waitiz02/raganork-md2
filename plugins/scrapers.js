@@ -12,7 +12,6 @@ const {
     getString
 } = require('./misc/lang');
 const {
-    ytv,
     getJson,
     gtts
 } = require('./misc/misc');
@@ -36,7 +35,7 @@ const {
     skbuffer
 } = require('raganork-bot');
 const LanguageDetect = require('languagedetect');
-const { downloadYT } = require('./misc/yt');
+const { downloadYT,ytv } = require('./misc/yt');
 const lngDetector = new LanguageDetect();
 async function extractGoogleImage(url){
 var result = (await axios(url)).data
