@@ -44,7 +44,7 @@ Module({
 }, (async (message, match) => {
 if (!match[1]) return message.sendReply("_Need song name, eg: .play starboy_")
 let sr = (await searchYT(match[1])).videos[0];
-  var {title} = await downloadYT(sr.id);
+  const title = await ytTitle(sr.id)
   await message.sendReply(`*Downloading:* _${title}_`)
   let sdl = await dlSong(sr.id);
   ffmpeg(sdl)
@@ -108,7 +108,7 @@ Module({
   var link = match[1].match(/\bhttps?:\/\/\S+/gi)
   if (link !== null && getID.test(link[0])) {
   let v_id = link[0].match(getID)[1]
-  var {title} = await downloadYT(v_id);
+  const title = await ytTitle(v_id);
   await message.sendReply(`*Downloading:* _${title}_`)
   let sdl = await dlSong(v_id);
   ffmpeg(sdl)
