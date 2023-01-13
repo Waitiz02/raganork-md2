@@ -160,52 +160,26 @@ if (match[1] === "on"){
     await setAntifake(message.jid);
     return await message.sendReply("_Antifake enabled!_")
 }
+if (match[1] === "allow"){
+    return await message.sendReply(`_Allowed prefixes are: ${ALLOWED} (applies to all groups)_`)
+}
 if (match[1] === "off"){
     await delAntifake(message.jid);
     return await message.sendReply("_Antifake disabled!_")
 }
-var {
-    subject,
-    owner
-} = await message.client.groupMetadata(message.jid)
-var myid = message.client.user.id.split(":")[0]
-owner = owner || myid + "@s.whatsapp.net"
-const templateButtons = [{
-        index: 1,
-        urlButton: {
-            displayText: 'WIKI',
-            url: 'https://github.com/souravkl11/raganork-md/wiki/Antifake'
-        }
-    },
-    {
-        index: 2,
-        quickReplyButton: {
-            displayText: 'ON',
-            id: handler+'antifake on'
-        }
-    },
-    {
-        index: 3,
-        quickReplyButton: {
-            displayText: 'OFF',
-            id: handler+'antifake off'
-        }
-    },
-    {
-        index: 4,
-        quickReplyButton: {
-            displayText: 'ALLOWED PREFIXES',
-            id: handler+'getvar ALLOWED'
-        }
-    },
-]
-
-const templateMessage = {
-    text: "*Antifake menu of* " + subject,
-    footer: '',
-    templateButtons: templateButtons
-}
-await message.client.sendMessage(message.jid, templateMessage)
+const buttons = [
+    {buttonId: handler+'antifake on', buttonText: {displayText: 'On'}, type: 1},
+    {buttonId: handler+'antifake off', buttonText: {displayText: 'Off'}, type: 1},
+    {buttonId: handler+'antifake allow', buttonText: {displayText: 'Allowed prefixes'}, type: 1}
+  ]
+  
+  const buttonMessage = {
+      text: "Antifake control menu",
+      footer: '',
+      buttons: buttons,
+      headerType: 1
+  }
+  await message.client.sendMessage(message.jid, buttonMessage,{quoted: message.data})
     })
 Module({
     on: "group_update",
