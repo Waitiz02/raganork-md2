@@ -25,7 +25,10 @@ Module({pattern: 'getjids ?(.*)', desc: 'Get all groups\' jids',use: 'utility',f
     if (!groups.length) return await msg.sendReply("_No group chats!_");
     var _msg = "";
     for (let e of groups){
-    _msg+= `_Group:_ ${(await msg.client.groupMetadata(e)).subject} \n_JID:_ ${e}\n\n`
+        try {
+    var g_name = (await msg.client.groupMetadata(e)).subject
+    } catch {var g_name = 'Can\'t load name (rate-overlimit)'}
+    _msg+= `_Group:_ ${} \n_JID:_ ${e}\n\n`
     }
     await msg.sendMessage(_msg)
 });
