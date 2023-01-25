@@ -133,7 +133,7 @@ async function sendButton(buttons,text,footer,message){
         if (!match) return await m.sendReply("_Need params!_\n_Eg: .setvar MODE:public_")
         let key = match.split(":")[0]
         let value =match.replace(key+":","").replace(/\n/g, '\\n')
-        if (!isHeroku) return await message.sendReply("_Command currently unavailable for heroku_");
+        if (isHeroku) return await message.sendReply("_Command currently unavailable for heroku_");
         config[key] = value
         if (isVPS){
         try { 
