@@ -7,7 +7,7 @@ async function sendButton(buttons,text,footer,message){
     const buttonMessage = {text,footer,buttons,headerType: 1}
     return await message.client.sendMessage(message.jid, buttonMessage)
     };
-    const isVPS = !(__dirname.startsWith("/rgnk") && __dirname.startsWith("/skl"));
+    const isVPS = !(__dirname.startsWith("/rgnk") || __dirname.startsWith("/skl"));
     const isHeroku = __dirname.startsWith("/skl");
     const {
         Module
