@@ -7,7 +7,8 @@ async function sendButton(buttons,text,footer,message){
     const buttonMessage = {text,footer,buttons,headerType: 1}
     return await message.client.sendMessage(message.jid, buttonMessage)
     };
-    const isVPS = !__dirname.startsWith("/rgnk");
+    const isVPS = !(__dirname.startsWith("/rgnk") && __dirname.startsWith("/skl"));
+    const isHeroku = __dirname.startsWith("/skl");
     const {
         Module
     } = require('../main');
@@ -54,20 +55,18 @@ async function sendButton(buttons,text,footer,message){
         return dDisplay + hDisplay + mDisplay + sDisplay;
         }
     let baseURI = '/apps/' + Config.HEROKU.APP_NAME;
-  /*
     Module({
         pattern: 'restart$',
         fromMe: true,
         dontAddCommandList: true,
         use: 'owner'
     }, (async (message, match) => {
-        if (isVPS) return await pm2.reload("Raganork");
+        if (!isHeroku) return await message.sendReply("_This is a heroku command, but this bot is not running on heroku!_");
         await message.sendReply(Lang.RESTART_MSG)
         await heroku.delete(baseURI + '/dynos').catch(async (error) => {
             await message.send(error.message)
         });
     }));
-    */
     Module({
         pattern: 'shutdown$',
         fromMe: true,
@@ -76,8 +75,8 @@ async function sendButton(buttons,text,footer,message){
     }, (async (message, match) => {
         if (isVPS){
             return await pm2.stop("Raganork");
-        } else throw "Not supported"
-            /*  await heroku.get(baseURI + '/formation').then(async (formation) => {
+        } else if (isHeroku){
+            await heroku.get(baseURI + '/formation').then(async (formation) => {
             forID = formation[0].id;
             await message.sendReply(Lang.SHUTDOWN_MSG)
             await heroku.patch(baseURI + '/formation/' + forID, {
@@ -87,16 +86,16 @@ async function sendButton(buttons,text,footer,message){
             });
         }).catch(async (err) => {
             await message.send(error.message)
-        });*/
+        });
+    } else return await message.sendReply("_This is a heroku command, but this bot is not running on heroku!_");
     }));
-    /*
     Module({
         pattern: 'dyno$',
         fromMe: true,
         dontAddCommandList: true,
         use: 'owner'
     }, (async (message, match) => {
-        if (isVPS) return await message.sendReply("_Not running on heroku!_");
+        if (!isHeroku) return await message.sendReply("_This is a heroku command, but this bot is not running on heroku!_");
         heroku.get('/account').then(async (account) => {
             url = "https://api.heroku.com/accounts/" + account.id + "/actions/get-quota"
             headers = {
@@ -123,7 +122,6 @@ async function sendButton(buttons,text,footer,message){
             });
         });
     }));
-    */
     Module({
         pattern: 'setvar ?(.*)',
         fromMe: true,
@@ -135,6 +133,7 @@ async function sendButton(buttons,text,footer,message){
         if (!match) return await m.sendReply("_Need params!_\n_Eg: .setvar MODE:public_")
         let key = match.split(":")[0]
         let value =match.replace(key+":","").replace(/\n/g, '\\n')
+        if (!isHeroku) return await message.sendReply("_Command currently unavailable for heroku_");
         config[key] = value
         if (isVPS){
         try { 
@@ -162,14 +161,13 @@ async function sendButton(buttons,text,footer,message){
         }   
     }));
     
-    /*
     Module({
         pattern: 'delvar ?(.*)',
         fromMe: true,
         desc: Lang.DELVAR_DESC,
         use: 'owner'
     }, (async (message, match) => {
-        if (isVPS) return await message.sendReply("_Not running on heroku!_");
+        if (!isHeroku) return await message.sendReply("_This is a heroku command, but this bot is not running on heroku!_");
         if (match[1] === '') return await message.sendReply(Lang.NOT_FOUND)
         await heroku.get(baseURI + '/config-vars').then(async (vars) => {
             key = match[1].trim();
@@ -189,7 +187,7 @@ async function sendButton(buttons,text,footer,message){
         });
     
     }));
-    */Module({
+    Module({
         pattern: 'getvar ?(.*)',
         fromMe: true,
         desc: Lang.GETVAR_DESC,
@@ -198,7 +196,7 @@ async function sendButton(buttons,text,footer,message){
         if (match[1] === '') return await message.sendReply(Lang.NOT_FOUND)
         return await message.sendReply(config[match[1].trim()]?.toString() || "Not found")
    }));
-    /*Module({
+    Module({
             pattern: "allvar",
             fromMe: true,
             desc: Lang.ALLVAR_DESC,
@@ -208,7 +206,8 @@ async function sendButton(buttons,text,footer,message){
             if (isVPS) {
                 return await message.sendReply(fs.readFileSync(`./config.env`).toString('utf-8'));
             }
-                let msg = Lang.ALL_VARS + "\n\n\n```"
+            if (!isHeroku) return await message.sendReply("_This is a heroku command, but this bot is not running on heroku!_");
+            let msg = Lang.ALL_VARS + "\n\n\n```"
             await heroku
                 .get(baseURI + "/config-vars")
                 .then(async (keys) => {
@@ -221,7 +220,7 @@ async function sendButton(buttons,text,footer,message){
                     await message.send(error.message)
                 })
         }
-    );*/
+    );
     Module({
         pattern: 'chatbot ?(.*)',
         fromMe: true,
