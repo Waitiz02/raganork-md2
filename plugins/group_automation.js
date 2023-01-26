@@ -101,10 +101,10 @@ await delAutoMute(message.jid);
 return await message.sendReply("*Automute has been disabled in this group ❗*");       
 }  
 var mregex = /[0-2][0-9] [0-5][0-9]/
-if (mregex.test(match?.match(/(\d+)/g).join(' ')) === false) return await message.sendReply("*_Wrong format!_\n_.automute 22 00 (For 10 PM)_\n_.automute 06 00 (For 6 AM)_*");
+if (mregex.test(match?.match(/(\d+)/g)?.join(' ')) === false) return await message.sendReply("*_Wrong format!_\n_.automute 22 00 (For 10 PM)_\n_.automute 06 00 (For 6 AM)_*");
 var admin = await isAdmin(message)
 if (!admin) return await message.sendReply("_I'm not an admin_");
-await setAutoMute(message.jid,match.match(/(\d+)/g).join(' '));
+await setAutoMute(message.jid,match.match(/(\d+)/g)?.join(' '));
 await message.sendReply(`*_Group will auto mute at ${tConvert(match.match(/(\d+)/g).join(' '))}, rebooting.._*`)
 process.exit(0)
 });
@@ -122,10 +122,10 @@ await delAutounMute(message.jid);
 return await message.sendReply("*_Auto unmute has been disabled in this group ❗_*");       
 }
 var mregex = /[0-2][0-9] [0-5][0-9]/
-if (mregex.test(match?.match(/(\d+)/g).join(' ')) === false) return await message.sendReply("*_Wrong format_!\n_.autounmute 22 00 (For 10 PM)_\n_.autounmute 06 00 (For 6 AM)_*");
+if (mregex.test(match?.match(/(\d+)/g)?.join(' ')) === false) return await message.sendReply("*_Wrong format_!\n_.autounmute 22 00 (For 10 PM)_\n_.autounmute 06 00 (For 6 AM)_*");
 var admin = await isAdmin(message)
 if (!admin) return await message.sendReply("*I'm not admin*");
-await setAutounMute(message.jid,match?.match(/(\d+)/g).join(' '));
+await setAutounMute(message.jid,match?.match(/(\d+)/g)?.join(' '));
 await message.sendReply(`*_Group will auto open at ${tConvert(match)}, rebooting.._*`)
 process.exit(0)
 });
