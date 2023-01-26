@@ -93,17 +93,19 @@ Module({
     warn: "This works according to IST (Indian standard time)",
     use: 'group'
 }, async (message, match) => {
-if (!match[1]) return await message.sendReply("*Wrong format!*\n*.automute 22 00 (For 10 PM)*\n*.automute 06 00 (For 6 AM)*\n*.automute off*");
-if (match[1]==="off") {
+match = match[1]?.toLowerCase()
+if (!match) return await message.sendReply("*Wrong format!*\n*.automute 22 00 (For 10 PM)*\n*.automute 06 00 (For 6 AM)*\n*.automute off*");
+if (match.includes("am") || match.includes("pm")) return await message.sendReply("_Time must be in HH MM format (24 hour)_")
+if (match=="off") {
 await delAutoMute(message.jid);
 return await message.sendReply("*Automute has been disabled in this group ❗*");       
 }  
 var mregex = /[0-2][0-9] [0-5][0-9]/
-if (mregex.test(match[1]) === false) return await message.sendReply("*Wrong format!\n.automute 22 00 (For 10 PM)\n.automute 06 00 (For 6 AM)*");
+if (mregex.test(match?.match(/(\d+)/g).join(' ')) === false) return await message.sendReply("*_Wrong format!_\n_.automute 22 00 (For 10 PM)_\n_.automute 06 00 (For 6 AM)_*");
 var admin = await isAdmin(message)
-if (!admin) return await message.sendReply("_I'm not admin_");
-await setAutoMute(message.jid,match[1]);
-await message.sendReply(`*Group will automatically mute at ${tConvert(match[1])}. Reconnecting..*`)
+if (!admin) return await message.sendReply("_I'm not an admin_");
+await setAutoMute(message.jid,match.match(/(\d+)/g).join(' '));
+await message.sendReply(`*_Group will auto mute at ${tConvert(match.match(/(\d+)/g).join(' '))}, rebooting.._*`)
 process.exit(0)
 });
 Module({
@@ -112,17 +114,19 @@ Module({
     warn: "This works according to IST (Indian standard time)",
     use: 'group'
 }, async (message, match) => {
-if (!match[1]) return await message.sendReply("*Wrong format!*\n*.autounmute 22 00 (For 10 PM)*\n*.autounmute 06 00 (For 6 AM)*\n*.autounmute off*");
-if (match[1]==="off") {
+match = match[1]?.toLowerCase()
+if (!match) return await message.sendReply("*_Wrong format!_*\n*_.autounmute 22 00 (For 10 PM)_*\n*_.autounmute 06 00 (For 6 AM)_*\n*_.autounmute off_*");
+if (match.includes("am") || match.includes("pm")) return await message.sendReply("_Time must be in HH MM format (24 hour)_")
+if (match==="off") {
 await delAutounMute(message.jid);
-return await message.sendReply("*Auto Unmute has been disabled in this group ❗*");       
+return await message.sendReply("*_Auto unmute has been disabled in this group ❗_*");       
 }
 var mregex = /[0-2][0-9] [0-5][0-9]/
-if (mregex.test(match[1]) === false) return await message.sendReply("*Wrong format!\n.autounmute 22 00 (For 10 PM)\n.autounmute 06 00 (For 6 AM)*");
+if (mregex.test(match?.match(/(\d+)/g).join(' ')) === false) return await message.sendReply("*_Wrong format_!\n_.autounmute 22 00 (For 10 PM)_\n_.autounmute 06 00 (For 6 AM)_*");
 var admin = await isAdmin(message)
 if (!admin) return await message.sendReply("*I'm not admin*");
-await setAutounMute(message.jid,match[1]);
-await message.sendReply(`*Group will automatically open at ${tConvert(match[1])}. Reconnecting..*`)
+await setAutounMute(message.jid,match?.match(/(\d+)/g).join(' '));
+await message.sendReply(`*_Group will auto open at ${tConvert(match)}, rebooting.._*`)
 process.exit(0)
 });
 var {
