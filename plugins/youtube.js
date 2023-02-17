@@ -50,7 +50,7 @@ let sr = (await searchYT(match[1])).videos[0];
   ffmpeg(sdl)
   .save('./temp/song.mp3')
   .on('end', async () => { 
-  var song = await addInfo('./temp/song.mp3',title,BOT_INFO.split(";")[0],"Raganork audio downloader",await skbuffer(`https://i3.ytimg.com/vi/${sr.id}/maxresdefault.jpg`))
+  var song = await addInfo('./temp/song.mp3',title,BOT_INFO.split(";")[0],"Raganork audio downloader",await skbuffer(`https://i3.ytimg.com/vi/${sr.id}/hqdefault.jpg`))
   return await message.client.sendMessage(message.jid, {
       audio:song,
       mimetype: 'audio/mp4'
@@ -114,7 +114,7 @@ Module({
   ffmpeg(sdl)
   .save('./temp/song.mp3')
   .on('end', async () => { 
-  var song = await addInfo('./temp/song.mp3',title,BOT_INFO.split(";")[0],"Raganork audio downloader",await skbuffer(`https://i3.ytimg.com/vi/${link[0].match(getID)[1]}/maxresdefault.jpg`))
+  var song = await addInfo('./temp/song.mp3',title,BOT_INFO.split(";")[0],"Raganork audio downloader",await skbuffer(`https://i3.ytimg.com/vi/${link[0].match(getID)[1]}/hqdefault.jpg`))
   return await message.client.sendMessage(message.jid, {
       audio:song,
       mimetype: 'audio/mp4'

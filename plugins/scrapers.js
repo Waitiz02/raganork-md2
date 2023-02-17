@@ -221,7 +221,7 @@ Module({
             video,
             mimetype: "video/mp4",
             caption,
-            thumbnail: await skbuffer(`https://i.ytimg.com/vi/${vid}/maxresdefault.jpg`)
+            thumbnail: await skbuffer(`https://i.ytimg.com/vi/${vid}/hqdefault.jpg`)
         },{quoted:message.data});
     });
 Module({
