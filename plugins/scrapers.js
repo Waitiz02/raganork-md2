@@ -126,7 +126,8 @@ Module({
     usage: '.gpt Write a short note about India'
 }, (async (message, match) => {
     if (!match[1]) return await message.sendReply("Need any query!");
-    return await message.sendReply(await chatGPT(match[1]))
+    const {result} = await chatGPT(match[1])
+    return await message.sendReply(result)
 }));
 Module({
     pattern: 'zipcode ?(.*)',
