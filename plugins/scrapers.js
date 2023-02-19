@@ -13,7 +13,8 @@ const {
 } = require('./misc/lang');
 const {
     getJson,
-    gtts
+    gtts,
+    chatGPT
 } = require('./misc/misc');
 const gis = require('async-g-i-s');
 const axios = require('axios');
@@ -116,6 +117,16 @@ Module({
          try { var buff = await skbuffer(results[i].url); } catch { var buff = await skbuffer("https://miro.medium.com/max/800/1*hFwwQAW45673VGKrMPE2qQ.png") }
          await message.send(buff, 'image');
         }
+}));
+Module({
+    pattern: 'gpt ?(.*)',
+    fromMe: w,
+    desc: "OpenAI's ChatGPT like languauge model, used for text generation",
+    use: 'AI',
+    usage: '.gpt Write a short note about India'
+}, (async (message, match) => {
+    if (!match[1]) return await message.sendReply("Need any query!");
+    return await message.sendReply(await chatGPT(match[1]))
 }));
 Module({
     pattern: 'zipcode ?(.*)',
