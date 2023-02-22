@@ -76,17 +76,6 @@ if (!m.reply_message.image) return await m.sendMessage("_Reply to an image!_")
 var q = await m.reply_message.download()
 var res = await edit(q,'contrast')
 await m.sendReply({url:res},"image") }))
-Module({pattern: 'aadhar ?(.*)', fromMe, use: "template edit", desc:'Makes an aadhar card with given image, name and gender'}, (async (m, text) => { 
-if (!text[1]) return await m.sendMessage("Need text\neg: .aadhar name,dob,gender")
-if (!m.reply_message.image) return await m.sendMessage("_Reply to an image!_")
-var q = await m.reply_message.download()
-var res = await edit(q,'aadhar',text[1])
-await m.sendReply({url:res},"image");}));
-Module({pattern: 'blur ?(.*)', fromMe, use: "template edit", desc:'Makes an aadhar card with given image, name and gender'}, (async (m, text) => { 
-if (!m.reply_message.image) return await m.sendMessage("_Reply to an image!_")
-var q = await m.reply_message.download()
-var res = await edit(q,'blur',text[1])
-await m.sendReply({url:res},"image");}));
 Module({pattern: 'ytcomment ?(.*)', fromMe, use: "template edit", desc:'Makes a youtube comment image with image,text and username'}, (async (m, text) => { 
 if (!text[1]) return await m.sendMessage("Need any text")
 if (!m.reply_message.image) return await m.sendMessage("_Reply to an image!_")
