@@ -134,9 +134,7 @@ Module({
     desc: "Text to animated sticker"
 }, (async (message, match) => {
     if (match[1] == '') return await message.send("*Need text*")
-    try { var result = await skbuffer("https://api.xteam.xyz/attp?file&text="+encodeURI(match[1]))
-    return await message.sendReply(result,'sticker');
-    } catch {var result = await skbuffer("https://raganork-api.herokuapp.com/api/attp?text="+encodeURI(match[1] +"&apikey=with_love_souravkl11"))} 
+    var result = await skbuffer("https://raganork-api.herokuapp.com/api/attp?text="+encodeURI(match[1] +"&apikey=with_love_souravkl11")) 
     fs.writeFile("attp.mp4",result,async (e)=>{
         var exif = {
             author: STICKER_DATA.split(";")[1] || "",
@@ -146,5 +144,6 @@ Module({
             ios: "https://github.com/souravkl11/Raganork-md/"
         }
         await message.send(fs.readFileSync(await addExif(await sticker("attp.mp4",'video'),exif)),'sticker')
+    
     })
 }));
