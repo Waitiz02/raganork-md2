@@ -114,8 +114,11 @@ Module({
     const results = await gis(query);
         await message.sendReply(Lang.IMG.format(results.splice(0, count).length, query))
         for (var i = 0; i < (results.length < count ? results.length : count); i++) {
-         try { var buff = await skbuffer(results[i].url); } catch { var buff = await skbuffer("https://miro.medium.com/max/800/1*hFwwQAW45673VGKrMPE2qQ.png") }
-         await message.send(buff, 'image');
+         try { var buff = await skbuffer(results[i].url); } catch {
+		 count++
+	        var buff = false
+	 }
+         if (buff) await message.send(buff, 'image');
         }
 }));
 Module({
