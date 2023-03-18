@@ -101,7 +101,7 @@ Module({
         waveform: Array.from({length: 40}, () => Math.floor(Math.random() * 99))
     }, {
         quoted: message.data
-    });
+    }); 
 });
 Module({
     pattern: 'img ?(.*)',
