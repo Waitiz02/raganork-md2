@@ -8,6 +8,7 @@ const {
     HANDLERS
 } = require('../config');
 var handler = HANDLERS !== 'false'?HANDLERS.split("")[0]:"";
+var badwordsRegExp = require('badwords/regexp');
 const {
     getString
 } = require('./misc/lang');
@@ -111,6 +112,7 @@ Module({
     if (!match[1]) return await message.sendReply(Lang.NEED_WORD);
     var count = parseInt(match[1].split(",")[1]) || 5
     var query = match[1].split(",")[0] || match[1];
+    if (badwordsRegExp.test(query)) return await message.sendReply(`_The word "${query.match(badwordsRegExp)}" is blocked!_`)
     const results = await gis(query);
         await message.sendReply(Lang.IMG.format(results.splice(0, count).length, query))
         for (var i = 0; i < (results.length < count ? results.length : count); i++) {
