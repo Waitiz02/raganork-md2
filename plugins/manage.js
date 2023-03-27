@@ -162,7 +162,8 @@ async function sendButton(buttons,text,footer,message){
     } catch(e){
             return await m.sendReply("_Are you a VPS user? Check out wiki for more._\n"+e.message);
         }
-        } else {
+        } 
+        if (__dirname.startsWith("/rgnk")) {
             let set_res = await update(key,value)
             if (set_res) return await m.sendReply(`_Successfully set ${key} to ${value}, redeploying._`)
             else throw "Error!"
