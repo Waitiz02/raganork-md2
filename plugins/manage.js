@@ -112,10 +112,10 @@ async function sendButton(buttons,text,footer,message){
                 percentage = Math.round((quota_used / total_quota) * 100);
                 remaining = total_quota - quota_used;
                 await message.sendReply(
-                    "_Total: *{}*_\n".format(secondsToDhms(total_quota)) +
+                    "_Total: *{}*_\n".format(secondsToDhms(total_quota).trim()) +
                     "_Used: *{}*_\n".format(secondsToDhms(quota_used)) +
                     "_Percent: *{}*_\n".format(percentage) +
-                    "_Remaining: *{}*_\n".format(secondsToDhms(remaining)))
+                    "_Remaining: *{}*_\n".format(secondsToDhms(remaining).trim()))
     
             }).catch(async (err) => {
                 await message.send(error.message)
@@ -133,8 +133,16 @@ async function sendButton(buttons,text,footer,message){
         if (!match) return await m.sendReply("_Need params!_\n_Eg: .setvar MODE:public_")
         let key = match.split(":")[0]
         let value =match.replace(key+":","").replace(/\n/g, '\\n')
-        if (isHeroku) return await message.sendReply("_Command currently unavailable for heroku_");
         config[key] = value
+        if (isHeroku) {
+            await heroku.patch(baseURI + '/config-vars', {
+                body: {
+                    [varKey]: varValue
+                }
+            }).then(async (app) => {
+                return await message.sendReply(`_Successfully set ${key} to ${config[key]}, restarting.._`)
+            });
+        }
         if (isVPS){
         try { 
         var envFile = fs.readFileSync(`./config.env`).toString('utf-8')
@@ -146,7 +154,7 @@ async function sendButton(buttons,text,footer,message){
             let newEnv = envFile+'\n'+key+'='+config[key]
             await fs.writeFileSync(`./config.env`,newEnv)
         }
-        await m.sendReply(`_Successfully set ${key} to ${config[key]}, rebooting._`)
+        await m.sendReply(`_Successfully set ${key} to ${config[key]}, rebooting.._`)
         if (key == "SESSION"){
         await require('fs-extra').removeSync('./baileys_auth_info'); 
         }
