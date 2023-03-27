@@ -35,7 +35,7 @@ Module({
         changelog += `${(parseInt(i)+1)}• *${commits.all[i].message}*\n`
     }
 }
-        changelog+=`_Use ".update start" to start the update_`
+        changelog+=`\n_Use ".update start" to start the update_`
           const Message = {
               text: changelog
             }
