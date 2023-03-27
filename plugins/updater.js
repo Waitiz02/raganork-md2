@@ -17,11 +17,12 @@ const { skbuffer } = require('raganork-bot');
 var handler = Config.HANDLERS !== 'false'?Config.HANDLERS.split("")[0]:"";
 let isHeroku = Config.HEROKU.API_KEY && Config.HEROKU.APP_NAME
 Module({
-    pattern: 'update',
+    pattern: 'update ?(.*)',
     fromMe: true,
     desc: "Updates bot",
     use: 'owner'
 }, (async (message, match) => {
+    if (match[1] == "start") return;
     await git.fetch();
     var commits = await git.log(['main' + '..origin/' + 'main']);
     var mss = '';
@@ -33,17 +34,55 @@ Module({
         for (var i in commits.all){
         changelog += `${(parseInt(i)+1)}• *${commits.all[i].message}*\n`
     }
-        mss = changelog;
-        var buttons = [{buttonId: handler+'updt', buttonText: {displayText: 'START UPDATE'}, type: 1}]
-    }
-          const buttonMessage = {
-              text: mss,
-              footer: 'Feel free to update!',
-              buttons: buttons,
-              headerType: 1
-          }
-    return await message.client.sendMessage(message.jid, buttonMessage)   
+}
+        changelog+=`_Use ".update start" to start the update_`
+          const Message = {
+              text: changelog
+            }
+    return await message.client.sendMessage(message.jid,Message)   
 }));
+Module({pattern: 'update start',use: 'owner', fromMe: true,dontAddCommandList: true, desc: "Updates bot"}, (async (message, match) => {
+    await git.fetch();
+    var commits = await git.log(['main' + '..origin/' + 'main']);
+    if (commits.total === 0) {
+        return await message.client.sendMessage(message.jid, { text:"_Bot up to date_"})
+
+        } 
+    if (!__dirname.startsWith("/rgnk") && !isHeroku){
+        await require("simple-git")().reset("hard",["HEAD"])
+        await require("simple-git")().pull()
+        await message.sendReply("_Successfully updated. Please manually update npm modules if applicable!_")
+        process.exit(0);    
+        }
+        else if (isHeroku) {
+            await message.client.sendMessage(message.jid, { text:"_Started update.._"})
+
+            try {
+                var app = await heroku.get('/apps/' + Config.HEROKU.APP_NAME)
+            } catch {
+                await message.client.sendMessage(message.jid, { text:"Heroku information wrong!"})
+
+                await new Promise(r => setTimeout(r, 1000));
+            }
+            git.fetch('upstream', 'main');
+            git.reset('hard', ['FETCH_HEAD']);
+
+            var git_url = app.git_url.replace(
+                "https://", "https://api:" + Config.HEROKU.API_KEY + "@"
+            )
+            
+            try {
+                await git.addRemote('heroku', git_url);
+            } catch { console.log(''); }
+            await git.push('heroku', 'main');
+
+            await message.client.sendMessage(message.jid, { text:"_Successfully updated_"})
+           await message.client.sendMessage(message.jid, { text:"_Restarting_"})
+            } else {
+                await update("UPDATER",'default')
+                await message.client.sendMessage(message.jid, { text:"_Update started!_"})
+    }
+    }));
 Module({pattern: 'updt',use: 'owner', fromMe: true,dontAddCommandList: true, desc: "Updates bot"}, (async (message, match) => {
     await git.fetch();
     var commits = await git.log(['main' + '..origin/' + 'main']);

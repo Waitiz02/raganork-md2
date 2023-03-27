@@ -324,7 +324,7 @@ async function parseReply(reply,no_){
     let matches = reply.match(regex)
     return matches[0].match(getID)[1]
   }
-  if (reply.includes("Available quality")){
+  if (reply?.includes("Available quality")){
     var query = reply.split("\n").filter(x=>x.startsWith(`${no_}.`))?.[0]?.replace(`${no_}. `,"").trim().replace(/(\*\_|_\*)/g,"")  
     query = (query.replace(query.match(/\([^)]+\)/g)[(query.match(/\([^)]+\)/g)).length-1],"")).trim()
     var videoID = reply.split("\n").filter(x=>x.startsWith(`_video_id`))?.[0]?.split(" ")[1].trim().replace(/_+$/, "");  
@@ -363,13 +363,13 @@ Module({
             return await message.client.sendMessage(message.jid,Message)
             }            
           }
-          if (reply.includes("Available quality")){
+          if (reply?.includes("Available quality")){
               let {res,videoID} = await parseReply(reply,no_);
               const result__ = await ytv(videoID,res)
               const title = await ytTitle(videoID)
               return await message.client.sendMessage(message.jid,{video:result__,caption:`_${title} *[${res}]*_`},{quoted:message.data}) 
           }
-          if (reply.includes("Results matching")){
+          if (reply?.includes("Results matching")){
             let videoID = await parseReply(reply,no_);
               const title = await ytTitle(videoID);
               await message.sendReply(`*Downloading:* _${title}_`)
@@ -386,7 +386,7 @@ Module({
               });
              }); 
           }
-          if (reply.includes("ᴄʜᴀɴɴᴇʟ")){
+          if (reply?.includes("ᴄʜᴀɴɴᴇʟ")){
             if (no_ == 1){
               let videoID = await parseReply(reply,no_);
               const title = await ytTitle(videoID);
