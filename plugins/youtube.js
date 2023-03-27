@@ -346,8 +346,8 @@ Module({
   fromMe: fm
   }, (async (message, match) => {
   if (message.reply_message){  
-  let reply = message.reply_message?.text || message.quoted?.message?.imageMessage?.caption || false;
-    if (reply && message.quoted.key.id.startsWith("BAE")){
+  let reply = message.reply_message?.text || message.quoted?.message?.imageMessage?.caption;
+    if (reply!==undefined && reply && message.quoted.key.id.startsWith("BAE")){
       var no_ = /\d+/.test(message.message) ? message.message.match(/\d+/)[0] : false
       if (!no_) throw "_Reply must be  a number_";
           if (reply?.includes("Search results")){

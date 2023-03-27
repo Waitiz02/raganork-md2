@@ -137,7 +137,7 @@ async function sendButton(buttons,text,footer,message){
         if (isHeroku) {
             await heroku.patch(baseURI + '/config-vars', {
                 body: {
-                    [varKey]: varValue
+                    [key]: value
                 }
             }).then(async (app) => {
                 return await message.sendReply(`_Successfully set ${key} to ${config[key]}, restarting.._`)
