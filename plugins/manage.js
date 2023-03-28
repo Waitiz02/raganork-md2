@@ -41,6 +41,42 @@ async function sendButton(buttons,text,footer,message){
         token: Config.HEROKU.API_KEY
     });
     var handler = Config.HANDLERS !== 'false'?Config.HANDLERS.split("")[0]:""
+    async function setVar(key,value,message){
+        if (isHeroku) {
+            await heroku.patch(baseURI + '/config-vars', {
+                body: {
+                    [key]: value
+                }
+            }).then(async (app) => {
+                return await message.sendReply(`_Successfully set ${key} to ${config[key]}, restarting.._`)
+            });
+        }
+        if (isVPS){
+        try { 
+        var envFile = fs.readFileSync(`./config.env`).toString('utf-8')
+        let matches = envFile.split('\n').filter(e=>e.startsWith(key))
+        if (matches.length==1){
+            let newEnv = envFile.replace(matches[0].split('=')[1],config[key])
+            await fs.writeFileSync(`./config.env`,newEnv)
+        } else {
+            let newEnv = envFile+'\n'+key+'='+config[key]
+            await fs.writeFileSync(`./config.env`,newEnv)
+        }
+        await m.sendReply(`_Successfully set ${key} to ${config[key]}, rebooting.._`)
+        if (key == "SESSION"){
+        await require('fs-extra').removeSync('./baileys_auth_info'); 
+        }
+        process.exit(0)    
+    } catch(e){
+            return await m.sendReply("_Are you a VPS user? Check out wiki for more._\n"+e.message);
+        }
+        } 
+        if (__dirname.startsWith("/rgnk")) {
+            let set_res = await update(key,value)
+            if (set_res) return await m.sendReply(`_Successfully set ${key} to ${value}, redeploying._`)
+            else throw "Error!"
+        }   
+    }
     function secondsToDhms(seconds) {
         seconds = Number(seconds);
         var d = Math.floor(seconds / (3600*24));
@@ -134,40 +170,8 @@ async function sendButton(buttons,text,footer,message){
         let key = match.split(":")[0]
         let value =match.replace(key+":","").replace(/\n/g, '\\n')
         config[key] = value
-        if (isHeroku) {
-            await heroku.patch(baseURI + '/config-vars', {
-                body: {
-                    [key]: value
-                }
-            }).then(async (app) => {
-                return await message.sendReply(`_Successfully set ${key} to ${config[key]}, restarting.._`)
-            });
-        }
-        if (isVPS){
-        try { 
-        var envFile = fs.readFileSync(`./config.env`).toString('utf-8')
-        let matches = envFile.split('\n').filter(e=>e.startsWith(key))
-        if (matches.length==1){
-            let newEnv = envFile.replace(matches[0].split('=')[1],config[key])
-            await fs.writeFileSync(`./config.env`,newEnv)
-        } else {
-            let newEnv = envFile+'\n'+key+'='+config[key]
-            await fs.writeFileSync(`./config.env`,newEnv)
-        }
-        await m.sendReply(`_Successfully set ${key} to ${config[key]}, rebooting.._`)
-        if (key == "SESSION"){
-        await require('fs-extra').removeSync('./baileys_auth_info'); 
-        }
-        process.exit(0)    
-    } catch(e){
-            return await m.sendReply("_Are you a VPS user? Check out wiki for more._\n"+e.message);
-        }
-        } 
-        if (__dirname.startsWith("/rgnk")) {
-            let set_res = await update(key,value)
-            if (set_res) return await m.sendReply(`_Successfully set ${key} to ${value}, redeploying._`)
-            else throw "Error!"
-        }   
+        return await setVar(key,value,message)
+        
     }));
     
     Module({
@@ -313,11 +317,13 @@ async function sendButton(buttons,text,footer,message){
             msg = Jids.join(",")
             toggle = "off"
         }
-        const buttons = [
-            {buttonId: handler+'setvar ANTI_SPAM:'+msg, buttonText: {displayText: 'ON'}, type: 1},
-            {buttonId: handler+'setvar ANTI_SPAM:'+off_msg, buttonText: {displayText: 'OFF'}, type: 1}
-        ]
-        return await sendButton(buttons,"*Antispam control panel*","Antispam is currently "+toggle,message)
+        if (match[1]?.toLowerCase() === 'on'){
+            return await setVar("ANTI_SPAM",msg,message)
+        }
+        if (match[1]?.toLowerCase() === 'off'){
+            return await setVar("ANTI_SPAM",off_msg,message)
+        }
+        return await message.sendReply("_Antispam mode_\n\n"+"_Current status: *"+toggle+"*\n\n_Use: .antispam on/off_")
     }));
     Module({
         pattern: 'antibot ?(.*)',
@@ -336,7 +342,13 @@ async function sendButton(buttons,text,footer,message){
             msg = Jids.join(",")
             toggle = "off"
         }
-        return await message.sendReply("_Antibot mode_\n\n"+"_Current status: *"+toggle+"*_")
+        if (match[1]?.toLowerCase() === 'on'){
+            return await setVar("ANTI_BOT",msg,message)
+        }
+        if (match[1]?.toLowerCase() === 'off'){
+            return await setVar("ANTI_BOT",off_msg,message)
+        }
+        return await message.sendReply("_Antibot mode_\n\n"+"_Current status: *"+toggle+"*_\n\n_Use: .antibot on/off_")
     }));
     Module({
         pattern: 'antilink ?(.*)',
