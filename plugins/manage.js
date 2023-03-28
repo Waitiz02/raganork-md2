@@ -42,6 +42,7 @@ async function sendButton(buttons,text,footer,message){
     });
     var handler = Config.HANDLERS !== 'false'?Config.HANDLERS.split("")[0]:""
     async function setVar(key,value,message){
+        let m = message;
         if (isHeroku) {
             await heroku.patch(baseURI + '/config-vars', {
                 body: {
