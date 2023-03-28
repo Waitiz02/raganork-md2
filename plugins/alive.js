@@ -33,12 +33,6 @@ Module({
   var myid = message.client.user.id.split(":")[0]
   const stars = ['✦','✯','✯','✰','◬','✵'];
   const star = stars[Math.floor(Math.random()*stars.length)];
-  const buttons = [
-    {buttonId: 'ping '+myid, buttonText: {displayText:'ᴛᴇsᴛ ᴘɪɴɢ'}, type: 1},
-    {buttonId: 'support '+myid, buttonText: {displayText:'ʙᴏᴛ ɢʀᴏᴜᴘ' }, type: 1},
-    {buttonId: 'commands '+myid, buttonText: {displayText: 'ᴄᴏᴍᴍᴀɴᴅs'}, type: 1}
-  ]
-  
   function shuffleArray(array) {
     for (var i = array.length - 1; i > 0; i--) {
         var j = Math.floor(Math.random() * (i + 1));
@@ -71,12 +65,12 @@ Module({
   var menu = `╭═══〘 ${BOT_INFO.split(";")[0]} 〙═══⊷❍
 ┃${star}╭──────────────
 ┃${star}│
-┃${star}│ Owner : ${BOT_INFO.split(";")[1]}
-┃${star}│ User : ${message.senderName.replace( /[\r\n]+/gm, "" )}
-┃${star}│ Mode : ${MODE}
-┃${star}│ Server : ${__dirname.startsWith('/skl')?"Heroku":"Private (VPS)"}
-┃${star}│ Available RAM: ${used} of ${total}
-┃${star}│ Version: ${config.VERSION}
+┃${star}│ _*Owner*_ : ${BOT_INFO.split(";")[1]}
+┃${star}│ _*User*_ : ${message.senderName.replace( /[\r\n]+/gm, "" )}
+┃${star}│ _*Mode*_ : ${MODE}
+┃${star}│ _*Server*_ : ${__dirname.startsWith('/skl')?"Heroku":"Private (VPS)"}
+┃${star}│ _*Available RAM*_ : ${used} of ${total}
+┃${star}│ _*Version*_ : ${config.VERSION}
 ┃${star}│
 ┃${star}│
 ┃${star}│  ▎▍▌▌▉▏▎▌▉▐▏▌▎
@@ -89,10 +83,7 @@ Module({
 ${cmdmenu}`
 return await message.client.sendMessage(message.jid,{
   image: await skbuffer(BOT_INFO.split(";")[3]||`https://picsum.photos/800/500`),
-  caption: FancyRandom(menu),
-  footer: BOT_INFO.split(";")[0],
-  buttons: buttons,
-  headerType: 4
+  caption: FancyRandom(menu)
 })
 }))
 Module({
