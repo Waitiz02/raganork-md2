@@ -1,6 +1,5 @@
 # _Raganork-multi-device_
 ## _Multi device whatsapp bot created with [@adiwajshing/baileys](https://github.com/adiwajshing/Baileys)_
-#### _(i) No need of forking this repository_
   
 <div align="center">
    
@@ -9,7 +8,10 @@
 <div>
 <br>
   
-<a href="https://raganork.souravkl11.xyz/deploy" target="blank"><img align="center" src="https://i.imgur.com/gtK4XLX.png" alt="Deploy bot" height="112" width="310" /></a>
+<a href="https://raganork.ml/api/deploy-md" target="blank"><img align="center" src="https://i.imgur.com/gtK4XLX.png" alt="Deploy bot" height="112" width="310" />(HEROKU)</a>
+  <div>
+<br>
+<a href="https://raganork.souravkl11.xyz/deploy" target="blank"><img align="center" src="https://i.imgur.com/gtK4XLX.png" alt="Deploy bot" height="112" width="310" />(KOYEB)</a>
   <div>
 <br>
 <div>

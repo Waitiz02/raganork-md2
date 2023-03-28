@@ -336,11 +336,7 @@ async function sendButton(buttons,text,footer,message){
             msg = Jids.join(",")
             toggle = "off"
         }
-        const buttons = [
-            {buttonId: handler+'setvar ANTI_BOT:'+msg, buttonText: {displayText: 'ON'}, type: 1},
-            {buttonId: handler+'setvar ANTI_BOT:'+off_msg, buttonText: {displayText: 'OFF'}, type: 1}
-        ]
-        return await sendButton(buttons,"_Antibot mode_","Current status: "+toggle,message)
+        return await message.sendReply("_Antibot mode_\n\n"+"_Current status: *"+toggle+"*_")
     }));
     Module({
         pattern: 'antilink ?(.*)',
@@ -348,29 +344,26 @@ async function sendButton(buttons,text,footer,message){
         desc: "Activates antilink",
         use: 'config'
     }, (async (message, match) => {
+        match[1]=match[1]?match[1].toLowerCase():""
         var db = await getAntilink();
         const jids = []
         db.map(data => {
             jids.push(data.jid)
         });
-        if (match[1] === "button_on"){
+        if (match[1] === "on"){
             if (!(await isAdmin(message))) return await message.sendReply("_I'm not an admin!_")
             await setAntilink(message.jid) 
         }
-        if (match[1] === "button_off"){
+        if (match[1] === "off"){
             if (!(await isAdmin(message))) return await message.sendReply("_I'm not an admin!_")
             await delAntilink(message.jid)  
         }
-        if (match[1]!=="button_on" && match[1]!=="button_off"){
-        const buttons = [
-            {buttonId: handler+'antilink button_on', buttonText: {displayText: 'ON'}, type: 1},
-            {buttonId: handler+'antilink button_off', buttonText: {displayText: 'OFF'}, type: 1}
-        ]
+        if (match[1]!=="on" && match[1]!=="off"){
         var status = jids.includes(message.jid) ? 'on' : 'off';
         var {subject} = await message.client.groupMetadata(message.jid)
-        return await sendButton(buttons,`_Antilink menu of ${subject}_`,"_Antilink is currently turned "+status+"_",message)
+        return await message.sendReply(`_Antilink menu of ${subject}_`+"\n\n_Antilink is currently turned *"+status+"*_\n\n_Use .antilink on/off_")
         }
-        await message.sendReply(match[1] === "button_on" ? "_Antilink activated!_" : "_Antilink deactivated!_");
+        await message.sendReply(match[1] === "on" ? "_Antilink activated!_" : "_Antilink deactivated!_");
     }));
     Module({
         on: 'text',
