@@ -42,6 +42,10 @@ async function sendButton(buttons,text,footer,message){
     });
     var handler = Config.HANDLERS !== 'false'?Config.HANDLERS.split("")[0]:""
     async function setVar(key,value,message){
+        let setvarAction = isHeroku ? "restarting" : isVPS ? "rebooting" : "redeploying";
+        var set_ = `_Successfully set ${key} to ${value}, {}.._`;
+        set_ = key == "ANTI_BOT" ? `AntiBot activated, bots will be automatically kicked, {}` : key == "ANTI_SPAM" ? `AntiSpam activated, spammers will be automatically kicked, {}` : key == "MODE" ? `Mode switched to ${value}, {}`:set_;
+        set_ = set_.format(setvarAction)
         let m = message;
         if (isHeroku) {
             await heroku.patch(baseURI + '/config-vars', {
@@ -49,7 +53,7 @@ async function sendButton(buttons,text,footer,message){
                     [key]: value
                 }
             }).then(async (app) => {
-                return await message.sendReply(`_Successfully set ${key} to ${config[key]}, restarting.._`)
+                return await message.sendReply(set_)
             });
         }
         if (isVPS){
@@ -63,7 +67,7 @@ async function sendButton(buttons,text,footer,message){
             let newEnv = envFile+'\n'+key+'='+config[key]
             await fs.writeFileSync(`./config.env`,newEnv)
         }
-        await m.sendReply(`_Successfully set ${key} to ${config[key]}, rebooting.._`)
+        await m.sendReply(set_)
         if (key == "SESSION"){
         await require('fs-extra').removeSync('./baileys_auth_info'); 
         }
@@ -74,7 +78,7 @@ async function sendButton(buttons,text,footer,message){
         } 
         if (__dirname.startsWith("/rgnk")) {
             let set_res = await update(key,value)
-            if (set_res) return await m.sendReply(`_Successfully set ${key} to ${value}, redeploying._`)
+            if (set_res) return await m.sendReply(set_)
             else throw "Error!"
         }   
     }
@@ -208,7 +212,7 @@ async function sendButton(buttons,text,footer,message){
         use: 'owner'
     }, (async (message, match) => {
         if (match[1] === '') return await message.sendReply(Lang.NOT_FOUND)
-        return await message.sendReply(config[match[1].trim()]?.toString() || "Not found")
+        return await message.sendReply(process.env[match[1].trim()]?.toString() || "Not found")
    }));
     Module({
             pattern: "allvar",
@@ -295,11 +299,11 @@ async function sendButton(buttons,text,footer,message){
         desc: "Change bot mode to public & private",
         use: 'config'
     }, (async (message, match) => {
-        const buttons = [
-            {buttonId: handler+'setvar MODE:public', buttonText: {displayText: 'PUBLIC'}, type: 1},
-            {buttonId: handler+'setvar MODE:private', buttonText: {displayText: 'PRIVATE'}, type: 1}
-        ]
-        return await sendButton(buttons,"*Mode switcher*","Current mode: "+Config.MODE,message)
+        if (match[1]?.toLowerCase() == "public" || match[1]?.toLowerCase() == "private"){
+            return await setVar("MODE",match[1],message)
+        } else {
+            return await message.sendReply(`_*Mode manager*_\n_Current mode: ${config.MODE}_\n_Use .mode public/private_`)
+        }
     }));
     Module({
         pattern: 'antispam ?(.*)',
@@ -309,8 +313,8 @@ async function sendButton(buttons,text,footer,message){
     }, (async (message, match) => {
         var admin = await isAdmin(message)
         if (!admin) return await message.sendReply("_I'm not admin_");
-        var Jids = Config.ANTI_SPAM?.split(',') || []
-        var msg = Config.ANTI_SPAM;
+        var Jids = process.env.ANTI_SPAM?.split(',') || []
+        var msg = process.env.ANTI_SPAM;
         var toggle = "on"
         var off_msg = Jids?.filter(e=>e!==message.jid) || 'false'
         if (!Jids.includes(message.jid)){
@@ -334,8 +338,8 @@ async function sendButton(buttons,text,footer,message){
     }, (async (message, match) => {
         var admin = await isAdmin(message)
         if (!admin) return await message.sendReply("_I'm not admin_");
-        var Jids = Config.ANTI_BOT?.split(',') || []
-        var msg = Config.ANTI_BOT;
+        var Jids = process.env.ANTI_BOT?.split(',') || []
+        var msg = process.env.ANTI_BOT;
         var toggle = "on"
         var off_msg = Jids?.filter(e=>e!==message.jid) || 'false'
         if (!Jids.includes(message.jid)){
