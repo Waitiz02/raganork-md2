@@ -12,7 +12,7 @@ var badwordsRegExp = require('badwords/regexp');
 const {
     getString
 } = require('./misc/lang');
-const {ChatGPT} = require('./misc/AI');
+const {ChatGPT, Davinci} = require('./misc/AI');
 const {
     getJson,
     gtts
@@ -126,12 +126,24 @@ Module({
 Module({
     pattern: 'gpt ?(.*)',
     fromMe: w,
-    desc: "OpenAI's ChatGPT's official languauge model, used for text generation and natural conversations",
+    desc: "OpenAI's ChatGPT's official languauge model, used for text generation, researches, and natural conversations",
     use: 'AI',
-    usage: '.gpt Write a short note about India'
+    usage: '.gpt Write a short note about Lionel Messi'
 }, (async (message, match) => {
     if (!match[1]) return await message.sendReply("Need any query!");
     const {text} = await ChatGPT(match[1])
+    return await message.sendReply(text)
+}));
+Module({
+    pattern: 'gpt ?(.*)',
+    fromMe: w,
+    desc: "OpenAI's yet another languauge model, best model for text generation and better prompt analysis",
+    use: 'AI',
+    usage: '.gpt Write a short note about Lionel Messi'
+}, (async (message, match) => {
+    if (!match[1]) return await message.sendReply("Need any query!");
+    const result = await Davinci(match[1])
+    const text = result.result?result.result:result;
     return await message.sendReply(text)
 }));
 Module({
