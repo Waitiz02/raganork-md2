@@ -131,7 +131,7 @@ Module({
     usage: '.gpt Write a short note about India'
 }, (async (message, match) => {
     if (!match[1]) return await message.sendReply("Need any query!");
-    const {result} = await ChatGPT(match[1])
+    const result = await ChatGPT(match[1])
     return await message.sendReply(result)
 }));
 Module({
