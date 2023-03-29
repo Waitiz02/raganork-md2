@@ -135,7 +135,7 @@ Module({
     return await message.sendReply(text)
 }));
 Module({
-    pattern: 'gpt ?(.*)',
+    pattern: 'davinci ?(.*)',
     fromMe: w,
     desc: "OpenAI's yet another languauge model, best model for text generation and better prompt analysis",
     use: 'AI',
