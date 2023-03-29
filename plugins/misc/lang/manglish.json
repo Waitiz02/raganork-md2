@@ -22,7 +22,7 @@
             "REMOVE_DESC": "Removes plugin.",
             "NEED_PLUGIN": "Oru name thaa. like: .remove news",
             "PLUGIN_NOT_FOUND": "Angane oru plugin nee install akiyittilla",
-            "DELETED": "{} plugin remove cheyth. Venenkil restart cheytho"
+            "DELETED": "{} plugin remove cheyth. Venenkil reboot cheytho, atha nallath!"
         },
         "group": {
             "KICK_DESC": "Groupilnn alkare remove cheyyum.",

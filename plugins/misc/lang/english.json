@@ -22,7 +22,7 @@
             "REMOVE_DESC": "Removes plugin.",
             "NEED_PLUGIN": "_Please give a plugin name! Ex: .remove news_",
             "PLUGIN_NOT_FOUND": "Maybe you have installed such a plugin, or maybe not. But it sure isn't right now.",
-            "DELETED": "_Deleted {}!_"
+            "DELETED": "_Deleted {}! Reboot to make effect_"
         },
         "group": {
             "KICK_DESC": "Kicks participants from group.",

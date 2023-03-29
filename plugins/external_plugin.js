@@ -46,6 +46,7 @@ Module({
     var plugin_name_temp = response.data.match(/pattern: ["'](.*)["'],/g)?response.data.match(/pattern: ["'](.*)["'],/g).map(e=>e.replace("pattern","").replace(/[^a-zA-Z]/g, "")):"temp"
     try { plugin_name = plugin_name[1].split(" ")[0] } catch { return await message.sendReply("_Invalid plugin. No plugin name found!_") }
     fs.writeFileSync('./plugins/' + plugin_name + '.js', response.data);
+    plugin_name_temp = plugin_name_temp.length > 1 ? plugin_name_temp.join(", ") : plugin_name;
     try {
         require('./' + plugin_name);
     } catch (e) {
@@ -53,7 +54,7 @@ Module({
         return await message.sendReply(Lang.INVALID_PLUGIN + e);
     }
     await Db.installPlugin(url, plugin_name);
-    await message.send(Lang.INSTALLED.format(plugin_name_temp.join(", ")));
+    await message.send(Lang.INSTALLED.format(plugin_name_temp));
 }
 }));
 
@@ -105,14 +106,7 @@ Module({
         await plugin[0].destroy();
         delete require.cache[require.resolve('./' + match[1] + '.js')]
         fs.unlinkSync('./plugins/' + match[1] + '.js');
-    const buttons = [{buttonId: handler+'reboot', buttonText: {displayText: 'Restart'}, type: 1}]
-          
-          const buttonMessage = {
-              text: Lang.DELETED.format(match[1]),
-              footer: '_Restart to make effect_',
-              buttons: buttons,
-              headerType: 1
-          }
-        await message.client.sendMessage(message.jid,buttonMessage);
+          const Message = Lang.DELETED.format(match[1])
+        await message.sendReply(message.jid,Message);
     }
 }));
