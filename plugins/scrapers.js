@@ -132,7 +132,7 @@ Module({
 }, (async (message, match) => {
     if (!match[1]) return await message.sendReply("Need any query!");
     const {text} = await ChatGPT(match[1])
-    return await message.sendReply(text)
+    return await message.sendReply(text || "_No response returned, please try again_")
 }));
 Module({
     pattern: 'davinci ?(.*)',
