@@ -195,8 +195,12 @@ Module({
         jids.push(data.jid)
     });
     if (message.update === 'add' && jids.includes(message.jid)) {
-        var allowed = ALLOWED.split(",");
-        if (isFake(message.participant[0], allowed)) {
+        var allowed = ALLOWED?.split(","),not_allowed = NOT_ALLOWED?.split(","),checker = [],not_checker = [];
+        allowed.split(",").map(e=> checker.push(message.participant[0].startsWith(e)))
+        not_allowed.split(",").map(e=> not_checker.push(message.participant[0].startsWith(e)))
+        allowed = allowed.includes(true)
+        not_allowed = not_allowed.includes(true)
+        if (!allowed || not_allowed) {
             var admin = await isAdmin(message);
             if (!admin) return;
             /*await message.client.sendMessage(message.jid, {

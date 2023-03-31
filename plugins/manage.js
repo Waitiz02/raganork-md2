@@ -396,14 +396,17 @@ async function sendButton(buttons,text,footer,message){
             jids.push(data.jid)
         });
         if (jids.includes(message.jid)) {
-        var allowed = process.env.ALLOWED_LINKS || "gist,instagram,youtu";
+        var allowed = process.env.ALLOWED_LINKS || "";
+        var not_allowed = process.env.NOT_ALLOWED_LINKS || "";
         var checker = [];
+        var not_checker = [];
         allowed.split(",").map(e=> checker.push(message.message.includes(e)))
-        if (!checker.includes(true)){
+        not_allowed.split(",").map(e=> not_checker.push(message.message.includes(e)))
+        if (!checker.includes(true) || not_checker.includes(true)){
         if (!(await isAdmin(message,message.sender))) {
         var usr = message.sender.includes(":") ? message.sender.split(":")[0]+"@s.whatsapp.net" : message.sender
         await message.client.sendMessage(message.jid, { delete: message.data.key })
-        await message.sendReply("_Link not allowed!_");
+        await message.sendReply("_Links are'nt allowed!_");
         await message.client.groupParticipantsUpdate(message.jid, [usr], "remove")
         }
         }
