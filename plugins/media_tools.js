@@ -244,7 +244,7 @@ acr.identify(file).then(result => {
 Module({
       pattern: "find ?(.*)",
       fromMe: fromMe,
-      desc: "Finds music name. Like Shazam",
+      desc: "Finds music name using AI",
       usage: ".find reply to a music",
       use: 'search'
   }, async (message, match) => {
@@ -254,15 +254,12 @@ Module({
       var data = await findMusic(audio)
       if (!data) return await message.sendReply("_No matching results found!_");
 var buttons = [];
-  if ("youtube" in data.external_metadata){
- buttons.push({buttonId:handler+'yts https://youtu.be/'+data.external_metadata?.youtube?.vid, buttonText: {displayText: 'YouTube'}, type: 1})
-}
 function getDuration(millis) {
   var minutes = Math.floor(millis / 60000);
   var seconds = ((millis % 60000) / 1000).toFixed(0);
   return minutes + ":" + (seconds < 10 ? '0' : '') + seconds;
 }
-const buttonMessage = {
+const Message = {
     text:  `*Title:* ${data.title}\n
 Artists: ${data.artists?.map(e => e.name + " ")}\n
 Released on: ${data.release_date}\n
@@ -270,12 +267,13 @@ Duration: ${getDuration(data.duration_ms)}\n
 Album: ${data.album?.name}\n
 Genres: ${data.genres?.map(e => e.name + " ")}\n
 Label: ${data.label}\n
-Spotify: ${"spotify" in data.external_metadata?"Available":"Unavailable"}\n`,
-    footer: '🎼 Listen to full music on',
-    buttons,
-    headerType:1
+Spotify: ${"spotify" in data.external_metadata?"Available":"Unavailable"}\n
+YouTube: ${"youtube" in data.external_metadata?data.external_metadata.youtube.vid:"Unavailable"}\n`,
+//    footer: '🎼 Listen to full music on',
+//    buttons,
+//    headerType:1
 }
-await message.client.sendMessage(message.jid, buttonMessage)    
+await message.client.sendMessage(message.jid, Message)    
     });
   Module({pattern: "rotate ?(.*)",fromMe: fromMe}, async (message, match) => {
     if (!match[1] || !message.reply_message || !message.reply_message.video) return await message.sendReply("*Reply to a video*\n*.rotate left|right|flip*");        
