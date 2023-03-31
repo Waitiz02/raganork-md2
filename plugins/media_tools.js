@@ -285,7 +285,7 @@ await message.client.sendMessage(message.jid, Message)
     await message.sendReply(fs.readFileSync(await rotate(file,angle)),'video')
 });
   Module({pattern: "flip ?(.*)",fromMe: fromMe, desc:"Flips video"}, async (message, match) => {
-    if (!match[1] || !message.reply_message || !message.reply_message.video) return await message.sendReply("*Reply to a video*");        
+    if (!message.reply_message || !message.reply_message.video) return await message.sendReply("*Reply to a video*");        
     var file = await message.reply_message.download();
     var angle = "3"
     await message.send("_Processing..._")
