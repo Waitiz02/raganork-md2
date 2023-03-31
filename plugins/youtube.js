@@ -345,7 +345,8 @@ Module({
   on: 'text',
   fromMe: fm
   }, (async (message, match) => {
-  if (message.reply_message){  
+  if (message.reply_message){
+    try {
   let reply = message.reply_message?.text || message.quoted?.message?.imageMessage?.caption;
     if (reply!==undefined && !!reply && message.quoted.key.id.startsWith("BAE")){
       var no_ = /\d+/.test(message.message) ? message.message.match(/\d+/)[0] : false
@@ -416,5 +417,8 @@ Module({
         },{quoted:message.data});
             } else throw "_Invalid number, reply 1 for audio and 2 for video_"
           }
-        }
+        } catch (error) {
+          console.log("")
+        }  
+      }
   }));
