@@ -275,11 +275,19 @@ YouTube: ${"youtube" in data.external_metadata?data.external_metadata.youtube.vi
 }
 await message.client.sendMessage(message.jid, Message)    
     });
-  Module({pattern: "rotate ?(.*)",fromMe: fromMe}, async (message, match) => {
+  Module({pattern: "rotate ?(.*)",fromMe: fromMe, desc:"Rotates video (left/right)"}, async (message, match) => {
     if (!match[1] || !message.reply_message || !message.reply_message.video) return await message.sendReply("*Reply to a video*\n*.rotate left|right|flip*");        
     var file = await message.reply_message.download();
     var angle = "1"
     if (match[1] === "left") angle = "2" 
     if (match[1] === "flip") angle = "3" 
+    await message.send("_Processing..._")
+    await message.sendReply(fs.readFileSync(await rotate(file,angle)),'video')
+});
+  Module({pattern: "flip ?(.*)",fromMe: fromMe, desc:"Flips video"}, async (message, match) => {
+    if (!match[1] || !message.reply_message || !message.reply_message.video) return await message.sendReply("*Reply to a video*");        
+    var file = await message.reply_message.download();
+    var angle = "3"
+    await message.send("_Processing..._")
     await message.sendReply(fs.readFileSync(await rotate(file,angle)),'video')
 });
