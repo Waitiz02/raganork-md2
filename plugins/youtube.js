@@ -14,6 +14,7 @@ const {
   BOT_INFO
 } = require('../config');
 const ffmpeg = require('fluent-ffmpeg');
+// let parseBotJid = (id) => id+"@s.whatsapp.net";
 const {
   getString
 } = require('./misc/lang');
@@ -348,7 +349,7 @@ Module({
   if (message.reply_message){
     try {
   let reply = message.reply_message?.text || message.quoted?.message?.imageMessage?.caption;
-    if (reply!==undefined && !!reply && message.quoted.key.id.startsWith("BAE")){
+    if (reply!==undefined && !!reply && message.quoted.key.id.startsWith("BAE") && message.quoted.key.participant.includes(message.myjid)){
       var no_ = /\d+/.test(message.message) ? message.message.match(/\d+/)[0] : false
       if (!no_) throw "_Reply must be  a number_";
           if (reply?.includes("Search results")){
