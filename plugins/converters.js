@@ -14,7 +14,8 @@ const {
 const Config = require('../config');
 const {
     MODE,
-    STICKER_DATA
+    STICKER_DATA,
+    AUDIO_DATA
 } = require('../config');
 const {
     getString
@@ -60,8 +61,12 @@ Module({
     ffmpeg(savedFile)
         .save('./temp/tomp3.mp3')
         .on('end', async () => {
+                let inf = match[1] !== '' ? match[1] : AUDIO_DATA
+                var spl = inf.split(';')
+                var image = spl[2] ? await skbuffer(spl[2]): await skbuffer(BOT_INFO.split(";")[3])
+                var res = await addInfo('./temp/tomp3.mp3',spl[0],spl[1]?spl[1]:AUDIO_DATA.split(";")[1], 'Raganork Engine', image)
             await message.client.sendMessage(message.jid, {
-                audio: fs.readFileSync('./temp/tomp3.mp3'),
+                audio: res,
                 mimetype: 'audio/mp4',
                 ptt: false
             }, {
