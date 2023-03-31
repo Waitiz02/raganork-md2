@@ -22,6 +22,7 @@
     "@adiwajshing/baileys": "git+https://github.com/souravkl11/Baileys.git",
     "@adiwajshing/keyed-db": "0.2.4",
     "acrcloud": "1.4.0",
+    "awesome-phonenumber": "5.3.0",
     "adm-zip": "0.5.9",
     "sequelize": "^6.13.0",
     "async-g-i-s": "1.0.0",
