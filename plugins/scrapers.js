@@ -76,7 +76,7 @@ Module({
     }
     query = query.replace("tts","")
     var lng = 'en';
-    if (/[^\x00-\x7F]+/.test(query)) lng = 'ml';
+    if (/[\u0D00-\u0D7F]+/.test(query)) lng = 'ml';
     let
         LANG = lng,
         ttsMessage = query,
