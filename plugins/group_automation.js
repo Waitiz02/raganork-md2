@@ -25,7 +25,7 @@ const {
     Module
 } = require('../main')
 const {
-    ALLOWED,
+    ALLOWED, NOT_ALLOWED,
     HANDLERS
 } = require('../config');
 var handler = HANDLERS !== 'false'? HANDLERS.split("")[0]:""
