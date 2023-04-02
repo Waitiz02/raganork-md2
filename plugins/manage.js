@@ -259,6 +259,21 @@ async function sendButton(buttons,text,footer,message){
         desc: "Bot settings. Enable extra options related to WhatsApp visibility.",
         use: 'owner'
     }, (async (message, match) => {
+        var msg = "_*Bot settings (WORK IN PROGRESS)*_\n\n"
+        const settings = {
+            1:"READ_MESSAGES;Auto read all messages",
+            2:"READ_COMMAND;Auto read commands",
+            3:"AUTO_READ_STATUS;Auto read status updates",
+            4:"REJECT_CALLS;Auto reject calls",
+            5:"ALWAYS_ONLINE;Always Online",
+            6:"PMB_VAR;PM auto blocker",
+            7:"DIS_PM;Disable public bot use in PM",
+            8:"DISABLED_COMMANDS;Disable specific commands in your bot"
+        }
+        for (let x in settings) msg+= `${x}. *_${settings[x].split(";")[1]}_*\n`;
+        msg+=`\n_Reply the number to configure_`        
+        return await message.sendReply(msg);
+        /* USING BUTTONS
         if (match[1].includes(";")){
             let key_ = match[1].split(";")
             var buttons = [
@@ -272,13 +287,13 @@ async function sendButton(buttons,text,footer,message){
                 {
                 title: "Configure these:",
                 rows: [
-                    {title: "Auto read all messages", rowId: handler+"settings READ_MESSAGES;Auto read all messages"},
-                    {title: "Auto read command messages", rowId: handler+"settings READ_COMMAND;Auto read command messages"},
-                    {title: "Auto read status updates", rowId: handler+"settings AUTO_READ_STATUS;Auto read status updates"},
-                    {title: "Auto reject calls", rowId: handler+"settings REJECT_CALLS;Auto reject calls"},
-                    {title: "Always online", rowId: handler+"settings ALWAYS_ONLINE;Always Online"},
-                    {title: "PM Auto blocker", rowId: handler+"settings PMB_VAR;PM auto blocker"},
-                    {title: "Disable bot in PM", rowId: handler+"settings DIS_PM;Disable public bot use in PM"}
+                    {title: "Auto read all messages", rowId: handler+"settings "},
+                    {title: "Auto read command messages", rowId: handler+"settings ;"},
+                    {title: "Auto read status updates", rowId: handler+"settings "},
+                    {title: "Auto reject calls", rowId: handler+"settings "},
+                    {title: "Always online", rowId: handler+"settings "},
+                    {title: "PM Auto blocker", rowId: handler+"settings "},
+                    {title: "Disable bot in PM", rowId: handler+"settings "}
                 ]
                 }
             ]
@@ -290,8 +305,8 @@ async function sendButton(buttons,text,footer,message){
               buttonText: "view",
               sections
             }
-            
-         return await message.client.sendMessage(message.jid, listMessage)
+            return await message.client.sendMessage(message.jid, listMessage)      
+       */
         }));
     Module({
         pattern: 'mode ?(.*)',
