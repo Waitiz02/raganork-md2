@@ -196,8 +196,8 @@ Module({
     });
     if (message.update === 'add' && jids.includes(message.jid)) {
         var allowed = ALLOWED?.split(","),not_allowed = NOT_ALLOWED?.split(","),checker = [],not_checker = [];
-        allowed.split(",").map(e=> checker.push(message.participant[0].startsWith(e)))
-        not_allowed.split(",").map(e=> not_checker.push(message.participant[0].startsWith(e)))
+        allowed.map(e=> checker.push(message.participant[0].startsWith(e)))
+        not_allowed.map(e=> not_checker.push(message.participant[0].startsWith(e)))
         allowed = allowed.includes(true)
         not_allowed = not_allowed.includes(true)
         if (!allowed || not_allowed) {
