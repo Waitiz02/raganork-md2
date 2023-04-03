@@ -80,7 +80,7 @@ Module({
     } else {
         plugins.map(
             (plugin) => {
-                msg += '*' +(plugin.dataValues.name + '* : ' + plugin.dataValues.url.endsWith("/raw")?plugin.dataValues.url.replace('raw',''):plugin.dataValues.url) + '\n\n';
+                msg += '*' +plugin.dataValues.name + '* : ' +( plugin.dataValues.url.endsWith("/raw")?plugin.dataValues.url.replace('raw',''):plugin.dataValues.url) + '\n\n';
             }
         );
         return await message.sendReply(msg);
