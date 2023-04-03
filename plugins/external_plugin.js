@@ -32,8 +32,7 @@ Module({
         return await message.send(Lang.INVALID_URL);
     }
     if (url.host === 'gist.github.com') {
-        url.host = 'gist.githubusercontent.com';
-        url = url.toString() + '/raw'
+        url = !url.endsWith('raw')?url.toString() + '/raw':url
     } else {
         url = url.toString()
     }
@@ -81,7 +80,7 @@ Module({
     } else {
         plugins.map(
             (plugin) => {
-                msg += '*' + plugin.dataValues.name + '* : ' + plugin.dataValues.url + '\n\n';
+                msg += '*' +(plugin.dataValues.name + '* : ' + plugin.dataValues.url.endsWith("/raw")?plugin.dataValues.url.replace('raw',''):plugin.dataValues.url) + '\n\n';
             }
         );
         return await message.sendReply(msg);
@@ -104,9 +103,9 @@ Module({
         return await message.send(Lang.NO_PLUGIN);
     } else {
         await plugin[0].destroy();
+        const Message = Lang.DELETED.format(match[1])
+        await message.sendReply(message.jid,Message);
         delete require.cache[require.resolve('./' + match[1] + '.js')]
         fs.unlinkSync('./plugins/' + match[1] + '.js');
-          const Message = Lang.DELETED.format(match[1])
-        await message.sendReply(message.jid,Message);
-    }
+       }
 }));
