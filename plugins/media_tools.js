@@ -268,7 +268,7 @@ Album: ${data.album?.name}\n
 Genres: ${data.genres?.map(e => e.name + " ")}\n
 Label: ${data.label}\n
 Spotify: ${"spotify" in data.external_metadata?"Available":"Unavailable"}\n
-YouTube: ${"youtube" in data.external_metadata?data.external_metadata.youtube.vid:"Unavailable"}\n`,
+YouTube: ${"youtube" in data.external_metadata?"https://youtu.be/"+data.external_metadata.youtube.vid:"Unavailable"}\n`,
 //    footer: '🎼 Listen to full music on',
 //    buttons,
 //    headerType:1
