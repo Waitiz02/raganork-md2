@@ -67,7 +67,7 @@ Module({
     if (match[1] !== '') {
         var plugin = plugins.filter(_plugin => _plugin.dataValues.name === match[1])
         try {
-            await message.sendReply(plugin[0].dataValues.name + ": " + plugin[0].dataValues.url);
+            await message.sendReply(`$_{plugin[0].dataValues.name}:_ ${plugin[0].dataValues.url}`);
         } catch {
             return await message.sendReply(Lang.PLUGIN_NOT_FOUND)
         }
