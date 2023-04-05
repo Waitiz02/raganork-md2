@@ -31,7 +31,7 @@ Module({
     } catch {
         return await message.send(Lang.INVALID_URL);
     }
-    if (url.host === 'gist.github.com') {
+    if (url.host === 'gist.github.com' || url.host === 'gist.githubusercontent.com') {
         url = !url?.toString().endsWith('raw')?url.toString() + '/raw':url.toString()
     } else {
         url = url.toString()
