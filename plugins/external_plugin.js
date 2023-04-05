@@ -104,7 +104,7 @@ Module({
     } else {
         await plugin[0].destroy();
         const Message = Lang.DELETED.format(match[1])
-        await message.sendReply(message.jid,Message);
+        await message.sendReply(Message);
         delete require.cache[require.resolve('./' + match[1] + '.js')]
         fs.unlinkSync('./plugins/' + match[1] + '.js');
        }
