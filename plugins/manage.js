@@ -172,8 +172,8 @@ async function sendButton(buttons,text,footer,message){
         match=match[1]
         var m = message;
         if (!match) return await m.sendReply("_Need params!_\n_Eg: .setvar MODE:public_")
-        let key = match.split(":")[0]
-        let value =match.replace(key+":","").replace(/\n/g, '\\n')
+        let [key, ...valueArr] = match.split(':');
+        let value = valueArr.join(':');
         config[key] = value
         return await setVar(key,value,message)
         
