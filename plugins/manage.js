@@ -58,15 +58,22 @@ async function sendButton(buttons,text,footer,message){
         }
         if (isVPS){
         try { 
-        var envFile = fs.readFileSync(`./config.env`).toString('utf-8')
-        let matches = envFile.split('\n').filter(e=>e.startsWith(key))
-        if (matches.length==1){
-            let newEnv = envFile.replace(matches[0].split('=')[1],config[key])
-            await fs.writeFileSync(`./config.env`,newEnv)
-        } else {
-            let newEnv = envFile+'\n'+key+'='+config[key]
-            await fs.writeFileSync(`./config.env`,newEnv)
+        var envFile = fs.readFileSync(`./config.env`,'utf-8')
+        const lines = envFile.trim().split('\n');
+        let found = false;
+        for (let i = 0; i < lines.length; i++) {
+        const line = lines[i];
+        if (line.startsWith(`${key}=`)) {
+            // If the line matches the variable name, replace the value
+            lines[i] = `${key}="${value}"`;
+            found = true;
+            break;
         }
+        }
+        if (!found) {
+        lines.push(`${key}="${value}"`);
+        }
+fs.writeFileSync('./config.env', lines.join('\n'));
         await m.sendReply(set_)
         if (key == "SESSION"){
         await require('fs-extra').removeSync('./baileys_auth_info'); 
