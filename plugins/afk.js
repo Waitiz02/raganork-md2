@@ -41,16 +41,16 @@ Module({on: 'text', fromMe: true}, async (message, match) => {
      ]
 
     const buttonMessage = {
-    text: "*Looks like you are back online. Disable afk?*",
+    text: "*Looks like you are back online. Use '.afk disable' to disable afk*",
     footer: 'AFK manager',
     buttons: buttons
 }
-    return await message.client.sendMessage(message.jid,buttonMessage,{quoted:message.data})
+    return await message.sendReply(buttonMessage.text)
     }
 });
 
 Module({pattern: 'afk ?(.*)', fromMe: true, desc: Lang.AFK_DESC}, async (message, match) => {     
-    if (match[1] === "disable_button" && (message.fromMe || message.sender.split("@")[0] === config.SUDO?.split(",")[0])){
+    if (match[1] === "disable" && (message.fromMe || message.sender.split("@")[0] === config.SUDO?.split(",")[0])){
         AFK_DB.lastseen = 0;
         AFK_DB.reason = false;
         AFK_DB.isAfk = false;
