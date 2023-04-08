@@ -117,7 +117,7 @@ Module({
         if (match.length < 2) {
             return await message.sendReply("Wrong format" + ' ```.gfilter "input" "output"');
         }
-        await setFilter(match[0].replace(/['"“]+/g, ''), match[1].replace(/['"“]+/g, '').replace(/[#]+/g, '\n'), match[0][0] === "'" ? true : false);
+        await setGFilter(match[0].replace(/['"“]+/g, ''), match[1].replace(/['"“]+/g, '').replace(/[#]+/g, '\n'), match[0][0] === "'" ? true : false);
         await message.sendReply("_Set " + match[0].replace(/['"]+/g, '')+" to all groups' filter_");
     }
 }));
@@ -146,7 +146,7 @@ Module({
         if (match.length < 2) {
             return await message.sendReply("Wrong format" + ' ```.dfilter "input" "output"');
         }
-        await setFilter(match[0].replace(/['"“]+/g, ''), match[1].replace(/['"“]+/g, '').replace(/[#]+/g, '\n'), match[0][0] === "'" ? true : false);
+        await setDFilter(match[0].replace(/['"“]+/g, ''), match[1].replace(/['"“]+/g, '').replace(/[#]+/g, '\n'), match[0][0] === "'" ? true : false);
         await message.sendReply("Successfully set " + match[0].replace(/['"]+/g, ''));
     }
 }));
