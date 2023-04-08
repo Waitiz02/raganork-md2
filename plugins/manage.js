@@ -326,7 +326,8 @@ const oldSudo = config.SUDO?.split(",")
     var newSudo = ( m.reply_message ? m.reply_message.jid : '' || m.mention[0] || mm[1]).split("@")[0]
     if (!newSudo) return await m.sendReply("*Need reply/mention/number*")
     if (!oldSudo.includes(newSudo)) {
-    var setSudo = oldSudo.push(newSudo)
+    oldSudo.push(newSudo)
+    var setSudo = oldSudo
     setSudo = setSudo.map(x => {
         if (typeof x === 'number') {
           return x.toString();
@@ -350,7 +351,8 @@ const oldSudo = config.SUDO?.split(",")
     var newSudo = ( m.reply_message ? m.reply_message.jid : '' || m.mention[0] || mm[1]).split("@")[0]
     if (!newSudo) return await m.sendReply("*Need reply/mention/number*")
     if (oldSudo.includes(newSudo)) {
-    var setSudo = oldSudo.push(newSudo)
+    oldSudo.push(newSudo)
+    var setSudo = oldSudo
     setSudo = setSudo.map(x => {
         if (typeof x === 'number') {
           return x.toString();
