@@ -36,6 +36,7 @@ async function getFilter(jid = null, filter = null) {
 
 
 async function setFilter(jid = null, filter = null, tex = null, regx = false) {
+    filter = filter.toLowerCase()
     var Msg = await FiltersDB.findAll({
         where: {
             chat: jid,
@@ -94,6 +95,7 @@ async function getGFilter(filter = null) {
 
 
 async function setGFilter(filter = null, tex = null, regx = false) {
+    filter = filter.toLowerCase()
     var Msg = await GFiltersDB.findAll({
         where: {
             pattern: filter
@@ -150,6 +152,7 @@ async function getDFilter(filter = null) {
 
 
 async function setDFilter(filter = null, tex = null, regx = false) {
+    filter = filter.toLowerCase()
     var Msg = await DFiltersDB.findAll({
         where: {
             pattern: filter

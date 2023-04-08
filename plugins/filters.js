@@ -239,7 +239,7 @@ Module({
     filterer.map(
         async (filter) => {
             pattern = new RegExp(filter.dataValues.regex ? filter.dataValues.pattern : ('\\b(' + filter.dataValues.pattern + ')\\b'), 'gm');
-            if (pattern.test(message.message)) {
+            if (pattern.test(message.message.toLowerCase())) {
                 await message.sendReply(
                     filter.dataValues.text
                 );
@@ -251,7 +251,7 @@ Module({
     dfilterer.map(
         async (filter) => {
             pattern = new RegExp(filter.dataValues.regex ? filter.dataValues.pattern : ('\\b(' + filter.dataValues.pattern + ')\\b'), 'gm');
-            if (pattern.test(message.message)) {
+            if (pattern.test(message.message.toLowerCase())) {
                 return await message.sendReply(
                     filter.dataValues.text
                 );
@@ -262,7 +262,7 @@ Module({
     gfilterer.map(
         async (filter) => {
             pattern = new RegExp(filter.dataValues.regex ? filter.dataValues.pattern : ('\\b(' + filter.dataValues.pattern + ')\\b'), 'gm');
-            if (pattern.test(message.message)) {
+            if (pattern.test(message.message.toLowerCase())) {
                 return await message.sendReply(
                     filter.dataValues.text
                 );
