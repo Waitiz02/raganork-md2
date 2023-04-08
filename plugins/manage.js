@@ -42,6 +42,8 @@ async function sendButton(buttons,text,footer,message){
     });
     var handler = Config.HANDLERS !== 'false'?Config.HANDLERS.split("")[0]:""
     async function setVar(key,value,message){
+        key = key.toUpperCase().trim()
+        value = value.trim()
         let setvarAction = isHeroku ? "restarting" : isVPS ? "rebooting" : "redeploying";
         var set_ = `_Successfully set ${key} to ${value}, {}.._`;
         set_ = key == "ANTI_BOT" ? `AntiBot activated, bots will be automatically kicked, {}` : key == "ANTI_SPAM" ? `AntiSpam activated, spammers will be automatically kicked, {}` : key == "MODE" ? `Mode switched to ${value}, {}`:set_;
@@ -313,6 +315,54 @@ fs.writeFileSync('./config.env', lines.join('\n'));
         }
     }));
     Module({
+        pattern: 'setsudo ?(.*)',
+        fromMe: true,
+        use: 'owner'
+    }, (async (message, match) => {
+   var m = message;
+        var newSudo = ( m.reply_message ? m.reply_message.jid : '' || m.mention[0] || match[1]).split("@")[0]
+if (!newSudo) return await m.sendReply("*Need reply/mention/number*")
+const oldSudo = config.SUDO?.split(",")
+    var newSudo = ( m.reply_message ? m.reply_message.jid : '' || m.mention[0] || mm[1]).split("@")[0]
+    if (!newSudo) return await m.sendReply("*Need reply/mention/number*")
+    if (!oldSudo.includes(newSudo)) {
+    var setSudo = oldSudo.push(newSudo)
+    setSudo = setSudo.map(x => {
+        if (typeof x === 'number') {
+          return x.toString();
+        } else {
+          return x.replace(/[^0-9]/g, '');
+        }
+      }).join(',')
+    await m.client.sendMessage(m.jid,{text:'_Added @'+newSudo+' as sudo_',mentions:[newSudo+"@s.whatsapp.net"]})
+    await setVar("SUDO",setSudo,m)
+    } else return await m.sendReply("_User is already a sudo_")
+}));
+    Module({
+        pattern: 'getsudo ?(.*)',
+        fromMe: true,
+        use: 'owner'
+    }, (async (message, match) => {
+    return await message.sendReply(config.SUDO);
+    }));
+    Module({pattern: 'delsudo ?(.*)', fromMe: true, desc: "Deletes sudo"}, (async (m,mm) => { 
+    const oldSudo = config.SUDO?.split(",")
+    var newSudo = ( m.reply_message ? m.reply_message.jid : '' || m.mention[0] || mm[1]).split("@")[0]
+    if (!newSudo) return await m.sendReply("*Need reply/mention/number*")
+    if (!oldSudo.includes(newSudo)) {
+    var setSudo = oldSudo.push(newSudo)
+    setSudo = setSudo.map(x => {
+        if (typeof x === 'number') {
+          return x.toString();
+        } else {
+          return x.replace(/[^0-9]/g, '');
+        }
+      }).join(',')
+    await m.client.sendMessage(m.jid,{text:'_Removed @'+newSudo+' from sudo!_',mentions:[newSudo+"@s.whatsapp.net"]})
+    await setVar("SUDO",setSudo,m)
+    } else return await m.sendReply("_User is already not a sudo_")
+}));
+    Module({
         pattern: 'antispam ?(.*)',
         fromMe: true,
         desc: "Detects spam messages and kicks user.",
@@ -418,3 +468,4 @@ fs.writeFileSync('./config.env', lines.join('\n'));
     }
     }));
     
+module.exports = {setVar}

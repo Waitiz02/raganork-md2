@@ -1,5 +1,8 @@
 const fs = require('fs');
 const { Sequelize } = require('sequelize');
+const isVPS = !(__dirname.startsWith("/rgnk") || __dirname.startsWith("/skl"));
+const isHeroku = __dirname.startsWith("/skl");
+const isKoyeb = __dirname.startsWith("/rgnk");
 if (fs.existsSync('config.env')) require('dotenv').config({ path: './config.env' });
 function convertToBool(text, fault = 'true') {
     return text === fault ? true : false;
@@ -11,6 +14,7 @@ module.exports = {
     ALIVE: process.env.ALIVE || "https://i.imgur.com/KCnoMM2.jpg Hey {sender}, I'm alive \n Uptime: {uptime}",
     BLOCK_CHAT: process.env.BLOCK_CHAT || '',
     ALWAYS_ONLINE: convertToBool(process.env.ALWAYS_ONLINE) || false,
+    PLATFORM:isHeroku?"Heroku":isKoyeb?"Koyeb":"VPS",isHeroku,isKoyeb,isVPS,
     AUTOMUTE_MSG: process.env.AUTOMUTE_MSG || '_Group automuted!_\n_(edit AUTOMUTE_MSG)_',
     ANTI_SPAM: process.env.ANTI_SPAM || '919074309534-1632403322@g.us',
     MULTI_HANDLERS: convertToBool(process.env.MULTI_HANDLERS) || false,
