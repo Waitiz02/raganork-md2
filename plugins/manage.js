@@ -318,7 +318,7 @@ fs.writeFileSync('./config.env', lines.join('\n'));
         pattern: 'setsudo ?(.*)',
         fromMe: true,
         use: 'owner'
-    }, (async (message, match) => {
+    }, (async (message, mm) => {
    var m = message;
         var newSudo = ( m.reply_message ? m.reply_message.jid : '' || m.mention[0] || match[1]).split("@")[0]
 if (!newSudo) return await m.sendReply("*Need reply/mention/number*")
