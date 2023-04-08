@@ -163,7 +163,7 @@ async function setDFilter(filter = null, tex = null, regx = false) {
     }
 }
 
-async function deleteFilter(filter) {
+async function deleteDFilter(filter) {
     var Msg = await DFiltersDB.findAll({
         where: {
             pattern: filter
