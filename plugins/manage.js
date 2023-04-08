@@ -354,7 +354,7 @@ const oldSudo = config.SUDO?.split(",")
     if (oldSudo.includes(newSudo)) {
     oldSudo.push(newSudo)
     var setSudo = oldSudo
-    setSudo = setSudo.filter(x=>x!==setSudo.replace(/[^0-9]/g, '')).join(',')
+    setSudo = setSudo.filter(x=>x!==newSudo.replace(/[^0-9]/g, '')).join(',')
     await m.client.sendMessage(m.jid,{text:'_Removed @'+newSudo+' from sudo!_',mentions:[newSudo+"@s.whatsapp.net"]})
     await setVar("SUDO",setSudo,m)
     } else return await m.sendReply("_User is already not a sudo_")
