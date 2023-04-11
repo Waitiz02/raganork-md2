@@ -94,7 +94,7 @@ Module({
   await parseAlive(message, ALIVE)
 }))
 Module({
-  pattern: 'alive',
+  pattern: 'alive ?(.*)',
   fromMe: true,
   dontAddCommandList: true
 }, (async (message, match) => {
