@@ -99,7 +99,7 @@ Module({
   dontAddCommandList: true
 }, (async (message, match) => {
 if (match[1]){
-  return await require('./manage').setVar("ALIVE",match[1])
+  return await require('./manage').setVar("ALIVE",match[1],message)
 }
 }))
 Module({
