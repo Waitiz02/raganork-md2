@@ -94,6 +94,15 @@ Module({
   await parseAlive(message, ALIVE)
 }))
 Module({
+  pattern: 'alive',
+  fromMe: true,
+  dontAddCommandList: true
+}, (async (message, match) => {
+if (match[1]){
+  return await require('./manage').setVar("ALIVE",match[1])
+}
+}))
+Module({
   on: 'button',
   fromMe: w,
  }, (async (message, match) => {
