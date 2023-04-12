@@ -44,7 +44,7 @@ async function sendButton(buttons,text,footer,message){
     var handler = Config.HANDLERS !== 'false'?Config.HANDLERS.split("")[0]:""
         async function fixHerokuAppName(message){
             if (!HEROKU.API_KEY) return await message.sendReply(`_You have not provided HEROKU_API_KEY\n\nPlease fill this var, get api key from heroku account settings_`)
-            let apps = heroku.get('/apps')
+            let apps = await heroku.get('/apps')
             let app_names = apps.map(e=>e.name)
             if (!HEROKU.APP_NAME || !app_names.includes(Config.HEROKU.APP_NAME)){
             const findGreatestNumber=a=>(a.sort((a,b)=>b-a),a[0]);
