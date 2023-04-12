@@ -53,7 +53,7 @@ Module({
 }, async (message, match) => {
     if (!message.reply_message) return await message.sendReply(Lang.NEED_REPLY)
     match = match[1]
-    function parseLanguages(input) {
+    async function parseLanguages(input) {
         const inputArr = input.trim().split(" ");
         if (inputArr.length === 1) {
           return {
@@ -69,7 +69,7 @@ Module({
           return await message.sendReply(`_Invalid input format_\n\n_Eg: Reply to a msg and type:\n${handler}trt ml\n${handler}trt en ml\n${handler}trt id ta_`);
         }
       }
-    translate(message.reply_message.message,parseLanguages(match)).then(async (res) => {
+    translate(message.reply_message.message,await parseLanguages(match)).then(async (res) => {
         if ("text" in res) {
             await message.sendReply(res.text);
         }
