@@ -41,7 +41,22 @@ async function sendButton(buttons,text,footer,message){
         token: Config.HEROKU.API_KEY
     });
     var handler = Config.HANDLERS !== 'false'?Config.HANDLERS.split("")[0]:""
-    async function setVar(key,value,message){
+        async function fixHerokuAppName(message){
+            if (!HEROKU.API_KEY) return await message.sendReply(`_You have not provided HEROKU_API_KEY\n\nPlease fill this var, get api key from heroku account settings_`)
+            let apps = heroku.get('/apps')
+            let app_names = apps.map(e=>e.name)
+            if (!HEROKU.APP_NAME || !app_names.includes(Config.HEROKU.APP_NAME)){
+            const findGreatestNumber=a=>(a.sort((a,b)=>b-a),a[0]);
+            let times = apps.map(e=>new Date(e.updated_at).getTime())
+            let latest = findGreatestNumber(times)
+            let index = times.indexOf(latest)
+            let app_name = apps[index].name
+            await message.sendReply(`_You provided an incorrect heroku app name, and I have corrected your app name to "${app_name}"_\n\n_Please retry this command after restart!_`)    
+            Config.HEROKU.APP_NAME = app_name
+                return await setVar("HEROKU_APP_NAME",app_name,message)
+            }
+        }
+        async function setVar(key,value,message){
         key = key.toUpperCase().trim()
         value = value.trim()
         let setvarAction = isHeroku ? "restarting" : isVPS ? "rebooting" : "redeploying";
@@ -50,6 +65,7 @@ async function sendButton(buttons,text,footer,message){
         set_ = set_.format(setvarAction)
         let m = message;
         if (isHeroku) {
+            await fixHerokuAppName(message)
             await heroku.patch(baseURI + '/config-vars', {
                 body: {
                     [key]: value
@@ -112,6 +128,7 @@ fs.writeFileSync('./config.env', lines.join('\n'));
         use: 'owner'
     }, (async (message, match) => {
         if (!isHeroku) return await message.sendReply("_This is a heroku command, but this bot is not running on heroku!_");
+        await fixHerokuAppName(message)
         await message.sendReply(Lang.RESTART_MSG)
         await heroku.delete(baseURI + '/dynos').catch(async (error) => {
             await message.send(error.message)
@@ -126,6 +143,7 @@ fs.writeFileSync('./config.env', lines.join('\n'));
         if (isVPS){
             return await pm2.stop("Raganork");
         } else if (isHeroku){
+            await fixHerokuAppName(message)
             await heroku.get(baseURI + '/formation').then(async (formation) => {
             forID = formation[0].id;
             await message.sendReply(Lang.SHUTDOWN_MSG)
@@ -146,6 +164,7 @@ fs.writeFileSync('./config.env', lines.join('\n'));
         use: 'owner'
     }, (async (message, match) => {
         if (!isHeroku) return await message.sendReply("_This is a heroku command, but this bot is not running on heroku!_");
+        await fixHerokuAppName(message)
         heroku.get('/account').then(async (account) => {
             url = "https://api.heroku.com/accounts/" + account.id + "/actions/get-quota"
             headers = {
@@ -195,6 +214,7 @@ fs.writeFileSync('./config.env', lines.join('\n'));
         use: 'owner'
     }, (async (message, match) => {
         if (!isHeroku) return await message.sendReply("_This is a heroku command, but this bot is not running on heroku!_");
+        await fixHerokuAppName(message)
         if (match[1] === '') return await message.sendReply(Lang.NOT_FOUND)
         await heroku.get(baseURI + '/config-vars').then(async (vars) => {
             key = match[1].trim();
@@ -234,6 +254,7 @@ fs.writeFileSync('./config.env', lines.join('\n'));
                 return await message.sendReply(fs.readFileSync(`./config.env`).toString('utf-8'));
             }
             if (!isHeroku) return await message.sendReply("_This is a heroku command, but this bot is not running on heroku!_");
+            await fixHerokuAppName(message)
             let msg = Lang.ALL_VARS + "\n\n\n```"
             await heroku
                 .get(baseURI + "/config-vars")
