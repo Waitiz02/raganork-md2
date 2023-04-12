@@ -428,7 +428,7 @@ const oldSudo = config.SUDO?.split(",")
                     await message.sendReply(`_Successfully turned on \`${handler}${match}\` command_`)
                     return await setVar("DISABLED_COMMANDS",disabled.filter(x=>x!=match).join(','),false)
                     }
-        } else return await message.sendReply(`_Example: ${handler}${match} img_\n\n_(This will disable .img command)_`)
+        } else return await message.sendReply(`_Example: ${handler}toggle img_\n\n_(This will disable .img command)_`)
     }));
     Module({
         pattern: 'antibot ?(.*)',
