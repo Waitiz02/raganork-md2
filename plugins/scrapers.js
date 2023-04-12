@@ -52,12 +52,24 @@ Module({
     use: 'utility'
 }, async (message, match) => {
     if (!message.reply_message) return await message.sendReply(Lang.NEED_REPLY)
-    var from = match[1].split(" ")[0] || ''
-    var to = match[1].split(" ")[1] || match[1]
-    translate(message.reply_message.message, {
-        from: from,
-        to: to
-    }).then(async (res) => {
+    match = match[1]
+    function parseLanguages(input) {
+        const inputArr = input.trim().split(" ");
+        if (inputArr.length === 1) {
+          return {
+            from: "auto",
+            to: inputArr[0].toLowerCase()
+          };
+        } else if (inputArr.length === 2) {
+          return {
+            from: inputArr[0].toLowerCase(),
+            to: inputArr[1].toLowerCase()
+          };
+        } else {
+          return await message.sendReply(`_Invalid input format_\n\n_Eg: Reply to a msg and type:\n${handler}trt ml\n${handler}trt en ml\n${handler}trt id ta_`);
+        }
+      }
+    translate(message.reply_message.message,parseLanguages(match)).then(async (res) => {
         if ("text" in res) {
             await message.sendReply(res.text);
         }
