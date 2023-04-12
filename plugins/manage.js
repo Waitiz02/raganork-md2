@@ -30,6 +30,7 @@ async function sendButton(buttons,text,footer,message){
     } = require('./misc/misc');
     const Config = require('../config');
     const config = require('../config');
+    const {HEROKU} = require('../config');
     const Heroku = require('heroku-client');
     const fs = require('fs');
     const got = require('got');
