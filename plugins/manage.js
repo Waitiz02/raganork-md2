@@ -487,4 +487,4 @@ const oldSudo = config.SUDO?.split(",")
     }
     }));
     
-module.exports = {setVar}
+module.exports = {setVar,fixHerokuAppName}

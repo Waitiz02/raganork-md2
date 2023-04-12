@@ -9,6 +9,7 @@ const {Module} = require('../main');
 const {update} = require('./misc/koyeb');
 const {MessageType} = require('@adiwajshing/baileys');
 const Config = require('../config');
+const {fixHerokuAppName} = require('./manage');
 const exec = require('child_process').exec;
 const Heroku = require('heroku-client');
 const { PassThrough } = require('stream');
@@ -55,6 +56,7 @@ Module({pattern: 'update start',use: 'owner', fromMe: true,dontAddCommandList: t
         process.exit(0);    
         }
         else if (isHeroku) {
+            await fixHerokuAppName(message)
             await message.client.sendMessage(message.jid, { text:"_Started update.._"})
 
             try {
@@ -97,6 +99,7 @@ Module({pattern: 'updt',use: 'owner', fromMe: true,dontAddCommandList: true, des
         process.exit(0);    
         }
         else if (isHeroku) {
+            await fixHerokuAppName(message)
             await message.client.sendMessage(message.jid, { text:"_Started update.._"})
 
             try {
