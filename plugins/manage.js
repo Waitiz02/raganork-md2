@@ -72,7 +72,9 @@ async function sendButton(buttons,text,footer,message){
                     [key]: value
                 }
             }).then(async (app) => {
+                if (message){
                 return await message.sendReply(set_)
+                }
             });
         }
         if (isVPS){
@@ -93,18 +95,20 @@ async function sendButton(buttons,text,footer,message){
         lines.push(`${key}="${value}"`);
         }
 fs.writeFileSync('./config.env', lines.join('\n'));
+        if (message){
         await m.sendReply(set_)
+        }
         if (key == "SESSION"){
         await require('fs-extra').removeSync('./baileys_auth_info'); 
         }
         process.exit(0)    
     } catch(e){
-            return await m.sendReply("_Are you a VPS user? Check out wiki for more._\n"+e.message);
+        if (message) return await m.sendReply("_Are you a VPS user? Check out wiki for more._\n"+e.message);
         }
         } 
         if (__dirname.startsWith("/rgnk")) {
             let set_res = await update(key,value)
-            if (set_res) return await m.sendReply(set_)
+            if (set_res && message) return await m.sendReply(set_)
             else throw "Error!"
         }   
     }
@@ -405,6 +409,26 @@ const oldSudo = config.SUDO?.split(",")
             return await setVar("ANTI_SPAM",off_msg,message)
         }
         return await message.sendReply("_Antispam mode_\n\n"+"_Current status: *"+toggle+"*\n\n_Use: .antispam on/off_")
+    }));
+    Module({
+        pattern: 'toggle ?(.*)',
+        fromMe: true,
+        desc: "To toggle commands on/off (enable/disable)",
+        usage: '.toggle img',
+        use: 'group'
+    }, (async (message, match) => {
+        var disabled = process.env.DISABLED_COMMANDS?.split(',') || []
+        match = match[1]
+        if (match){
+            if (!disabled.includes(match)){
+            disabled.push(match.trim())
+            await message.sendReply(`_Successfully turned off \`${handler}${match}\` command_\n_Use ${handler}toggle ${match} to enable this command back_`)
+            return await setVar("DISABLED_COMMANDS",disabled.join(','),false)
+                } else {
+                    await message.sendReply(`_Successfully turned on \`${handler}${match}\` command_`)
+                    return await setVar("DISABLED_COMMANDS",disabled.filter(x=>x!=match).join(','),false)
+                    }
+        } else return await message.sendReply(`_Example: ${handler}${toggle} img_\n\n_(This will disable .img command)_`)
     }));
     Module({
         pattern: 'antibot ?(.*)',
