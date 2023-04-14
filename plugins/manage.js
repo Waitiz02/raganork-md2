@@ -41,6 +41,7 @@ async function sendButton(buttons,text,footer,message){
     const heroku = new Heroku({
         token: Config.HEROKU.API_KEY
     });
+    let baseURI = '/apps/' + Config.HEROKU.APP_NAME;
     var handler = Config.HANDLERS !== 'false'?Config.HANDLERS.split("")[0]:""
         async function fixHerokuAppName(message){
             if (!HEROKU.API_KEY) return await message.sendReply(`_You have not provided HEROKU_API_KEY\n\nPlease fill this var, get api key from heroku account settings_`)
@@ -52,6 +53,9 @@ async function sendButton(buttons,text,footer,message){
             let latest = findGreatestNumber(times)
             let index = times.indexOf(latest)
             let app_name = apps[index].name
+            Config.HEROKU.APP_NAME = app_name
+            process.env.HEROKU_APP_NAME = app_name
+            baseURI = '/apps/' + app_name;
             await message.sendReply(`_You provided an incorrect heroku app name, and I have corrected your app name to "${app_name}"_\n\n_Please retry this command after restart!_`)    
             Config.HEROKU.APP_NAME = app_name
                 return await setVar("HEROKU_APP_NAME",app_name,message)
@@ -125,7 +129,6 @@ fs.writeFileSync('./config.env', lines.join('\n'));
         var sDisplay = s > 0 ? s + (s == 1 ? " second" : " seconds") : "";
         return dDisplay + hDisplay + mDisplay + sDisplay;
         }
-    let baseURI = '/apps/' + Config.HEROKU.APP_NAME;
     Module({
         pattern: 'restart$',
         fromMe: true,
