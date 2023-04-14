@@ -48,7 +48,7 @@ async function sendButton(buttons,text,footer,message){
             let apps = await heroku.get('/apps')
             let app_names = apps.map(e=>e.name)
             if (!HEROKU.APP_NAME || !app_names.includes(Config.HEROKU.APP_NAME)){
-            const findGreatestNumber=a=>(a.sort((a,b)=>b-a),a[0]);
+            function findGreatestNumber(e){let t=e[0];for(let n=1;n<e.length;n++)e[n]>t&&(t=e[n]);return t}
             let times = apps.map(e=>new Date(e.updated_at).getTime())
             let latest = findGreatestNumber(times)
             let index = times.indexOf(latest)
