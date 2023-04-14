@@ -30,6 +30,7 @@ async function sendButton(buttons,text,footer,message){
     } = require('./misc/misc');
     const Config = require('../config');
     const config = require('../config');
+    const {getCommands} = require('./commands');
     const {HEROKU} = require('../config');
     const Heroku = require('heroku-client');
     const fs = require('fs');
@@ -422,7 +423,9 @@ const oldSudo = config.SUDO?.split(",")
     }, (async (message, match) => {
         var disabled = process.env.DISABLED_COMMANDS?.split(',') || []
         match = match[1]
+        const commands = getCommands()
         if (match){
+            if (!commands.includes(match.trim())) return await message.sendReply(`_${handler}${match.trim()} is not a valid command!_`)
             if (!disabled.includes(match)){
             disabled.push(match.trim())
             await message.sendReply(`_Successfully turned off \`${handler}${match}\` command_\n_Use ${handler}toggle ${match} to enable this command back_`)

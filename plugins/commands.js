@@ -16,6 +16,9 @@ const {
 } = require("raganork-bot");
 let w = "public" != MODE;
 const readMore = String.fromCharCode(8206).repeat(4001);
+function getCommands(){
+return commands.map(x=>x?.pattern?.toString().match(/(\W*)([A-Za-zğüşıiöç1234567890 ]*)/)[2].trim())
+}
 Module({
     pattern: "list ?(.*)",
     fromMe: w,
@@ -56,4 +59,4 @@ Module({
         await n.sendReply(t)
     }
 });
-
+module.exports = {getCommands};
