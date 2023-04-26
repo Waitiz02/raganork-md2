@@ -524,7 +524,7 @@ const oldSudo = config.SUDO?.split(",")
             await chatBot(message, Config.BOT_NAME)
         }
         if (/\bhttps?:\/\/\S+/gi.test(message.message)){
-        var db = await getAntilink();
+        var db = await antilink.get();
         const jids = []
         db.map(data => {
             jids.push(data.jid)
