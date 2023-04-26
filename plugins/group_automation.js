@@ -205,7 +205,7 @@ Module({
     });
     if (message.update == 'demote') admin_jids.push(message.participant[0])
         await message.client.sendMessage(message.jid, {
-                text: `_*[${message.update=='promote'?"Promote detected":"Demote detected"}]*_\n\n_${message.from.split("@")[0]} ${message.update}d ${message.participant[0].split("@")[0]}_`,
+                text: `_*[${message.update=='promote'?"Promote detected":"Demote detected"}]*_\n\n_@${message.from.split("@")[0]} ${message.update}d @${message.participant[0].split("@")[0]}_`,
                 mentions: admin_jids
             });
     }

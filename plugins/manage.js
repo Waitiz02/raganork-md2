@@ -391,31 +391,6 @@ const oldSudo = config.SUDO?.split(",")
     } else return await m.sendReply("_User is already not a sudo_")
 }));
     Module({
-        pattern: 'antispam ?(.*)',
-        fromMe: true,
-        desc: "Detects spam messages and kicks user.",
-        use: 'group'
-    }, (async (message, match) => {
-        var admin = await isAdmin(message)
-        if (!admin) return await message.sendReply("_I'm not admin_");
-        var Jids = process.env.ANTI_SPAM?.split(',') || []
-        var msg = process.env.ANTI_SPAM;
-        var toggle = "on"
-        var off_msg = Jids?.filter(e=>e!==message.jid) || 'false'
-        if (!Jids.includes(message.jid)){
-            Jids.push(message.jid)
-            msg = Jids.join(",")
-            toggle = "off"
-        }
-        if (match[1]?.toLowerCase() === 'on'){
-            return await setVar("ANTI_SPAM",msg,message)
-        }
-        if (match[1]?.toLowerCase() === 'off'){
-            return await setVar("ANTI_SPAM",off_msg,message)
-        }
-        return await message.sendReply("_Antispam mode_\n\n"+"_Current status: *"+toggle+"*\n\n_Use: .antispam on/off_")
-    }));
-    Module({
         pattern: 'toggle ?(.*)',
         fromMe: true,
         desc: "To toggle commands on/off (enable/disable)",
