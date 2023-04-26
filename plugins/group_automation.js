@@ -6,9 +6,7 @@ Raganork MD - Sourav KL11
 const {
     isAdmin,
     isFake,
-    delAntifake,
-    getAntifake,
-    setAntifake,
+    antifake,pdm,
     parseWelcome
 } = require('./misc/misc');
 const {
@@ -189,11 +187,28 @@ Module({
     on: "group_update",
     fromMe: false
 }, async (message, match) => {
-    var db = await getAntifake();
+    var db = await antifake.get();
     const jids = []
     db.map(data => {
         jids.push(data.jid)
     });
+    var pdmdb = await pdm.get();
+    const pdmjids = []
+    pdmdb.map(data => {
+        pdmjids.push(data.jid)
+    });
+    if ((message.update == 'promote' || message.update == 'demote') && pdmjids.includes(message.jid)) {
+    var admin_jids = [];
+    var admins = (await message.client.groupMetadata(message.jid)).participants.filter(v => v.admin !== null).map(x => x.id);
+    admins.map(async (user) => {
+        admin_jids.push(user.replace('c.us', 's.whatsapp.net'));
+    });
+    if (message.update == 'demote') admin_jids.push(message.participant[0])
+        await message.client.sendMessage(message.jid, {
+                text: `_*[${message.update=='promote'?"Promote detected":"Demote detected"}]*_\n\n_${message.from.split("@")[0]} ${message.update}d ${message.participant[0].split("@")[0]}_`,
+                mentions: admin_jids
+            });
+    }
     if (message.update === 'add' && jids.includes(message.jid)) {
         var allowed = ALLOWED.split(",");
         if (isFake(message.participant[0], allowed)) {

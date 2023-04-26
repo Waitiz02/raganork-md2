@@ -18,9 +18,10 @@ async function sendButton(buttons,text,footer,message){
     const pm2 = require('pm2')
     const {
         isAdmin,
-        delAntilink,
-        getAntilink,
-        setAntilink
+        antilink,
+        antibot,
+        antispam,
+        pdm,
     } = require('./misc/misc');
     const {
         skbuffer 
@@ -442,51 +443,103 @@ const oldSudo = config.SUDO?.split(",")
         desc: "Detects other bot's messages and kicks.",
         use: 'group'
     }, (async (message, match) => {
-        var admin = await isAdmin(message)
-        if (!admin) return await message.sendReply("_I'm not admin_");
-        var Jids = process.env.ANTI_BOT?.split(',') || []
-        var msg = process.env.ANTI_BOT;
-        var toggle = "on"
-        var off_msg = Jids?.filter(e=>e!==message.jid) || 'false'
-        if (!Jids.includes(message.jid)){
-            Jids.push(message.jid)
-            msg = Jids.join(",")
-            toggle = "off"
-        }
-        if (match[1]?.toLowerCase() === 'on'){
-            return await setVar("ANTI_BOT",msg,message)
-        }
-        if (match[1]?.toLowerCase() === 'off'){
-            return await setVar("ANTI_BOT",off_msg,message)
-        }
-        return await message.sendReply("_Antibot mode_\n\n"+"_Current status: *"+toggle+"*_\n\n_Use: .antibot on/off_")
-    }));
-    Module({
-        pattern: 'antilink ?(.*)',
-        fromMe: true,
-        desc: "Activates antilink",
-        use: 'config'
-    }, (async (message, match) => {
         match[1]=match[1]?match[1].toLowerCase():""
-        var db = await getAntilink();
+        var db = await antibot.get();
         const jids = []
         db.map(data => {
             jids.push(data.jid)
         });
         if (match[1] === "on"){
             if (!(await isAdmin(message))) return await message.sendReply("_I'm not an admin!_")
-            await setAntilink(message.jid) 
+            await antibot.set(message.jid) 
         }
         if (match[1] === "off"){
+            await antibot.delete(message.jid)  
+        }
+        if (match[1]!=="on" && match[1]!=="off"){
+        var status = jids.includes(message.jid) ? 'on' : 'off';
+        var {subject} = await message.client.groupMetadata(message.jid)
+        return await message.sendReply(`_Antibot menu of ${subject}_`+"\n\n_Antibot is currently turned *"+status+"*_\n\n_Use .antibot on/off_")
+        }
+        await message.sendReply(match[1] === "on" ? "_Antibot activated!_" : "_Antibot turned off!_");
+    }));
+    Module({
+        pattern: 'antispam ?(.*)',
+        fromMe: true,
+        desc: "Detects spam messages and kicks user.",
+        use: 'group'
+    }, (async (message, match) => {
+        match[1]=match[1]?match[1].toLowerCase():""
+        var db = await antispam.get();
+        const jids = []
+        db.map(data => {
+            jids.push(data.jid)
+        });
+        if (match[1] === "on"){
             if (!(await isAdmin(message))) return await message.sendReply("_I'm not an admin!_")
-            await delAntilink(message.jid)  
+            await antispam.set(message.jid) 
+        }
+        if (match[1] === "off"){
+            await antispam.delete(message.jid)  
+        }
+        if (match[1]!=="on" && match[1]!=="off"){
+        var status = jids.includes(message.jid) ? 'on' : 'off';
+        var {subject} = await message.client.groupMetadata(message.jid)
+        return await message.sendReply(`_Anti spam menu of ${subject}_`+"\n\n_Antispam is currently turned *"+status+"*_\n\n_Use .antispam on/off_")
+        }
+        await message.sendReply(match[1] === "on" ? "_Antispam activated!_" : "_Antispam turned off!_");
+    }));
+    Module({
+        pattern: 'pdm ?(.*)',
+        fromMe: true,
+        desc: "Detects promote/demote and sends alert.",
+        use: 'group'
+    }, (async (message, match) => {
+        match[1]=match[1]?match[1].toLowerCase():""
+        var db = await pdm.get();
+        const jids = []
+        db.map(data => {
+            jids.push(data.jid)
+        });
+        if (match[1] === "on"){
+            if (!(await isAdmin(message))) return await message.sendReply("_I'm not an admin!_")
+            await pdm.set(message.jid) 
+        }
+        if (match[1] === "off"){
+            await pdm.delete(message.jid)  
+        }
+        if (match[1]!=="on" && match[1]!=="off"){
+        var status = jids.includes(message.jid) ? 'on' : 'off';
+        var {subject} = await message.client.groupMetadata(message.jid)
+        return await message.sendReply(`_Promote|demote alert message menu of ${subject}_`+"\n\n_PDM alert is currently turned *"+status+"*_\n\n_Use .pdm on/off_")
+        }
+        await message.sendReply(match[1] === "on" ? "_Pdm activated!_" : "_Pdm turned off!_");
+    }));
+    Module({
+        pattern: 'antilink ?(.*)',
+        fromMe: true,
+        desc: "Activates antilink, kicks if user sends link",
+        use: 'group'
+    }, (async (message, match) => {
+        match[1]=match[1]?match[1].toLowerCase():""
+        var db = await antilink.get();
+        const jids = []
+        db.map(data => {
+            jids.push(data.jid)
+        });
+        if (match[1] === "on"){
+            if (!(await isAdmin(message))) return await message.sendReply("_I'm not an admin!_")
+            await antilink.set(message.jid) 
+        }
+        if (match[1] === "off"){
+            await antilink.delete(message.jid)  
         }
         if (match[1]!=="on" && match[1]!=="off"){
         var status = jids.includes(message.jid) ? 'on' : 'off';
         var {subject} = await message.client.groupMetadata(message.jid)
         return await message.sendReply(`_Antilink menu of ${subject}_`+"\n\n_Antilink is currently turned *"+status+"*_\n\n_Use .antilink on/off_")
         }
-        await message.sendReply(match[1] === "on" ? "_Antilink activated!_" : "_Antilink deactivated!_");
+        await message.sendReply(match[1] === "on" ? "_Antilink activated!_" : "_Antilink turned off!_");
     }));
     Module({
         on: 'text',
