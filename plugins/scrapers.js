@@ -219,7 +219,7 @@ Module({
     match = match[1] ? match[1] : "file"
     let file = fs.readFileSync(await message.reply_message.download())
     let {mime, ext} = await fromBuffer(file)
-    await message.client.sendMessage(message.jid,{document:file+"."+ext,mimetype:mime,fileName:match},{quoted: message.quoted});
+    await message.client.sendMessage(message.jid,{document:file,mimetype:mime,fileName:match+"."+ext},{quoted: message.quoted});
 }));
 Module({
     pattern: 'hackernews ?(.*)',
