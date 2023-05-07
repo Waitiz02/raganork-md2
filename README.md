@@ -6,8 +6,10 @@
 <a href="https://raganork.ml"><img align="center" src="https://i.imgur.com/lLgFrTQ.png" alt="Scan QR" height="112" width="300" /></a>
 <br>
 <div>
+<br>  
+<a href="https://github.com/souravkl11/raganork-md/fork" target="blank"><img align="center" src="https://i.imgur.com/rM1IC4u.png" alt="Deploy bot" height="112" width="310" /></a>
+  <div>
 <br>
-  
 <a href="https://dashboard.heroku.com/new-app?template=https://github.com/souravkl11/raganork-md" target="blank"><img align="center" src="https://i.imgur.com/gtK4XLX.png" alt="Deploy bot" height="112" width="310" />(HEROKU Anti-ban)</a>
   <div>
 <br>
