@@ -8,7 +8,7 @@
 <div>
 <br>
   
-<a href="https://raganork.ml/api/deploy-md" target="blank"><img align="center" src="https://i.imgur.com/gtK4XLX.png" alt="Deploy bot" height="112" width="310" />(HEROKU)</a>
+<a href="https://dashboard.heroku.com/new-app?template=https://github.com/souravkl11/raganork-md" target="blank"><img align="center" src="https://i.imgur.com/gtK4XLX.png" alt="Deploy bot" height="112" width="310" />(HEROKU Anti-ban)</a>
   <div>
 <br>
 <a href="https://raganork.souravkl11.xyz/deploy" target="blank"><img align="center" src="https://i.imgur.com/gtK4XLX.png" alt="Deploy bot" height="112" width="310" />(KOYEB)</a>
