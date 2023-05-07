@@ -159,14 +159,14 @@ Module({
 var admin = await isAdmin(message)
 if (!admin) return await message.sendReply("_I'm not admin!_");
 if (match[1] === "on"){
-    await setAntifake(message.jid);
+    await antifake.set(message.jid);
     return await message.sendReply("_Antifake enabled!_")
 }
 if (match[1] === "allow"){
     return await message.sendReply(`_Allowed prefixes are: ${ALLOWED} (applies to all groups)_`)
 }
 if (match[1] === "off"){
-    await delAntifake(message.jid);
+    await antifake.delete(message.jid);
     return await message.sendReply("_Antifake disabled!_")
 }
 const buttons = [
