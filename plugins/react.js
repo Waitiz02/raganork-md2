@@ -9,7 +9,7 @@ const {
 Module({
     pattern: 'react ?(.*)',
     fromMe: true,
-    use: 'utility'
+    use: 'whatsapp'
 }, (async (m, t) => {
     let msg = {
         remoteJid: m.reply_message.jid,
@@ -23,6 +23,15 @@ Module({
     }
 
     await m.client.sendMessage(m.jid, reactionMessage);
+}));
+Module({
+    pattern: 'edit ?(.*)',
+    fromMe: true,
+    use: 'whatsapp'
+}, (async (m, t) => {
+    if (match[1] && m.reply_message?.text && m.quoted.key.fromMe){
+    await m.edit(match[1],m.jid,m.quoted.key);
+}
 }));
 Module({
     pattern: 'vv ?(.*)',
