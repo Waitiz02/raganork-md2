@@ -29,8 +29,8 @@ Module({
     fromMe: true,
     use: 'whatsapp'
 }, (async (m, t) => {
-    if (match[1] && m.reply_message?.text && m.quoted.key.fromMe){
-    await m.edit(match[1],m.jid,m.quoted.key);
+    if (t[1] && m.reply_message?.text && m.quoted.key.fromMe){
+    await m.edit(t[1],m.jid,m.quoted.key);
 }
 }));
 Module({
