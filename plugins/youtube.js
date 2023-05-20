@@ -325,11 +325,13 @@ async function parseReply(reply,no_){
     let matches = reply.match(regex)
     return matches[0].match(getID)[1]
   }
+  if (reply?.includes("Subtitles matching")){
+    let matches = reply.match(regex)
+    return matches[0].match(getID)[1]
+  }
   if (reply?.includes("Available quality")){
     var query = reply.split("\n").filter(x=>x.startsWith(`${no_}.`))?.[0]?.replace(`${no_}. `,"").trim().replace(/(\*\_|_\*)/g,"")  
-    query = (query.replace(query.match(/\([^)]+\)/g)[(query.match(/\([^)]+\)/g)).length-1],"")).trim()
-    var videoID = reply.split("\n").filter(x=>x.startsWith(`_video_id`))?.[0]?.split(" ")[1].trim().replace(/_+$/, "");  
-    return {res:query,videoID}
+    return query
   }
   var query = reply.split("\n").filter(x=>x.startsWith(`${no_}.`))?.[0]?.replace(`${no_}. `,"").trim().replace(/(\*\_|_\*)/g,"")
   if (!query) throw "_Invalid number, only 20 results are given!_"
@@ -371,6 +373,20 @@ Module({
               const title = await ytTitle(videoID)
               return await message.client.sendMessage(message.jid,{video:result__,caption:`_${title} *[${res}]*_`},{quoted:message.data}) 
           }
+          if (reply?.includes("Subtitles matching")){
+              let query = await parseReply(reply,no_);
+              let res = (await require("axios")(`https://raganork.ml/api/subtitles?query=${query}`)).data
+              if (res.length) res = res.filter(x=>x.title == query)
+              res = (await require("axios")(`https://raganork.ml/api/subtitles?query=${res[0].url}`)).data
+              if (res.length && !('dl_url' in res)) 
+              {
+                res = res.filter(x=>x.title == query)
+                res = (await require("axios")(`https://raganork.ml/api/subtitles?query=${res[0].url}`)).data
+              }
+              if ('dl_url' in res) {
+                return await message.client.sendMessage(message.jid,{document: {url: res.dl_url},fileName:res.title+'.srt',caption:'_*Here\'s your subtitle file!*_',mimetype:'application/x-subrip'},{quoted:message.data})
+              } 
+            }
           if (reply?.includes("Results matching")){
             let videoID = await parseReply(reply,no_);
               const title = await ytTitle(videoID);

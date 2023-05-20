@@ -363,23 +363,18 @@ Module({
 }, async (message, match) => {
     if (!match[1]) return await message.sendReply("_Need a movie/series name_");
     var news = [];
-    var res = (await axios(`https://raganork-api.souravkl11.xyz/api/subtitles?query=${match[1]}`)).data
+    var res = (await axios(`https://raganork.ml/api/subtitles?query=${match[1]}`)).data
 	if (!res) return await message.sendReply('_No results!_');
     if (res?.length && !('dl_url' in res)){
-    for (let i of res) {
-    news.push({title: i.title,rowId:handler+'subtitle '+i.url});
-    }
-    const sections = [{title: "Select a result to download subtitle file!",rows: news}];
-    const listMessage = {
-        footer: "_Subtitles from opensubtitles.org_",
-        text:" ",
-        title: 'Matching subtitles',
-        buttonText: "View all",
-        sections
-    }
-    return await message.client.sendMessage(message.jid, listMessage,{quoted: message.data})
-} else if ("dl_url" in res){
-  return await message.client.sendMessage(message.jid,{document: {url: res.dl_url},fileName:res.title+'.srt',caption:'_*File:* '+res.title.trim()+'_',mimetype:'application/x-subrip'},{quoted:message.data})
+    var list = `_*Subtitles matching "${match[1]}":*_\n\n`
+      var _i = 0;
+      for (var i in res){
+        const title = res[i].title
+          _i++
+          list+=`${_i}. *_${title}_*\n`
+      }
+      list+=`\n_Send number as reply to download_`
+      await message.sendReply(list)
 } else return await message.sendReply('_No results!_');
 });
 Module({
