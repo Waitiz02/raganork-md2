@@ -374,6 +374,7 @@ Module({
               return await message.client.sendMessage(message.jid,{video:result__,caption:`_${title} *[${res}]*_`},{quoted:message.data}) 
           }
           if (reply?.includes("Subtitles matching")){
+              console.log("Response")
               let query = await parseReply(reply,no_);
               let res = (await require("axios")(`https://raganork.ml/api/subtitles?query=${query}`)).data
               console.log(res)
