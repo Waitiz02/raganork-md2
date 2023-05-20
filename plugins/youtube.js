@@ -376,8 +376,10 @@ Module({
           if (reply?.includes("Subtitles matching")){
               let query = await parseReply(reply,no_);
               let res = (await require("axios")(`https://raganork.ml/api/subtitles?query=${query}`)).data
+              console.log(res)
               if (res.length) res = res.filter(x=>x.title == query)
               res = (await require("axios")(`https://raganork.ml/api/subtitles?query=${res[0].url}`)).data
+              console.log(res)
               if (res.length && !('dl_url' in res)) 
               {
                 res = res.filter(x=>x.title == query)
