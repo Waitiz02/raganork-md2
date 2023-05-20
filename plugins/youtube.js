@@ -325,11 +325,13 @@ async function parseReply(reply,no_){
     let matches = reply.match(regex)
     return matches[0].match(getID)[1]
   }
-  if (reply?.includes("Subtitles matching")){
-    let matches = reply.match(regex)
-    return matches[0].match(getID)[1]
-  }
   if (reply?.includes("Available quality")){
+    var query = reply.split("\n").filter(x=>x.startsWith(`${no_}.`))?.[0]?.replace(`${no_}. `,"").trim().replace(/(\*\_|_\*)/g,"")  
+    query = (query.replace(query.match(/\([^)]+\)/g)[(query.match(/\([^)]+\)/g)).length-1],"")).trim()
+    var videoID = reply.split("\n").filter(x=>x.startsWith(`_video_id`))?.[0]?.split(" ")[1].trim().replace(/_+$/, "");  
+    return {res:query,videoID}
+  }
+  if (reply?.includes("Subtitles matching")){
     var query = reply.split("\n").filter(x=>x.startsWith(`${no_}.`))?.[0]?.replace(`${no_}. `,"").trim().replace(/(\*\_|_\*)/g,"")  
     return query
   }
@@ -374,7 +376,6 @@ Module({
               return await message.client.sendMessage(message.jid,{video:result__,caption:`_${title} *[${res}]*_`},{quoted:message.data}) 
           }
           if (reply?.includes("Subtitles matching")){
-              console.log("Response")
               let query = await parseReply(reply,no_);
               let res = (await require("axios")(`https://raganork.ml/api/subtitles?query=${query}`)).data
               console.log(res)
