@@ -68,7 +68,7 @@ async function sendButton(buttons,text,footer,message){
         value = value.trim()
         let setvarAction = isHeroku ? "restarting" : isVPS ? "rebooting" : "redeploying";
         var set_ = `_Successfully set ${key} to ${value}, {}.._`;
-        set_ = key == "ANTI_BOT" ? `AntiBot activated, bots will be automatically kicked, {}` : key == "ANTI_SPAM" ? `AntiSpam activated, spammers will be automatically kicked, {}` : key == "MODE" ? `Mode switched to ${value}, {}`:set_;
+        set_ = key == "ANTI_BOT" ? `AntiBot activated, bots will be automatically kicked, {}` : key == "ANTI_SPAM" ? `AntiSpam activated, spammers will be automatically kicked, {}` :key == "CHATBOT" ? `AI Chatbot activated, {}` : key == "MODE" ? `Mode switched to ${value}, {}`:set_;
         set_ = set_.format(setvarAction)
         let m = message;
         if (isHeroku) {
@@ -285,13 +285,13 @@ fs.writeFileSync('./config.env', lines.join('\n'));
         desc: "Activates chatbot",
         use: 'config'
     }, (async (message, match) => {
-        if (match[1]!=="button_on" && match[1]!=="button_off"){
-            var buttons = [
-                {buttonId: handler+'setvar CHATBOT:on', buttonText: {displayText: 'ON'}, type: 1},
-                {buttonId: handler+'setvar CHATBOT:off', buttonText: {displayText: 'OFF'}, type: 1}
-            ]
+        if (match[1]?.toLowerCase() === 'on'){
+            return await setVar("CHATBOT",'on',message)
         }
-        return await sendButton(buttons,"*ChatBot control panel*","Chatbot is currently turned "+Config.CHATBOT+" now",message)
+        if (match[1]?.toLowerCase() === 'off'){
+            return await setVar("CHATBOT",'off',message)
+        }
+        return await message.sendReply("_AI ChatBot mode_\n\n"+"_Current status: *"+toggle+"*\n\n_Use: .chatbot on/off_")    
     }));
     Module({
         pattern: 'settings ?(.*)',
