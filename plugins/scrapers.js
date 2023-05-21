@@ -17,7 +17,7 @@ const {
     getJson,
     gtts
 } = require('./misc/misc');
-const gis = require('async-g-i-s');
+const gis = require('./misc/gis');
 const axios = require('axios');
 const fs = require('fs');
 const Lang = getString('scrapers');
@@ -125,10 +125,10 @@ Module({
     var count = parseInt(match[1].split(",")[1]) || 5
     var query = match[1].split(",")[0] || match[1];
     if (badwordsRegExp.test(query)) return await message.sendReply(`_The word "${query.match(badwordsRegExp)}" is blocked!_`)
-    const results = await gis(query);
-        await message.sendReply(Lang.IMG.format(results.splice(0, count).length, query))
+    const results = await gis(query,count);
+        await message.sendReply(Lang.IMG.format(results.length, query))
         for (var i = 0; i < (results.length < count ? results.length : count); i++) {
-         try { var buff = await skbuffer(results[i].url); } catch {
+         try { var buff = await skbuffer(results[i]); } catch {
 		 count++
 	        var buff = false
 	 }
