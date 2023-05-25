@@ -77,10 +77,10 @@ Module({
      if (/\bhttps?:\/\/\S+/gi.test(q)) q = q.match(/\bhttps?:\/\/\S+/gi)[0]
      if (!q) return await msg.sendReply("*Need Facebook link*")
      var res = await fb(q);
-     let sent_msg = await message.sendReply('_*Hold on, downloading will take some time..*_')
+     let sent_msg = await msg.sendReply('_*Hold on, downloading will take some time..*_')
     const end = new Date().getTime()
     await msg.sendReply({url: res.url},"video")
-    return await message.edit('*_Download complete!_*',message.jid,sent_msg.key)
+    return await msg.edit('*_Download complete!_*',msg.jid,sent_msg.key)
         }));
 Module({
     pattern: 'ig ?(.*)',
