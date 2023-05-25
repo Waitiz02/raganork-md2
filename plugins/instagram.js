@@ -77,7 +77,7 @@ Module({
      if (/\bhttps?:\/\/\S+/gi.test(q)) q = q.match(/\bhttps?:\/\/\S+/gi)[0]
      if (!q) return await msg.sendReply("*Need Facebook link*")
      var res = await fb(q);
-     return await msg.sendReply({url: res['hd']},"video")
+     return await msg.sendReply({url: res.url},"video")
         }));
 Module({
     pattern: 'ig ?(.*)',
