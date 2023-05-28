@@ -4,8 +4,8 @@ const isVPS = !(__dirname.startsWith("/rgnk") || __dirname.startsWith("/skl"));
 const isHeroku = __dirname.startsWith("/skl");
 const isKoyeb = __dirname.startsWith("/rgnk");
 if (fs.existsSync('config.env')) require('dotenv').config({ path: './config.env' });
-function convertToBool(text, fault = 'true') {
-    return text === fault ? true : false;
+function convertToBool(text, fault = 'true',fault2='on') {
+    return ((text === fault) || (text === fault2));
 }
 DATABASE_URL = process.env.DATABASE_URL === undefined ? './bot.db' : process.env.DATABASE_URL;
 DEBUG = process.env.DEBUG === undefined ? false : convertToBool(process.env.DEBUG);

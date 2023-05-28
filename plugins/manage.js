@@ -296,42 +296,20 @@ fs.writeFileSync('./config.env', lines.join('\n'));
     Module({
         pattern: 'settings ?(.*)',
         fromMe: true,
-        desc: "Bot settings. Enable extra options related to WhatsApp visibility.",
+        desc: "Bot settings to enable extra options related to WhatsApp bot functionality.",
         use: 'owner'
     }, (async (message, match) => {
-        if (match[1].includes(";")){
-            let key_ = match[1].split(";")
-            var buttons = [
-                {buttonId: handler+`setvar ${key_[0]}:true`, buttonText: {displayText: 'ON'}, type: 1},
-                {buttonId: handler+`setvar ${key_[0]}:false`, buttonText: {displayText: 'OFF'}, type: 1}
-            ]
-            return await sendButton(buttons,`_${key_[1]}_`,`_Current status: ${config[key_[0]]?'enabled':'disabled'}_`,message)
-    
-        }
-            const sections = [
-                {
-                title: "Configure these:",
-                rows: [
-                    {title: "Auto read all messages", rowId: handler+"settings READ_MESSAGES;Auto read all messages"},
-                    {title: "Auto read command messages", rowId: handler+"settings READ_COMMAND;Auto read command messages"},
-                    {title: "Auto read status updates", rowId: handler+"settings AUTO_READ_STATUS;Auto read status updates"},
-                    {title: "Auto reject calls", rowId: handler+"settings REJECT_CALLS;Auto reject calls"},
-                    {title: "Always online", rowId: handler+"settings ALWAYS_ONLINE;Always Online"},
-                    {title: "PM Auto blocker", rowId: handler+"settings PMB_VAR;PM auto blocker"},
-                    {title: "Disable bot in PM", rowId: handler+"settings DIS_PM;Disable public bot use in PM"}
+            let configs = [
+                    {title: "Auto read all messages", env_var: "READ_MESSAGES"},
+                    {title: "Auto read command messages", env_var: "READ_COMMAND"},
+                    {title: "Auto read status updates", env_var: "AUTO_READ_STATUS"},
+                    {title: "Auto reject calls", env_var: "REJECT_CALLS"},
+                    {title: "Always online", env_var: "ALWAYS_ONLINE"},
+                    {title: "PM Auto blocker", env_var: "PMB_VAR"},
+                    {title: "Disable bot in PM", env_var: "DIS_PM"}
                 ]
-                }
-            ]
-            
-            const listMessage = {
-              text: " ",
-              footer: "_Configure your settings_",
-              title: "_Settings_",
-              buttonText: "view",
-              sections
-            }
-            
-         return await message.client.sendMessage(message.jid, listMessage)
+        let msgToBeSent = configs.map(e=>configs.indexOf(e)+1+'. _*'+e.title+'*_').join('\n')+'\n\n_Reply the number to continue_'
+        return await message.sendReply(msgToBeSent)
         }));
     Module({
         pattern: 'mode ?(.*)',
