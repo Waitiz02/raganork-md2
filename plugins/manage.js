@@ -45,8 +45,8 @@ async function sendButton(buttons,text,footer,message){
     });
     let baseURI = '/apps/' + Config.HEROKU.APP_NAME;
     var handler = Config.HANDLERS !== 'false'?Config.HANDLERS.split("")[0]:""
-        async function fixHerokuAppName(message){
-            if (!HEROKU.API_KEY) return await message.sendReply(`_You have not provided HEROKU_API_KEY\n\nPlease fill this var, get api key from heroku account settings_`)
+        async function fixHerokuAppName(message = false){
+            if (!HEROKU.API_KEY && message) return await message.sendReply(`_You have not provided HEROKU_API_KEY\n\nPlease fill this var, get api key from heroku account settings_`)
             let apps = await heroku.get('/apps')
             let app_names = apps.map(e=>e.name)
             if (!HEROKU.APP_NAME || !app_names.includes(Config.HEROKU.APP_NAME)){
@@ -58,12 +58,12 @@ async function sendButton(buttons,text,footer,message){
             Config.HEROKU.APP_NAME = app_name
             process.env.HEROKU_APP_NAME = app_name
             baseURI = '/apps/' + app_name;
-            await message.sendReply(`_You provided an incorrect heroku app name, and I have corrected your app name to "${app_name}"_\n\n_Please retry this command after restart!_`)    
+            if (message) await message.sendReply(`_You provided an incorrect heroku app name, and I have corrected your app name to "${app_name}"_\n\n_Please retry this command after restart!_`)    
             Config.HEROKU.APP_NAME = app_name
                 return await setVar("HEROKU_APP_NAME",app_name,message)
             }
         }
-        async function setVar(key,value,message){
+        async function setVar(key,value,message = false){
         key = key.toUpperCase().trim()
         value = value.trim()
         let setvarAction = isHeroku ? "restarting" : isVPS ? "rebooting" : "redeploying";
@@ -308,7 +308,7 @@ fs.writeFileSync('./config.env', lines.join('\n'));
                     {title: "PM Auto blocker", env_var: "PMB_VAR"},
                     {title: "Disable bot in PM", env_var: "DIS_PM"}
                 ]
-        let msgToBeSent = configs.map(e=>configs.indexOf(e)+1+'. _*'+e.title+'*_').join('\n')+'\n\n_Reply the number to continue_'
+        let msgToBeSent = "_*Settings configuration menu*_\n\n"+configs.map(e=>configs.indexOf(e)+1+'. _*'+e.title+'*_').join('\n')+'\n\n_Reply the number to continue_'
         return await message.sendReply(msgToBeSent)
         }));
     Module({
