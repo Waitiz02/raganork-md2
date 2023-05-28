@@ -397,7 +397,6 @@ Module({
             }
             return await message.client.sendMessage(message.jid,Message)
             }            
-          }
           if (reply?.includes("Settings configuration menu")){
             let item = await parseReply(reply,no_);
             let msgToBeSent = `_*${item}*_\n\n_Reply *on/off*_`;
@@ -424,7 +423,6 @@ Module({
               } 
             }
           if (reply?.includes("Results matching")){
-            console.log(reply,no)
             let videoID = await parseReply(reply,no_);
               const title = await ytTitle(videoID);
               await message.sendReply(`*Downloading:* _${title}_`)
@@ -471,7 +469,8 @@ Module({
         },{quoted:message.data});
             } else throw "_Invalid number, reply 1 for audio and 2 for video_"
           };
-        } catch (error) {
+        }
+       } catch (error) {
           console.log("")
         }  
       }
