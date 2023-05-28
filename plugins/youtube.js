@@ -13,6 +13,7 @@ const {
   AUDIO_DATA,
   BOT_INFO
 } = require('../config');
+const config = require('../config');
 const ffmpeg = require('fluent-ffmpeg');
 // let parseBotJid = (id) => id+"@s.whatsapp.net";
 const {
@@ -34,6 +35,15 @@ const {
   getVideo,
   addInfo
 } = require('raganork-bot');
+let configs = [
+  {title: "Auto read all messages", env_var: "READ_MESSAGES"},
+  {title: "Auto read command messages", env_var: "READ_COMMAND"},
+  {title: "Auto read status updates", env_var: "AUTO_READ_STATUS"},
+  {title: "Auto reject calls", env_var: "REJECT_CALLS"},
+  {title: "Always online", env_var: "ALWAYS_ONLINE"},
+  {title: "PM Auto blocker", env_var: "PMB_VAR"},
+  {title: "Disable bot in PM", env_var: "DIS_PM"}
+]
 var handler = HANDLERS !== 'false'?HANDLERS.split("")[0]:""
 let fm = MODE == 'public' ? false : true
 const getID = /(?:http(?:s|):\/\/|)(?:(?:www\.|)youtube(?:\-nocookie|)\.com\/(?:watch\?.*(?:|\&)v=|embed|shorts\/|v\/)|youtu\.be\/)([-_0-9A-Za-z]{11})/;
@@ -369,18 +379,10 @@ Module({
       let onOrOff = (message.message.toLowerCase().includes('on') || message.message.toLowerCase().includes('off')) ? message.message.toLowerCase().trim() : false
       if (onOrOff){
         let action = onOrOff == 'on'?'true':'false';
-        let configs = [
-          {title: "Auto read all messages", env_var: "READ_MESSAGES"},
-          {title: "Auto read command messages", env_var: "READ_COMMAND"},
-          {title: "Auto read status updates", env_var: "AUTO_READ_STATUS"},
-          {title: "Auto reject calls", env_var: "REJECT_CALLS"},
-          {title: "Always online", env_var: "ALWAYS_ONLINE"},
-          {title: "PM Auto blocker", env_var: "PMB_VAR"},
-          {title: "Disable bot in PM", env_var: "DIS_PM"}
-      ]
       let set_action = reply.split('\n')[0].replace(/(\*\_|_\*)/g,"")
       if (configs.map(e=>e.title).includes(set_action)){
         let {env_var} = configs.filter(e=>e.title==set_action)[0]
+        await message.sendReply(`*${set_action}* turned *${onOrOff}*`)
         await setVar(env_var.trim(),action)
       }
       }
@@ -399,7 +401,8 @@ Module({
             }            
           if (reply?.includes("Settings configuration menu")){
             let item = await parseReply(reply,no_);
-            let msgToBeSent = `_*${item}*_\n\n_Reply *on/off*_`;
+            let {env_var} = configs.filter(e=>e.title==item)[0]
+            let msgToBeSent = `_*${item}*_\n\n_Current status: ${config[env_var]=='true'?'on':'off'}_\n\n_Reply *on/off*_`;
             return await message.sendReply(msgToBeSent)
             }                        
           if (reply?.includes("Available quality")){
