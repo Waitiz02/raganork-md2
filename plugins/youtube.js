@@ -326,27 +326,26 @@ async function parseReply(reply,no_){
     let matches = reply.match(regex)
     return matches[0].match(getID)[1]
   }
-  else if (reply?.includes("Available quality")){
+  if (reply?.includes("Available quality")){
     var query = reply.split("\n").filter(x=>x.startsWith(`${no_}.`))?.[0]?.replace(`${no_}. `,"").trim().replace(/(\*\_|_\*)/g,"")  
     query = (query.replace(query.match(/\([^)]+\)/g)[(query.match(/\([^)]+\)/g)).length-1],"")).trim()
     var videoID = reply.split("\n").filter(x=>x.startsWith(`_video_id`))?.[0]?.split(" ")[1].trim().replace(/_+$/, "");  
     return {res:query,videoID}
   }
-  else if (reply?.includes("Available quality")){
+  if (reply?.includes("Available quality")){
     var query = reply.split("\n").filter(x=>x.startsWith(`${no_}.`))?.[0]?.replace(`${no_}. `,"").trim().replace(/(\*\_|_\*)/g,"")  
     query = (query.replace(query.match(/\([^)]+\)/g)[(query.match(/\([^)]+\)/g)).length-1],"")).trim()
     var videoID = reply.split("\n").filter(x=>x.startsWith(`_video_id`))?.[0]?.split(" ")[1].trim().replace(/_+$/, "");  
     return {res:query,videoID}
   }
-  else if (reply?.includes("Subtitles matching")){
+  if (reply?.includes("Subtitles matching")){
     var query = reply.split("\n").filter(x=>x.startsWith(`${no_}.`))?.[0]?.replace(`${no_}. `,"").trim().replace(/(\*\_|_\*)/g,"")  
     return query
   }
-  else if (reply?.includes("Settings configuration menu")){
+  if (reply?.includes("Settings configuration menu")){
     var query = reply.split("\n").filter(x=>x.startsWith(`${no_}.`))?.[0]?.replace(`${no_}. `,"").trim().replace(/(\*\_|_\*)/g,"")  
     return query
   }
-  else {
   var query = reply.split("\n").filter(x=>x.startsWith(`${no_}.`))?.[0]?.replace(`${no_}. `,"").trim().replace(/(\*\_|_\*)/g,"")
   if (!query) throw "_Invalid number, only 20 results are given!_"
   query = (query.replace(query.match(/\([^)]+\)/g)[(query.match(/\([^)]+\)/g)).length-1],"")).trim()
@@ -357,7 +356,6 @@ async function parseReply(reply,no_){
   // let link = YT_BASEURL.format(sr?.id)
   return sr?.id         
   }
-}
 
 Module({
   on: 'text',
@@ -400,18 +398,18 @@ Module({
             return await message.client.sendMessage(message.jid,Message)
             }            
           }
-          else if (reply?.includes("Settings configuration menu")){
+          if (reply?.includes("Settings configuration menu")){
             let item = await parseReply(reply,no_);
             let msgToBeSent = `_*${item}*_\n\n_Reply *on/off*_`;
             return await message.sendReply(msgToBeSent)
             }                        
-          else if (reply?.includes("Available quality")){
+          if (reply?.includes("Available quality")){
               let {res,videoID} = await parseReply(reply,no_);
               const result__ = await ytv(videoID,res)
               const title = await ytTitle(videoID)
               return await message.client.sendMessage(message.jid,{video:result__,caption:`_${title} *[${res}]*_`},{quoted:message.data}) 
           }
-          else if (reply?.includes("Subtitles matching")){
+          if (reply?.includes("Subtitles matching")){
               let query = await parseReply(reply,no_);
               let res = (await require("axios")(`https://raganork.ml/api/subtitles?query=${query}`)).data
               if (res.length) res = res.filter(x=>x.title == query)
@@ -425,7 +423,7 @@ Module({
                 return await message.client.sendMessage(message.jid,{document: {url: res.dl_url},fileName:res.title+'.srt',caption:'_*Here\'s your subtitle file!*_',mimetype:'application/x-subrip'},{quoted:message.data})
               } 
             }
-          else if (reply?.includes("Results matching")){
+          if (reply?.includes("Results matching")){
             let videoID = await parseReply(reply,no_);
               const title = await ytTitle(videoID);
               await message.sendReply(`*Downloading:* _${title}_`)
@@ -442,7 +440,7 @@ Module({
               });
              }); 
           }
-          else if (reply?.includes("ᴄʜᴀɴɴᴇʟ")){
+          if (reply?.includes("ᴄʜᴀɴɴᴇʟ")){
             if (no_ == 1){
               let videoID = await parseReply(reply,no_);
               const title = await ytTitle(videoID);
@@ -459,7 +457,7 @@ Module({
                   quoted: message.data
               });
              }); 
-            } else if (no_ == 2){
+            } if (no_ == 2){
               let videoID = await parseReply(reply,no_);
               await message.sendReply("_Downloading video..._")
               const video = await ytv(videoID)
@@ -471,7 +469,7 @@ Module({
               thumbnail: await skbuffer(`https://i.ytimg.com/vi/${videoID}/hqdefault.jpg`)
         },{quoted:message.data});
             } else throw "_Invalid number, reply 1 for audio and 2 for video_"
-          } else return;
+          };
         } catch (error) {
           console.log("")
         }  
