@@ -3,24 +3,26 @@ const { Sequelize } = require('sequelize');
 const isVPS = !(__dirname.startsWith("/rgnk") || __dirname.startsWith("/skl"));
 const isHeroku = __dirname.startsWith("/skl");
 const isKoyeb = __dirname.startsWith("/rgnk");
+const isRailway = __dirname.startsWith("/railway");
 if (fs.existsSync('config.env')) require('dotenv').config({ path: './config.env' });
 function convertToBool(text, fault = 'true',fault2='on') {
     return ((text === fault) || (text === fault2));
 }
 DATABASE_URL = process.env.DATABASE_URL === undefined ? './bot.db' : process.env.DATABASE_URL;
 DEBUG = process.env.DEBUG === undefined ? false : convertToBool(process.env.DEBUG);
+if (!(process.env.SESSION || process.env.SESSION_ID)) throw new Error("No session found, add session before starting bot")
 module.exports = {
     VERSION: 'v3.0.0',
     ALIVE: process.env.ALIVE || "https://i.imgur.com/KCnoMM2.jpg Hey {sender}, I'm alive \n Uptime: {uptime}",
     BLOCK_CHAT: process.env.BLOCK_CHAT || '',
     ALWAYS_ONLINE: convertToBool(process.env.ALWAYS_ONLINE) || false,
-    PLATFORM:isHeroku?"Heroku":isKoyeb?"Koyeb":"VPS",isHeroku,isKoyeb,isVPS,
+    PLATFORM:isHeroku?"Heroku":isRailway?"Railway":isKoyeb?"Koyeb":"Other server",isHeroku,isKoyeb,isVPS,isRailway,
     AUTOMUTE_MSG: process.env.AUTOMUTE_MSG || '_Group automuted!_\n_(edit AUTOMUTE_MSG)_',
     ANTI_SPAM: process.env.ANTI_SPAM || '919074309534-1632403322@g.us',
     MULTI_HANDLERS: convertToBool(process.env.MULTI_HANDLERS) || false,
     DISABLED_COMMANDS: (process.env.DISABLED_COMMANDS ? process.env.DISABLED_COMMANDS.split(",") : undefined) || [],
     ANTI_BOT: process.env.ANTI_BOT || '',
-    ANTISPAM_COUNT: process.env.ANTISPAM_COUNT || '7/10', // msgs/sec
+    ANTISPAM_COUNT: process.env.ANTISPAM_COUNT || '6/10', // msgs/sec
     AUTOUNMUTE_MSG: process.env.AUTOUNMUTE_MSG || '_Group auto unmuted!_\n_(edit AUTOUNMUTE_MSG)_',
     AUTO_READ_STATUS: convertToBool(process.env.AUTO_READ_STATUS) || false,
     READ_MESSAGES: convertToBool(process.env.READ_MESSAGES) || false,
@@ -29,7 +31,7 @@ module.exports = {
     REJECT_CALLS: convertToBool(process.env.REJECT_CALLS) || false,
     PMB: process.env.PMB || '_Personal messages not allowed, BLOCKED!_',
     READ_COMMAND: convertToBool(process.env.READ_COMMAND) || true,
-    SESSION: process.env.SESSION.trim() || '',
+    SESSION: (process.env.SESSION || process.env.SESSION_ID || '').trim() || '',
     IMGBB_KEY: ["76a050f031972d9f27e329d767dd988f", "deb80cd12ababea1c9b9a8ad6ce3fab2", "78c84c62b32a88e86daf87dd509a657a"],
     RG: process.env.RG || '919074309534-1632403322@g.us,120363116963909366@g.us',
     BOT_INFO: process.env.BOT_INFO || 'Raganork;Skl11;0;https://i.imgur.com/P7ziVhr.jpeg;https://chat.whatsapp.com/Dt3C4wrQmt0GG6io1IBIHb',
