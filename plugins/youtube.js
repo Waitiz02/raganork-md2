@@ -384,7 +384,7 @@ Module({
         await setVar(env_var.trim(),action)
       }
       }
-      if (!no_ && !onOrOff) return;
+      if (!no_) return;
           if (reply?.includes("Search results")){
             let videoID = await parseReply(reply,no_);
             var {
