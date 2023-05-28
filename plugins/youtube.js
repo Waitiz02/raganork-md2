@@ -365,6 +365,7 @@ Module({
     try { 
   let reply = message.reply_message?.text || message.quoted?.message?.imageMessage?.caption;
     if (reply!==undefined && !!reply && message.quoted.key.id.startsWith("BAE") && message.quoted.key.participant.includes(message.myjid)){
+      console.log(message.message)
       let no_ = /\d+/.test(message.message) ? message.message.match(/\d+/)[0] : false
       let onOrOff = (message.message.toLowerCase().includes('on') || message.message.toLowerCase().includes('off')) ? message.message.toLowerCase().trim() : false
       if (onOrOff){
