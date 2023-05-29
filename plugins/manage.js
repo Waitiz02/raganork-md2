@@ -291,7 +291,7 @@ fs.writeFileSync('./config.env', lines.join('\n'));
         if (match[1]?.toLowerCase() === 'off'){
             return await setVar("CHATBOT",'off',message)
         }
-        return await message.sendReply("_AI ChatBot mode_\n\n"+"_Current status: *"+toggle+"*\n\n_Use: .chatbot on/off_")    
+        return await message.sendReply("_AI ChatBot mode_\n\n"+"_Current status: *"+config.CHATBOT+"*\n\n_Use: .chatbot on/off_")    
     }));
     Module({
         pattern: 'settings ?(.*)',

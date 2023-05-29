@@ -402,7 +402,7 @@ Module({
           if (reply?.includes("Settings configuration menu")){
             let item = await parseReply(reply,no_);
             let {env_var} = configs.filter(e=>e.title==item)[0]
-            let msgToBeSent = `_*${item}*_\n\n_Current status: ${config[env_var]=='true'?'on':'off'}_\n\n_Reply *on/off*_`;
+            let msgToBeSent = `_*${item}*_\n\n_Current status: ${config[env_var] ?'on':'off'}_\n\n_Reply *on/off*_`;
             return await message.sendReply(msgToBeSent)
             }                        
           if (reply?.includes("Available quality")){
