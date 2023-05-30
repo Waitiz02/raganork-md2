@@ -9,12 +9,12 @@ const {readFileSync} = require('fs');
 const {saveMessage} = require('./misc/saveMessage');
 const Lang = getString('group');
 Module({pattern: 'tag ?(.*)',use: 'group', fromMe: true, desc: Lang.TAGALL_DESC}, (async (message, match) => {
-if (match[1] === "all" || (match[1] && match[1].startsWith("ad")) || !message.reply_message) return;
+if (match[1] === "all" || !message.reply_message) return;
 var target = message.jid
 if (match[1] && /[0-9]+(-[0-9]+|)(@g.us|@s.whatsapp.net)/g.test(match[1])) target = [...match[1].match(/[0-9]+(-[0-9]+|)(@g.us|@s.whatsapp.net)/g)][0];
 var group = await message.client.groupMetadata(target)
 var jids = [];
-if (match[1] == 'admin'){
+if (match[1].includes('admin')){
         var admins = group.participants.filter(v => v.admin !== null).map(x => x.id);
         admins.map(async (user) => {
             jids.push(user.replace('c.us', 's.whatsapp.net'));
