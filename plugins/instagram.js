@@ -25,6 +25,7 @@ const {
     pin,
     story,
     tiktok,
+    igStalk,
     fb
 } = require('./misc/misc');
 const Config = require('../config');
@@ -88,25 +89,19 @@ Module({
     desc: 'Gets account info from instagram',
     usage: 'ig username',
     use: 'search'
-}, (async (msg, query) => {
-    if (query[1] === 'dl') return; 
-    if (query[1] === '') return await msg.client.sendMessage(msg.jid, {
-        text: need_acc
+}, (async (message, match) => {
+    if (!match[1]) return await message.sendReply("_Need instagram username!_")
+    if (match[1].startsWith("https") && match[1].includes("instagram")) {
+        const _regex = /instagram\.com\/([^/?]+)/i;
+        const _match = match[1].match(_regex);
+        match[1] = _match && _match[1];
+    }
+    var res = await igStalk(match[1])
+    await message.client.sendMessage(message.jid, {
+        image: {url: res.profile_pic},
+        caption: '_*Name:*_ ' + `${res.full_name}` + '\n _*Followers:*_ ' + `${res.followers}` + '\n _*Following:*_ ' + '\n _*Bio:*_ ' + `${res.bio}` + '\n _*Private account:*_ ' + `${res.is_private?"Yes":"No"} ` + `${res.following}` + '\n _*Posts:*_ ' + `${res.posts}`
     }, {
-        quoted: msg.data
-    })
-    var res = await getStalk(query[1])
-    if (res === "false") return await msg.client.sendMessage(msg.jid, {
-        text: "*_Username invalid!_*"
-    }, {
-        quoted: msg.data
-    })
-    var buffer = await skbuffer(res.hd_profile_pic_url_info.url)
-    await msg.client.sendMessage(msg.jid, {
-        image: buffer,
-        caption: '_*Name:*_ ' + `${res.fullname}` + '\n _*Bio:*_ ' + `${res.biography}` + '\n _*Private account:*_ ' + `${res.is_private} ` + '\n _*Followers:*_ ' + `${res.followers}` + '\n _*Following:*_ ' + `${res.following}` + '\n _*Posts:*_ ' + `${res.post_count}` + '\n _*Verified:*_ ' + `${res.is_verified} ` + '\n _*IGTV videos:*_ ' + `${res.total_igtv_videos}`
-    }, {
-        quoted: msg.data
+        quoted: message.data
     });
 }));
 Module({
