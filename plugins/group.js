@@ -41,7 +41,7 @@ Module({
         delete: true,
         lastMessages: [{ key: message.data.key, messageTimestamp:message.data.messageTimestamp }]
       },message.jid)
-    return await message.send("_Chat cleared!_")  
+    return  await message.send("_Chat cleared!_")  
 }));
     Module({
     pattern: 'kick ?(.*)',
@@ -93,6 +93,7 @@ Module({
     pattern: 'add ?(.*)',
     fromMe: true,
     desc: Lang.ADD_DESC,
+    warn:"You number might get banned, use with caution",
     use: 'group'
 }, (async (message, match) => {
     if (!message.isGroup) return await message.sendReply(Lang.GROUP_COMMAND)
