@@ -175,17 +175,12 @@ Module({
     var link = query[1] !== '' ? query[1] : msg.reply_message.text;
     if (!link) return await msg.sendReply("_Need a tiktok url_");
     link = link.match(/\bhttps?:\/\/\S+/gi)[0]
-    const buttons = [
-        {buttonId: hnd+'upload '+'https://api.akuari.my.id/downloader/tiktoknowm?link='+link, buttonText: {displayText: 'No watermark'}, type: 1},
-        {buttonId: hnd+'upload '+'https://api.akuari.my.id/downloader/tiktokwithwm?link='+link, buttonText: {displayText: 'With watermark'}, type: 1}
-       ]
-      const buttonMessage = {
-          text: "_Select video type_",
-          footer: '',
-          buttons: buttons,
-          headerType: 1
-      }
-       await msg.client.sendMessage(msg.jid, buttonMessage,{quoted:msg.data})
+    try {
+        let {result} = await tiktok(link)
+        await msg.sendReply({url:result},'video')        
+    } catch (error) {
+        await msg.sendReply("_Server busy!_")
+    }
       }));
     Module({
         on: 'button',
