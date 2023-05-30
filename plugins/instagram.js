@@ -96,10 +96,10 @@ Module({
         const _match = match[1].match(_regex);
         match[1] = _match && _match[1];
     }
-    var res = await igStalk(match[1])
+    try { var res = await igStalk(encodeURIComponent(match[1])) } catch { return await message.sendReply("_Server busy!_")}
     await message.client.sendMessage(message.jid, {
         image: {url: res.profile_pic},
-        caption: '_*Name:*_ ' + `${res.full_name}` + '\n _*Followers:*_ ' + `${res.followers}` + '\n _*Following:*_ ' + '\n _*Bio:*_ ' + `${res.bio}` + '\n _*Private account:*_ ' + `${res.is_private?"Yes":"No"} ` + `${res.following}` + '\n _*Posts:*_ ' + `${res.posts}`
+        caption: '_*Name:*_ ' + `${res.full_name}` + '\n _*Followers:*_ ' + `${res.followers}` + '\n _*Following:*_ ' +res.following+ '\n _*Bio:*_ ' + `${res.bio}` + '\n _*Private account:*_ ' + `${res.is_private?"Yes":"No"} ` + '\n _*Posts:*_ ' + `${res.posts}`
     }, {
         quoted: message.data
     });
