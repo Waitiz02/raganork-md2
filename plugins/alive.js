@@ -100,7 +100,7 @@ const myTimeOut = setInterval(displayHello, 1000);
 setTimeout(myStopFunction,5000)
 setTimeout(afterType,5500)
 async function displayHello() {
-var str = "typing..."
+var str = process.env.ALIVE || `HELLO ${m.senderName},\nI AM ALIVE..♥️`
 let ans = []
 for(var i=0;i<=str.length-1;i++){
 var x = str.charAt(i)
@@ -113,7 +113,7 @@ function myStopFunction() {
   clearTimeout(myTimeOut);
 }
 async function afterType(){
-await m.edit("H E L L O ,\nI  A M  A L I V E . . .",m.jid,mes.key)
+ await m.edit('(^_^)',m.jid,mes.key)
 }
 }))
 Module({
