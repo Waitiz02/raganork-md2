@@ -371,7 +371,8 @@ Module({
   on: 'text',
   fromMe: fm
   }, (async (message, match) => {
-  if (message.reply_message){
+  console.log(message)
+    if (message.reply_message){
     try { 
   let reply = message.reply_message?.text || message.quoted?.message?.imageMessage?.caption;
     if (reply!==undefined && !!reply && message.quoted.key.id.startsWith("BAE") && message.quoted.key.participant.includes(message.myjid)){
