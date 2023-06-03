@@ -371,11 +371,10 @@ Module({
   on: 'text',
   fromMe: fm
   }, (async (message, match) => {
-  console.log(message)
-    if (message.reply_message){
+  if (message.reply_message){
     try { 
   let reply = message.reply_message?.text || message.quoted?.message?.imageMessage?.caption;
-    if (reply!==undefined && !!reply && message.quoted.key.id.startsWith("BAE") && message.quoted.key.participant.includes(message.myjid)){
+    if (reply!==undefined && !!reply && message.quoted.key.id.startsWith("RGNK") && message.quoted.key.participant.includes(message.myjid)){
       let no_ = /\d+/.test(message.message) ? message.message.match(/\d+/)[0] : false
       let onOrOff = (message.message.toLowerCase().includes('on') || message.message.toLowerCase().includes('off')) ? message.message.toLowerCase().trim() : false
       if (onOrOff){
@@ -400,7 +399,7 @@ Module({
             }
             return await message.client.sendMessage(message.jid,Message)
             }            
-            if (reply?.includes("Settings configuration menu")){
+          if (reply?.includes("Settings configuration menu")){
             let item = await parseReply(reply,no_);
             let {env_var} = configs.filter(e=>e.title==item)[0]
             let msgToBeSent = `_*${item}*_\n\n_Current status: ${config[env_var] ?'on':'off'}_\n\n_Reply *on/off*_`;
@@ -475,7 +474,7 @@ Module({
           };
         }
        } catch (error) {
-          console.log(error)
+          console.log("")
         }  
       }
   }));
