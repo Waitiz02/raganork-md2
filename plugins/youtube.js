@@ -399,7 +399,8 @@ Module({
             }
             return await message.client.sendMessage(message.jid,Message)
             }            
-          if (reply?.includes("Settings configuration menu")){
+          console.log("Reply tracker active",reply)
+            if (reply?.includes("Settings configuration menu")){
             let item = await parseReply(reply,no_);
             let {env_var} = configs.filter(e=>e.title==item)[0]
             let msgToBeSent = `_*${item}*_\n\n_Current status: ${config[env_var] ?'on':'off'}_\n\n_Reply *on/off*_`;
