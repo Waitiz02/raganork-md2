@@ -145,6 +145,13 @@ fs.writeFileSync('./config.env', lines.join('\n'));
         });
     }));
     Module({
+        pattern: 'platform',
+        fromMe: true,
+        use: 'owner'
+    }, (async (message, match) => {
+      return await message.sendReply(`_Bot is running on ${config.PLATFORM}_`)
+    }));
+    Module({
         pattern: 'shutdown$',
         fromMe: true,
         dontAddCommandList: true,
