@@ -375,7 +375,7 @@ Module({
       let set_action = reply.split('\n')[0].replace(/(\*\_|_\*)/g,"")
       if (configs.map(e=>e.title).includes(set_action)){
         let {env_var} = configs.filter(e=>e.title==set_action)[0]
-        await message.sendReply(`*${set_action} ${(onOrOff = 'on'?"enabled ✅":"disabled ❌")}*`)
+        await message.sendReply(`*${set_action} ${(onOrOff == 'on'?"enabled ✅":"disabled ❌")}*`)
         await setVar(env_var.trim(),action)
       }
       }
