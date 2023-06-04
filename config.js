@@ -8,6 +8,15 @@ if (fs.existsSync('config.env')) require('dotenv').config({ path: './config.env'
 function convertToBool(text, fault = 'true',fault2='on') {
     return ((text === fault) || (text === fault2));
 }
+const settingsMenu = [
+    {title: "Auto read all messages", env_var: "READ_MESSAGES"},
+    {title: "Auto read command messages", env_var: "READ_COMMAND"},
+    {title: "With & without handler mode", env_var: "MULTI_HANDLERS"},
+    {title: "Auto reject calls", env_var: "REJECT_CALLS"},
+    {title: "Always online", env_var: "ALWAYS_ONLINE"},
+    {title: "PM Auto blocker", env_var: "PMB_VAR"},
+    {title: "Disable bot in PM", env_var: "DIS_PM"}
+  ]
 DATABASE_URL = process.env.DATABASE_URL === undefined ? './bot.db' : process.env.DATABASE_URL;
 DEBUG = process.env.DEBUG === undefined ? false : convertToBool(process.env.DEBUG);
 if (!(process.env.SESSION || process.env.SESSION_ID)) throw new Error("No session found, add session before starting bot")
@@ -58,5 +67,6 @@ module.exports = {
     LANGUAGE: process.env.LANGUAGE || 'english',
     DEBUG: DEBUG,
     ACR_A: "ff489a0160188cf5f0750eaf486eee74",
-    ACR_S: "ytu3AdkCu7fkRVuENhXxs9jsOW4YJtDXimAWMpJp"
+    ACR_S: "ytu3AdkCu7fkRVuENhXxs9jsOW4YJtDXimAWMpJp",
+    settingsMenu
 };

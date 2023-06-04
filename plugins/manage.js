@@ -32,7 +32,7 @@ async function sendButton(buttons,text,footer,message){
     const Config = require('../config');
     const config = require('../config');
     const {getCommands} = require('./commands');
-    const {HEROKU} = require('../config');
+    const {HEROKU, settingsMenu} = require('../config');
     const Heroku = require('heroku-client');
     const fs = require('fs');
     const got = require('got');
@@ -299,15 +299,7 @@ fs.writeFileSync('./config.env', lines.join('\n'));
         desc: "Bot settings to enable extra options related to WhatsApp bot functionality.",
         use: 'owner'
     }, (async (message, match) => {
-            let configs = [
-                    {title: "Auto read all messages", env_var: "READ_MESSAGES"},
-                    {title: "Auto read command messages", env_var: "READ_COMMAND"},
-                    {title: "Auto read status updates", env_var: "AUTO_READ_STATUS"},
-                    {title: "Auto reject calls", env_var: "REJECT_CALLS"},
-                    {title: "Always online", env_var: "ALWAYS_ONLINE"},
-                    {title: "PM Auto blocker", env_var: "PMB_VAR"},
-                    {title: "Disable bot in PM", env_var: "DIS_PM"}
-                ]
+            let configs = settingsMenu
         let msgToBeSent = "_*Settings configuration menu*_\n\n"+configs.map(e=>configs.indexOf(e)+1+'. _*'+e.title+'*_').join('\n')+'\n\n_Reply the number to continue_'
         return await message.sendReply(msgToBeSent)
         }));
