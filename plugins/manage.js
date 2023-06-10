@@ -3,6 +3,24 @@ Licensed under the  GPL-3.0 License;
 you may not use this file except in compliance with the License.
 Raganork MD - Sourav KL11
 */
+function checkLinks(links, allowedWords) {
+    let testArray = []
+    for (let i = 0; i < links.length; i++) {
+      const link = links[i];
+      let isAllowed = true;
+      for (let j = 0; j < allowedWords.length; j++) {
+        const allowedWord = allowedWords[j];
+        if (link.includes(allowedWord)) {
+          isAllowed = true; // Word is allowed
+          break;
+        }
+        isAllowed = false; // Word is not allowed
+      }
+      
+        testArray.push(isAllowed)
+      }
+    return testArray.includes(false)
+  }
 async function sendButton(buttons,text,footer,message){
     const buttonMessage = {text,footer,buttons,headerType: 1}
     return await message.client.sendMessage(message.jid, buttonMessage)
@@ -507,10 +525,9 @@ const oldSudo = config.SUDO?.split(",")
             jids.push(data.jid)
         });
         if (jids.includes(message.jid)) {
-        var allowed = process.env.ALLOWED_LINKS || "gist,instagram,youtu";
-        var checker = [];
-        allowed.split(",").map(e=> checker.push(message.message.includes(e)))
-        if (!checker.includes(true)){
+        let allowed = (process.env.ALLOWED_LINKS || "gist,instagram,youtu").split(",");
+        let linksInMsg = message.message.match(/\bhttps?:\/\/\S+/gi)
+        if (checkLinks(linksInMsg,allowed)) {
         if (!(await isAdmin(message,message.sender))) {
         var usr = message.sender.includes(":") ? message.sender.split(":")[0]+"@s.whatsapp.net" : message.sender
         await message.client.sendMessage(message.jid, { delete: message.data.key })
