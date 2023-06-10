@@ -216,9 +216,14 @@ Module({
     use: 'utility'
 }, (async (message, match) => {
     if (!message.reply_message) return await message.sendReply("_Need a file!_");
-    match = match[1] ? match[1] : "file"
+    match = match[1] ? match[1] : "file-"+Date.now()
     let file = fs.readFileSync(await message.reply_message.download())
-    let {mime, ext} = await fromBuffer(file)
+    let analysedBuffer = await fromBuffer(file)
+    let mime = analysedBuffer.mime, ext = analysedBuffer.ext;
+    if (('documentMessage' in message.quoted.message) && !mime){
+        mime = message.quoted.message.documentMessage.mimetype
+        ext = message.quoted.message.documentMessage.fileName.split('.')[1] || ''
+    } 
     await message.client.sendMessage(message.jid,{document:file,mimetype:mime,fileName:match+"."+ext},{quoted: message.quoted});
 }));
 Module({
