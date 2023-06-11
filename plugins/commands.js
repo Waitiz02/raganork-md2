@@ -21,7 +21,7 @@ return commands.map(x=>x?.pattern?.toString().match(/(\W*)([A-Za-zğüşıiöç1
 }
 function findCommand(command){
 let found_command = commands.filter(x=>x?.pattern?.toString().match(/(\W*)([A-Za-zğüşıiöç1234567890 ]*)/)[2].trim() == command)[0]
-if (!found_command || !found_command.length) return false
+if (!found_command) return false
 return {
     command, ...found_command
 }
