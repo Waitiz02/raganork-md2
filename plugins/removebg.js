@@ -12,7 +12,7 @@ Module({pattern: 'removebg ?(.*)', fromMe: w,use: 'AI', desc: "Removes image bac
 if (!message.reply_message?.image) return await message.send("_Reply to a photo_");
 let removing = await message.sendReply('_Removing background.._')
 if (!RBG_KEY) {
-    await message.client.sendMessage(message.jid,{image:await imageUpscaler(await message.reply_message.download('buffer')),caption:'_Use doc command to convert this image to a document_'},{quoted:message.quoted})
+    await message.client.sendMessage(message.jid,{image:await removeBgv2(await message.reply_message.download('buffer')),caption:'_Use doc command to convert this image to a document_'},{quoted:message.quoted})
     await message.edit('_Task complete!_',message.jid,removing.key)
 }
     try {
@@ -31,7 +31,7 @@ if (!RBG_KEY) {
         await message.sendReply(fs.readFileSync('rbg.png'),'image'); 
         await message.edit('_Task complete!_',message.jid,removing.key)   
     } catch {
-        await message.client.sendMessage(message.jid,{image:await imageUpscaler(await message.reply_message.download('buffer')),caption:'_Use doc command to convert this image to a document_'},{quoted:message.quoted})
+        await message.client.sendMessage(message.jid,{image:await removeBgv2(await message.reply_message.download('buffer')),caption:'_Use doc command to convert this image to a document_'},{quoted:message.quoted})
         await message.edit('_Task complete!_',message.jid,removing.key)
     }
     }));
