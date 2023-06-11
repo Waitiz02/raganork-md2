@@ -346,7 +346,7 @@ fs.writeFileSync('./config.env', lines.join('\n'));
         use: 'owner'
     }, (async (message, mm) => {
    var m = message;
-        var newSudo = ( m.reply_message ? m.reply_message.jid : '' || m.mention[0] || match[1]).split("@")[0]
+        var newSudo = ( m.reply_message ? m.reply_message.jid : '' || m.mention[0] || mm[1]).split("@")[0]
 if (!newSudo) return await m.sendReply("*Need reply/mention/number*")
 const oldSudo = config.SUDO?.split(",")
     var newSudo = ( m.reply_message ? m.reply_message.jid : '' || m.mention[0] || mm[1]).split("@")[0]
