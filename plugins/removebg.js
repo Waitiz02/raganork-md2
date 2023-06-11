@@ -45,6 +45,7 @@ if (match[1] == "1"){
     } else {
     image = await imageUpscalerV2(await message.reply_message.download())
 }   
+if (!image) return await message.sendReply(`_Engine ${match[1]} error, please use ${match[1] =="1"?"2":"1"}_`)
 await message.client.sendMessage(message.jid,{image,caption:"_Enhanced image_"},{quoted:message.quoted})
 await message.edit('_Task complete!_',message.jid,removing.key)
 }));
