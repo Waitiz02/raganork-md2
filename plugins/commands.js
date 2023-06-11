@@ -19,6 +19,13 @@ const readMore = String.fromCharCode(8206).repeat(4001);
 function getCommands(){
 return commands.map(x=>x?.pattern?.toString().match(/(\W*)([A-Za-zğüşıiöç1234567890 ]*)/)[2].trim())
 }
+function findCommand(command){
+let found_command = commands.filter(x=>x?.pattern?.toString().match(/(\W*)([A-Za-zğüşıiöç1234567890 ]*)/)[2].trim() == command)[0]
+if (!found_command || !found_command.length) return false
+return {
+    command, ...found_command
+}
+}
 Module({
     pattern: "list ?(.*)",
     fromMe: w,
@@ -26,22 +33,13 @@ Module({
 }, async (n, a) => {
     var e = "";
     if (a[1]) {
-        e = "";
-        commands.map(async n => {
-            if (!n.dontAddCommandList && void 0 !== n.pattern) {
-                try {
-                    n.pattern.toString().match(/(\W*)([A-Za-zğüşıiöç1234567890 ]*)/);
-                    var t = n.pattern.toString().match(/(\W*)([A-Za-züşiğ öç1234567890]*)/)[2]
-                } catch {
-                    n.pattern
-                }
-                if (t.endsWith(" ")) t = n.pattern.toString().match(/(\W*)([A-Za-züşiğ öç1234567890]*)/)[2].replace(" ", "");
-                if (t == a[1]) {
-                    var r = "";
-                    r = /\[(\W*)\]/.test(HANDLERS) ? HANDLERS.match(/\[(\W*)\]/)[1][0] : ".", "" == n.desc && "" == !n.usage && "" == n.warn && (e += (a.length >= 3 ? r + mmatch : n.pattern) + "\n" + "Example" + ": " + n.usage + "\n\n"), "" == !n.desc && "" == n.usage && "" == n.warn && (e += (a.length >= 3 ? r + mmatch : n.pattern) + "\n" + n.desc + " \n\n"), "" == n.desc && "" == n.usage && "" == !n.warn && (e += (a.length >= 3 ? r + mmatch : n.pattern) + "\n" + n.warn + "\n\n"), "" == !n.desc && "" == !n.usage && "" == n.warn && (e += (a.length >= 3 ? r + mmatch : n.pattern) + "\n" + n.desc + " \n" + "Example" + ": " + n.usage + "\n\n"), "" == !n.desc && "" == n.usage && "" == !n.warn && (e += (a.length >= 3 ? r + mmatch : n.pattern) + "\n" + n.desc + " \n" + "Warning" + ": " + n.warn + "\n\n"), "" == n.desc && "" == !n.usage && "" == !n.warn && (e += (a.length >= 3 ? r + mmatch : n.pattern) + "\n" + n.usage + "\n" + "Warning" + ": " + n.warn + "\n\n"), "" == n.desc && "" == n.usage && "" == n.warn && (e += (a.length >= 3 ? r + mmatch : n.pattern) + "\n\n"), "" == !n.desc && "" == !n.usage && "" == !n.warn && (e += (a.length >= 3 ? r + mmatch : n.pattern) + "\n" + n.desc + " \n" + "Example" + ": " + n.usage + "\n" + "Warning" + ": " + n.warn + "\n\n")
-                }
-            }
-        }), "" === e && (e += "Command not found"), await n.sendReply("_"+e.trim()+"_")
+        let foundCommand = findCommand(a[1].trim())
+        if (!foundCommand) return await n.sendReply("_No such command!_")
+        let msgToBeSent_ = `_*Command:* ${foundCommand.command}_\n_*Desc:* ${foundCommand.desc}_\n_*Owner command:* ${foundCommand.fromMe}_`
+        if (foundCommand.use) msgToBeSent_+=`\n_*Type:* ${foundCommand.use}_`
+        if (foundCommand.usage) msgToBeSent_+=`\n_*Usage:* ${foundCommand.usage}_`
+        if (foundCommand.warn) msgToBeSent_+=`\n_*Warning:* ${foundCommand.warn}_`
+        return await n.sendReply(msgToBeSent_)        
     } else {
         commands.map(async n => {
             if (!n.dontAddCommandList && void 0 !== n.pattern) {
