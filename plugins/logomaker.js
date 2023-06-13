@@ -18,7 +18,7 @@ Usage: .logo 14 Text
 45 - 45 : Dhoni
 46 - 46 : Vijay
 47 - 52 : KGF
-52 - 57 : Agent
+53 - 57 : Agent
 58 - 58 : Leo`+'```'
 Module({pattern: "logo ?(.*)",fromMe: x,use: 'logo',desc: "45 + Logo maker commands"}, async(message, match) => {
 if (!match[1] || match[1] === 'list') return await message.sendReply(list);
