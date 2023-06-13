@@ -15,9 +15,11 @@ Usage: .logo 14 Text
 33 - 34 : Pushpa
 35 - 37 Master
 38 - 44 IPL
-45      : Dhoni
-46      : Vijay
-47 - 52 : KGF`+'```'
+45 - 45 : Dhoni
+46 - 46 : Vijay
+47 - 52 : KGF
+52 - 57 : Agent
+58 - 58 : Leo`+'```'
 Module({pattern: "logo ?(.*)",fromMe: x,use: 'logo',desc: "45 + Logo maker commands"}, async(message, match) => {
 if (!match[1] || match[1] === 'list') return await message.sendReply(list);
 })
@@ -333,9 +335,45 @@ var api_url = "https://raganork-network.vercel.app/api/logo/kgf?style=5&text="+t
 var image = await skbuffer(api_url);
 await message.sendReply(image,'image');
 })
-Module({pattern: "logo 52 ?(.*)",fromMe: x,use: 'logo', dontAddCommandList: true}, async(message, match) => {
+Module({ pattern: "logo 52 ?(.*)",fromMe: x,use: 'logo', dontAddCommandList: true}, async(message, match) => {
 var text = match[1]
 var api_url = "https://raganork-network.vercel.app/api/logo/kgf?style=6&text="+text
+var image = await skbuffer(api_url);
+await message.sendReply(image,'image');
+})
+Module({ pattern: "logo 53 ?(.*)",fromMe: x,use: 'logo', dontAddCommandList: true}, async(message, match) => {
+var text = match[1]
+var api_url = "https://raganork-network.vercel.app/api/logo/agent?style=1&text="+text
+var image = await skbuffer(api_url);
+await message.sendReply(image,'image');
+})
+Module({ pattern: "logo 54 ?(.*)",fromMe: x,use: 'logo', dontAddCommandList: true}, async(message, match) => {
+var text = match[1]
+var api_url = "https://raganork-network.vercel.app/api/logo/agent?style=2&text="+text
+var image = await skbuffer(api_url);
+await message.sendReply(image,'image');
+})
+Module({ pattern: "logo 55 ?(.*)",fromMe: x,use: 'logo', dontAddCommandList: true}, async(message, match) => {
+var text = match[1]
+var api_url = "https://raganork-network.vercel.app/api/logo/agent?style=3&text="+text
+var image = await skbuffer(api_url);
+await message.sendReply(image,'image');
+})
+Module({ pattern: "logo 56 ?(.*)",fromMe: x,use: 'logo', dontAddCommandList: true}, async(message, match) => {
+var text = match[1]
+var api_url = "https://raganork-network.vercel.app/api/logo/agent?style=4&text="+text
+var image = await skbuffer(api_url);
+await message.sendReply(image,'image');
+})
+Module({ pattern: "logo 57 ?(.*)",fromMe: x,use: 'logo', dontAddCommandList: true}, async(message, match) => {
+var text = match[1]
+var api_url = "https://raganork-network.vercel.app/api/logo/agent?style=5&text="+text
+var image = await skbuffer(api_url);
+await message.sendReply(image,'image');
+})
+Module({ pattern: "logo 58 ?(.*)",fromMe: x,use: 'logo', dontAddCommandList: true}, async(message, match) => {
+var text = match[1]
+var api_url = "https://raganork-network.vercel.app/api/logo/leo?text="+text
 var image = await skbuffer(api_url);
 await message.sendReply(image,'image');
 })
