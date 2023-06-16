@@ -472,7 +472,6 @@ const oldSudo = config.SUDO?.split(",")
             jids.push(data.jid)
         });
         if (match[1] === "on"){
-            if (!(await isAdmin(message))) return await message.sendReply("_I'm not an admin!_")
             await pdm.set(message.jid) 
         }
         if (match[1] === "off"){
