@@ -221,6 +221,7 @@ Module({
             });
     }
     if (message.update == 'promote' && apjids.includes(message.jid)) {
+        console.log(message.from,message.participant[0],message.myjid)
         if (message.from.split("@")[0] == message.myjid || message.participant[0].split("@")[0] == message.myjid) return;
         var admin = await isAdmin(message);
         if (!admin) return;
