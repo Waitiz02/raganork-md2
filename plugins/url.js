@@ -34,7 +34,7 @@ else if (m.reply_message.audio){
 else if (m.reply_message.image || m.reply_message.video){
 let {link} = await upload(await m.reply_message.download())
 if (typeof link == 'function'){
-    
+    return await m.sendReply("_There are issues with Bot's IP & imgur, so uploading can't be done_")
 }
 try { await m.client.sendMessage(m.jid,{text:"_"+link+"_"},{quoted: m.quoted}) } catch {return await m.client.sendMessage(m.jid,{text:"_Failed to upload file!_"},{quoted: m.quoted});}
 }
