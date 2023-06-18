@@ -7,7 +7,7 @@ const {
     isAdmin,
     isFake,
     antifake,pdm,
-    parseWelcome
+    parseWelcome, antipromote, antidemote
 } = require('./misc/misc');
 const {
     setAutoMute,
@@ -198,12 +198,12 @@ Module({
     pdmdb.map(data => {
         pdmjids.push(data.jid)
     });
-    var apdb = await pdm.get();
+    var apdb = await antipromote.get();
     const apjids = []
     apdb.map(data => {
         apjids.push(data.jid)
     });
-    var addb = await pdm.get();
+    var addb = await antidemote.get();
     const adjids = []
     addb.map(data => {
         adjids.push(data.jid)
