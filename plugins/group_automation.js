@@ -221,7 +221,7 @@ Module({
             });
     }
     if (message.update == 'promote' && apjids.includes(message.jid)) {
-        if (message.from.split("@")[0] == message.myjid) return;
+        if (message.from.split("@")[0] == message.myjid || message.participant[0].split("@")[0] == message.myjid) return;
         var admin = await isAdmin(message);
         if (!admin) return;
         await message.client.groupParticipantsUpdate(message.jid, [message.from], "demote")
