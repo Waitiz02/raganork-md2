@@ -39,6 +39,8 @@ async function sendButton(buttons,text,footer,message){
         antilink,
         antibot,
         antispam,
+        antipromote,
+        antidemote,
         pdm,
     } = require('./misc/misc');
     const {
@@ -483,6 +485,56 @@ const oldSudo = config.SUDO?.split(",")
         return await message.sendReply(`_Promote|demote alert message menu of ${subject}_`+"\n\n_PDM alert is currently turned *"+status+"*_\n\n_Use .pdm on/off_")
         }
         await message.sendReply(match[1] === "on" ? "_Pdm activated!_" : "_Pdm turned off!_");
+    }));
+    Module({
+        pattern: 'antidemote ?(.*)',
+        fromMe: true,
+        desc: "Detects demote and automatically promotes demoted one and demotes person who demoted.",
+        use: 'group'
+    }, (async (message, match) => {
+        match[1]=match[1]?match[1].toLowerCase():""
+        var db = await antidemote.get();
+        const jids = []
+        db.map(data => {
+            jids.push(data.jid)
+        });
+        if (match[1] === "on"){
+            await antidemote.set(message.jid) 
+        }
+        if (match[1] === "off"){
+            await antidemote.delete(message.jid)  
+        }
+        if (match[1]!=="on" && match[1]!=="off"){
+        var status = jids.includes(message.jid) ? 'on' : 'off';
+        var {subject} = await message.client.groupMetadata(message.jid)
+        return await message.sendReply(`_Anti demote menu of ${subject}_`+"\n\n_This feature is currently turned *"+status+"*_\n\n_Use .antidemote on/off_")
+        }
+        await message.sendReply(match[1] === "on" ? "_Antidemote activated!_" : "_Antidemote turned off!_");
+    }));
+    Module({
+        pattern: 'antipromote ?(.*)',
+        fromMe: true,
+        desc: "Detects promote and automatically demotes promoted one and demotes person who promoted.",
+        use: 'group'
+    }, (async (message, match) => {
+        match[1]=match[1]?match[1].toLowerCase():""
+        var db = await antipromote.get();
+        const jids = []
+        db.map(data => {
+            jids.push(data.jid)
+        });
+        if (match[1] === "on"){
+            await antipromote.set(message.jid) 
+        }
+        if (match[1] === "off"){
+            await antipromote.delete(message.jid)  
+        }
+        if (match[1]!=="on" && match[1]!=="off"){
+        var status = jids.includes(message.jid) ? 'on' : 'off';
+        var {subject} = await message.client.groupMetadata(message.jid)
+        return await message.sendReply(`_Anti promote menu of ${subject}_`+"\n\n_This feature is currently turned *"+status+"*_\n\n_Use .antipromote on/off_")
+        }
+        await message.sendReply(match[1] === "on" ? "_Antipromote activated!_" : "_Antipromote turned off!_");
     }));
     Module({
         pattern: 'antilink ?(.*)',

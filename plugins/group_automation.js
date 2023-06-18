@@ -197,17 +197,44 @@ Module({
     pdmdb.map(data => {
         pdmjids.push(data.jid)
     });
-    if ((message.update == 'promote' || message.update == 'demote') && pdmjids.includes(message.jid)) {
+    var apdb = await pdm.get();
+    const apjids = []
+    apdb.map(data => {
+        apjids.push(data.jid)
+    });
+    var addb = await pdm.get();
+    const adjids = []
+    addb.map(data => {
+        adjids.push(data.jid)
+    });
     var admin_jids = [];
     var admins = (await message.client.groupMetadata(message.jid)).participants.filter(v => v.admin !== null).map(x => x.id);
     admins.map(async (user) => {
         admin_jids.push(user.replace('c.us', 's.whatsapp.net'));
     });
-    if (message.update == 'demote') admin_jids.push(message.participant[0])
+    if ((message.update == 'promote' || message.update == 'demote') && pdmjids.includes(message.jid)) {
+        if (message.update == 'demote') admin_jids.push(message.participant[0])
         await message.client.sendMessage(message.jid, {
                 text: `_*[${message.update=='promote'?"Promote detected":"Demote detected"}]*_\n\n_@${message.from.split("@")[0]} ${message.update}d @${message.participant[0].split("@")[0]}_`,
                 mentions: admin_jids
             });
+    }
+    if (message.update == 'promote' && apjids.includes(message.jid)) {
+        var admin = await isAdmin(message);
+        if (!admin) return;
+        await message.client.groupParticipantsUpdate(message.jid, [message.from], "demote")
+        return await message.client.groupParticipantsUpdate(message.jid, [message.participant[0]], "demote")
+    }
+    if (message.update == 'demote' && adjids.includes(message.jid)) {
+        if (message.participant[0].split("@")[0] == message.myjid) {
+            return await message.client.sendMessage(message.jid, {
+            text: `_*Bot number was demoted, I'm unable to execute anti-demote* [Demoted by @${message.from.split("@")[0]}]_`,
+            mentions: admin_jids
+        });
+    }   var admin = await isAdmin(message);
+        if (!admin) return;
+        await message.client.groupParticipantsUpdate(message.jid, [message.from], "demote")
+        return await message.client.groupParticipantsUpdate(message.jid, [message.participant[0]], "promote")
     }
     if (message.update === 'add' && jids.includes(message.jid)) {
         var allowed = ALLOWED.split(",");
