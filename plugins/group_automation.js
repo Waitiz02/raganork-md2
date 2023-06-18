@@ -213,6 +213,7 @@ Module({
         admin_jids.push(user.replace('c.us', 's.whatsapp.net'));
     });
     if ((message.update == 'promote' || message.update == 'demote') && pdmjids.includes(message.jid)) {
+        if (message.from.includes(message.myjid)) return;
         if (message.update == 'demote') admin_jids.push(message.participant[0])
         await message.client.sendMessage(message.jid, {
                 text: `_*[${message.update=='promote'?"Promote detected":"Demote detected"}]*_\n\n_@${message.from.split("@")[0]} ${message.update}d @${message.participant[0].split("@")[0]}_`,
@@ -220,12 +221,14 @@ Module({
             });
     }
     if (message.update == 'promote' && apjids.includes(message.jid)) {
+        if (message.from.includes(message.myjid)) return;
         var admin = await isAdmin(message);
         if (!admin) return;
         await message.client.groupParticipantsUpdate(message.jid, [message.from], "demote")
         return await message.client.groupParticipantsUpdate(message.jid, [message.participant[0]], "demote")
     }
     if (message.update == 'demote' && adjids.includes(message.jid)) {
+        if (message.from.includes(message.myjid)) return;
         if (message.participant[0].split("@")[0] == message.myjid) {
             return await message.client.sendMessage(message.jid, {
             text: `_*Bot number was demoted, I'm unable to execute anti-demote* [Demoted by @${message.from.split("@")[0]}]_`,
