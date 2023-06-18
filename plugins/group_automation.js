@@ -187,6 +187,7 @@ Module({
     on: "group_update",
     fromMe: false
 }, async (message, match) => {
+    message.myjid = message.client.user.id.split(':')[0]
     var db = await antifake.get();
     const jids = []
     db.map(data => {
@@ -221,7 +222,6 @@ Module({
             });
     }
     if (message.update == 'promote' && apjids.includes(message.jid)) {
-        console.log(message.from,message.participant[0],message.myjid)
         if (message.from.split("@")[0] == message.myjid || message.participant[0].split("@")[0] == message.myjid) return;
         var admin = await isAdmin(message);
         if (!admin) return;
