@@ -27,6 +27,22 @@ return {
 }
 }
 Module({
+    pattern: "info ?(.*)",
+    fromMe: w,
+    desc: "Gives command info"
+ }, async (n, a) => {
+    var e = "";
+    if (a[1]) {
+        let foundCommand = findCommand(a[1].trim())
+        if (!foundCommand) return await n.sendReply("_No such command!_")
+        let msgToBeSent_ = `_*Command:* ${foundCommand.command}_\n_*Desc:* ${foundCommand.desc}_\n_*Owner command:* ${foundCommand.fromMe}_`
+        if (foundCommand.use) msgToBeSent_+=`\n_*Type:* ${foundCommand.use}_`
+        if (foundCommand.usage) msgToBeSent_+=`\n_*Usage:* ${foundCommand.usage}_`
+        if (foundCommand.warn) msgToBeSent_+=`\n_*Warning:* ${foundCommand.warn}_`
+        return await n.sendReply(msgToBeSent_)        
+    } else return await n.sendReply("_Need a command, example: .info insta_")
+});    
+        Module({
     pattern: "list ?(.*)",
     fromMe: w,
     dontAddCommandList: true
