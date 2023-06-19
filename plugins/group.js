@@ -134,6 +134,7 @@ Module({
     var admin = await isAdmin(message);
     if (!admin) return await message.sendReply(Lang.NOT_ADMIN)
     let approvalList = await message.client.groupRequestParticipantsList(message.jid)
+    if (!approvalList.length) return await message.sendReply("_No pending requests!_")
     let approvalJids = approvalList.map(x=>x.jid)
     if (match[1]){
         match = match[1].toLowerCase()
