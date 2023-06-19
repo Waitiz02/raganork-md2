@@ -155,7 +155,8 @@ Module({
             default:{
                 return await message.sendReply("_Invalid input_\n_Eg: .requests approve all_\n_.requests reject all_")
             }
-        }    
+        }  
+        return;  
     }
     let msg = '*_Group join requests_*\n\n_(Use .requests approve|reject all)_\n\n'
     const requestType = (type_,requestor) => {
