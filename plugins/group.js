@@ -140,17 +140,20 @@ Module({
         switch(match){
             case 'approve all':{
                 for (let x of approvalJids){
-                    await conn.groupRequestParticipantsUpdate(message.jid,[x],"approve")
+                    await message.client.groupRequestParticipantsUpdate(message.jid,[x],"approve")
                     await delay(1000)
                 }
                 break;
             }
             case 'reject all':{
                 for (let x of approvalJids){
-                    await conn.groupRequestParticipantsUpdate(message.jid,[x],"reject")
+                    await message.client.groupRequestParticipantsUpdate(message.jid,[x],"reject")
                     await delay(1000)    
                 }
                 break;
+            }
+            default:{
+                return await message.sendReply("_Invalid input_\n_Eg: .requests approve all_\n_.requests reject all_")
             }
         }    
     }
