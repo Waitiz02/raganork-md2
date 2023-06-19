@@ -123,6 +123,30 @@ Module({
     await message.client.groupParticipantsUpdate(message.jid, [user], "promote")
 }))
 Module({
+    pattern: 'requests ?(.*)',
+    fromMe: true,
+    use: 'group',
+    usage: '.approve all or .approve',
+    desc: "Get list of approvals & approves all pending requests"
+}, (async (message, match) => {
+    if (!message.isGroup) return await message.sendReply(Lang.GROUP_COMMAND)
+    var admin = await isAdmin(message);
+    if (!admin) return await message.sendReply(Lang.NOT_ADMIN)
+    let approvalList = await message.client.groupRequestParticipantsList(message.jid)
+    let msg = '*_Group approval requests_*\n\n_(Use .approve all / .reject all)_\n\n'
+    const requestType = (type_,requestor) => {
+        switch(type_){
+            case 'linked_group_join' : return 'community'
+            case 'invite_link' : return 'invite link'
+            case 'non_admin_add' : return `added by +${requestor.split("@")[0]}`
+        }
+    }
+    for (let x in approvalList){
+        msg+=`*_${(parseInt(x)+1)}. ${approvalList[x].jid}_*\n  _• via: ${requestType(approvalList[x].request_method,approvalList[x].requestor)}_\n  _• at: ${new Date(parseInt(approvalList[x].request_time)*1000).toLocaleString()}_\n\n`
+    }
+    return await message.sendReply(msg)
+}))
+Module({
     pattern: 'leave',
     fromMe: true,
     desc: Lang.LEAVE_DESC
