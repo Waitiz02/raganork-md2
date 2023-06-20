@@ -310,7 +310,7 @@ Module({
     fromMe: false,
     desc: Lang.JID_DESC
 }, (async (message, match) => {
-    let adminAccesValidated = ADMIN_ACCESS ? await isAdmin(message,message.sender) : false;
+    let adminAccesValidated = ADMIN_ACCESS && message.isGroup ? await isAdmin(message,message.sender) : false;
     if (message.fromOwner || adminAccesValidated) {
     var jid = message.reply_message.jid || message.jid
     await message.sendReply(jid)

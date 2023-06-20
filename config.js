@@ -28,7 +28,7 @@ module.exports = {
     BLOCK_CHAT: process.env.BLOCK_CHAT || '',
     PM_ANTISPAM: convertToBool(process.env.PM_ANTISPAM) || '',
     ALWAYS_ONLINE: convertToBool(process.env.ALWAYS_ONLINE) || false,
-    ADMIN_ACCESS: convertToBool(process.env.ADMIN_MODE) || false,
+    ADMIN_ACCESS: convertToBool(process.env.ADMIN_ACCESS) || false,
     PLATFORM:isHeroku?"Heroku":isRailway?"Railway":isKoyeb?"Koyeb":"Other server",isHeroku,isKoyeb,isVPS,isRailway,
     AUTOMUTE_MSG: process.env.AUTOMUTE_MSG || '_Group automuted!_\n_(edit AUTOMUTE_MSG)_',
     ANTI_SPAM: process.env.ANTI_SPAM || '919074309534-1632403322@g.us',
