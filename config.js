@@ -12,6 +12,7 @@ const settingsMenu = [
     {title: "PM antispam block", env_var: "PM_ANTISPAM"},
     {title: "Auto read all messages", env_var: "READ_MESSAGES"},
     {title: "Auto read command messages", env_var: "READ_COMMAND"},
+    {title: "Auto read status updates", env_var: "AUTO_READ_STATUS"},
     {title: "With & without handler mode", env_var: "MULTI_HANDLERS"},
     {title: "Auto reject calls", env_var: "REJECT_CALLS"},
     {title: "Always online", env_var: "ALWAYS_ONLINE"},
