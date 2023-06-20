@@ -26,6 +26,15 @@
 <div>
   <br>
 
+
+## Deploy to Railway ↓
+
+<a href="https://railway.app/template/Mt-g4a" target="blank"><img align="center" src="https://railway.app/button.svg" alt="Deploy bot" height="" width="" /></a>
+  <div>
+<br>
+<div>
+  <br>
+
 ## Deploy in VPS [linux] ↓
 <div align="left">
 
