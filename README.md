@@ -1,5 +1,6 @@
 # _Raganork-multi-device_
 ## _Multi device whatsapp bot created with [@adiwajshing/baileys](https://github.com/adiwajshing/Baileys)_
+## _Support this project: [Buy Me A Coffee](https://www.buymeacoffee.com/souravkl11) 💖_
   
 <div align="center">
    
