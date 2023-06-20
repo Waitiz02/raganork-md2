@@ -11,7 +11,8 @@ const {
   MODE,
   HANDLERS,
   AUDIO_DATA,
-  BOT_INFO
+  BOT_INFO,
+  settingsMenu
 } = require('../config');
 const config = require('../config');
 const ffmpeg = require('fluent-ffmpeg');
@@ -35,15 +36,7 @@ const {
   getVideo,
   addInfo
 } = require('raganork-bot');
-let configs = [
-  {title: "Auto read all messages", env_var: "READ_MESSAGES"},
-  {title: "Auto read command messages", env_var: "READ_COMMAND"},
-  {title: "Auto read status updates", env_var: "AUTO_READ_STATUS"},
-  {title: "Auto reject calls", env_var: "REJECT_CALLS"},
-  {title: "Always online", env_var: "ALWAYS_ONLINE"},
-  {title: "PM Auto blocker", env_var: "PMB_VAR"},
-  {title: "Disable bot in PM", env_var: "DIS_PM"}
-]
+let configs = settingsMenu
 var handler = HANDLERS !== 'false'?HANDLERS.split("")[0]:""
 let fm = MODE == 'public' ? false : true
 const getID = /(?:http(?:s|):\/\/|)(?:(?:www\.|)youtube(?:\-nocookie|)\.com\/(?:watch\?.*(?:|\&)v=|embed|shorts\/|v\/)|youtu\.be\/)([-_0-9A-Za-z]{11})/;
@@ -374,7 +367,7 @@ Module({
   if (message.reply_message){
     try { 
   let reply = message.reply_message?.text || message.quoted?.message?.imageMessage?.caption;
-    if (reply!==undefined && !!reply && message.quoted.key.id.startsWith("BAE") && message.quoted.key.participant.includes(message.myjid)){
+    if (reply!==undefined && !!reply && (message.quoted.key.id.startsWith("RGNK") || message.quoted.key.id.startsWith("BAE")) && message.quoted.key.participant.includes(message.myjid)){
       let no_ = /\d+/.test(message.message) ? message.message.match(/\d+/)[0] : false
       let onOrOff = (message.message.toLowerCase().includes('on') || message.message.toLowerCase().includes('off')) ? message.message.toLowerCase().trim() : false
       if (onOrOff){
@@ -382,7 +375,7 @@ Module({
       let set_action = reply.split('\n')[0].replace(/(\*\_|_\*)/g,"")
       if (configs.map(e=>e.title).includes(set_action)){
         let {env_var} = configs.filter(e=>e.title==set_action)[0]
-        await message.sendReply(`*${set_action}* turned *${onOrOff}*`)
+        await message.sendReply(`*${set_action} ${(onOrOff == 'on'?"enabled ✅":"disabled ❌")}*`)
         await setVar(env_var.trim(),action)
       }
       }

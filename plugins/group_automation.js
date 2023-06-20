@@ -7,7 +7,7 @@ const {
     isAdmin,
     isFake,
     antifake,pdm,
-    parseWelcome
+    parseWelcome, antipromote, antidemote
 } = require('./misc/misc');
 const {
     setAutoMute,
@@ -18,13 +18,21 @@ const {
     getSticks,
     unstickCmd
 } = require('./misc/scheduler');
+async function isSuperAdmin(message, user = message.client.user.id) {
+    var metadata = await message.client.groupMetadata(message.jid);
+    let superadmin = metadata.participants.filter(v => v.admin == 'superadmin')
+    superadmin = superadmin.length ? superadmin[0].id == user : false
+    return superadmin
+}
 const greeting = require('./sql/greeting');
 const {
     Module
 } = require('../main')
 const {
     ALLOWED,
-    HANDLERS
+    HANDLERS,
+    ADMIN_ACCESS,
+    SUDO
 } = require('../config');
 var handler = HANDLERS !== 'false'? HANDLERS.split("")[0]:""
 
@@ -87,10 +95,12 @@ Module({
 });
     Module({
     pattern: "automute ?(.*)",
-    fromMe: true,
+    fromMe: false,
     warn: "This works according to IST (Indian standard time)",
     use: 'group'
 }, async (message, match) => {
+let adminAccesValidated = ADMIN_ACCESS ? await isAdmin(message,message.sender) : false;
+if (message.fromOwner || adminAccesValidated) {
 match = match[1]?.toLowerCase()
 if (!match) return await message.sendReply("*Wrong format!*\n*.automute 22 00 (For 10 PM)*\n*.automute 06 00 (For 6 AM)*\n*.automute off*");
 if (match.includes("am") || match.includes("pm")) return await message.sendReply("_Time must be in HH MM format (24 hour)_")
@@ -105,13 +115,15 @@ if (!admin) return await message.sendReply("_I'm not an admin_");
 await setAutoMute(message.jid,match.match(/(\d+)/g)?.join(' '));
 await message.sendReply(`*_Group will auto mute at ${tConvert(match.match(/(\d+)/g).join(' '))}, rebooting.._*`)
 process.exit(0)
-});
+}});
 Module({
     pattern: "autounmute ?(.*)",
-    fromMe: true,
+    fromMe: false,
     warn: "This works according to IST (Indian standard time)",
     use: 'group'
 }, async (message, match) => {
+let adminAccesValidated = ADMIN_ACCESS ? await isAdmin(message,message.sender) : false;
+if (message.fromOwner || adminAccesValidated) {
 match = match[1]?.toLowerCase()
 if (!match) return await message.sendReply("*_Wrong format!_*\n*_.autounmute 22 00 (For 10 PM)_*\n*_.autounmute 06 00 (For 6 AM)_*\n*_.autounmute off_*");
 if (match.includes("am") || match.includes("pm")) return await message.sendReply("_Time must be in HH MM format (24 hour)_")
@@ -126,16 +138,18 @@ if (!admin) return await message.sendReply("*I'm not admin*");
 await setAutounMute(message.jid,match?.match(/(\d+)/g)?.join(' '));
 await message.sendReply(`*_Group will auto open at ${tConvert(match)}, rebooting.._*`)
 process.exit(0)
-});
+}});
 var {
     getAutoMute,
     getAutounMute
 } = require('./misc/scheduler');
 Module({
     pattern: "getmute ?(.*)",
-    fromMe: true,
+    fromMe: false,
     use: 'group'
 }, async (message, match) => {
+let adminAccesValidated = ADMIN_ACCESS ? await isAdmin(message,message.sender) : false;
+if (message.fromOwner || adminAccesValidated) {
 var mute = await getAutoMute(message.jid,match[1]);
 var unmute = await getAutounMute(message.jid,match[1]);
 var msg = '';
@@ -150,12 +164,14 @@ for (e in mute){
 };
 if (!msg) return await message.sendReply("_No mutes/unmutes found!_")
 message.sendReply("*Scheduled Mutes/Unmutes*\n\n"+msg)
-});
+}});
 Module({
     pattern: "antifake ?(.*)",
-    fromMe: true,
+    fromMe: false,
     use: 'group'
 }, async (message, match) => {
+let adminAccesValidated = ADMIN_ACCESS ? await isAdmin(message,message.sender) : false;
+if (message.fromOwner || adminAccesValidated) {
 var admin = await isAdmin(message)
 if (!admin) return await message.sendReply("_I'm not admin!_");
 if (match[1] === "on"){
@@ -182,12 +198,14 @@ const buttons = [
       headerType: 1
   }
   await message.client.sendMessage(message.jid, buttonMessage,{quoted: message.data})
-    })
+    }})
 Module({
     on: "group_update",
     fromMe: false
 }, async (message, match) => {
+    message.myjid = message.client.user.id.split(':')[0]
     var db = await antifake.get();
+    let sudos = SUDO.split(",")
     const jids = []
     db.map(data => {
         jids.push(data.jid)
@@ -197,17 +215,47 @@ Module({
     pdmdb.map(data => {
         pdmjids.push(data.jid)
     });
-    if ((message.update == 'promote' || message.update == 'demote') && pdmjids.includes(message.jid)) {
+    var apdb = await antipromote.get();
+    const apjids = []
+    apdb.map(data => {
+        apjids.push(data.jid)
+    });
+    var addb = await antidemote.get();
+    const adjids = []
+    addb.map(data => {
+        adjids.push(data.jid)
+    });
     var admin_jids = [];
     var admins = (await message.client.groupMetadata(message.jid)).participants.filter(v => v.admin !== null).map(x => x.id);
     admins.map(async (user) => {
         admin_jids.push(user.replace('c.us', 's.whatsapp.net'));
     });
-    if (message.update == 'demote') admin_jids.push(message.participant[0])
+    if ((message.update == 'promote' || message.update == 'demote') && pdmjids.includes(message.jid)) {
+        if (message.from.split("@")[0] == message.myjid) return;
+        if (message.update == 'demote') admin_jids.push(message.participant[0])
         await message.client.sendMessage(message.jid, {
                 text: `_*[${message.update=='promote'?"Promote detected":"Demote detected"}]*_\n\n_@${message.from.split("@")[0]} ${message.update}d @${message.participant[0].split("@")[0]}_`,
                 mentions: admin_jids
             });
+    }
+    if (message.update == 'promote' && apjids.includes(message.jid)) {
+        if (message.from.split("@")[0] == message.myjid || sudos.includes(message.from.split("@")[0]) || message.participant[0].split("@")[0] == message.myjid || (await isSuperAdmin(message,message.from))) return;
+        var admin = await isAdmin(message);
+        if (!admin) return;
+        await message.client.groupParticipantsUpdate(message.jid, [message.from], "demote")
+        return await message.client.groupParticipantsUpdate(message.jid, [message.participant[0]], "demote")
+    }
+    if (message.update == 'demote' && adjids.includes(message.jid)) {
+        if (message.from.split("@")[0] == message.myjid || sudos.includes(message.from.split("@")[0]) || (await isSuperAdmin(message,message.from))) return;
+        if (message.participant[0].split("@")[0] == message.myjid) {
+            return await message.client.sendMessage(message.jid, {
+            text: `_*Bot number was demoted, I'm unable to execute anti-demote* [Demoted by @${message.from.split("@")[0]}]_`,
+            mentions: admin_jids
+        });
+    }   var admin = await isAdmin(message);
+        if (!admin) return;
+        await message.client.groupParticipantsUpdate(message.jid, [message.from], "demote")
+        return await message.client.groupParticipantsUpdate(message.jid, [message.participant[0]], "promote")
     }
     if (message.update === 'add' && jids.includes(message.jid)) {
         var allowed = ALLOWED.split(",");

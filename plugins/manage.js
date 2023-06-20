@@ -3,6 +3,24 @@ Licensed under the  GPL-3.0 License;
 you may not use this file except in compliance with the License.
 Raganork MD - Sourav KL11
 */
+function checkLinks(links, allowedWords) {
+    let testArray = []
+    for (let i = 0; i < links.length; i++) {
+      const link = links[i];
+      let isAllowed = true;
+      for (let j = 0; j < allowedWords.length; j++) {
+        const allowedWord = allowedWords[j];
+        if (link.includes(allowedWord)) {
+          isAllowed = true; // Word is allowed
+          break;
+        }
+        isAllowed = false; // Word is not allowed
+      }
+      
+        testArray.push(isAllowed)
+      }
+    return testArray.includes(false)
+  }
 async function sendButton(buttons,text,footer,message){
     const buttonMessage = {text,footer,buttons,headerType: 1}
     return await message.client.sendMessage(message.jid, buttonMessage)
@@ -21,6 +39,8 @@ async function sendButton(buttons,text,footer,message){
         antilink,
         antibot,
         antispam,
+        antipromote,
+        antidemote,
         pdm,
     } = require('./misc/misc');
     const {
@@ -32,7 +52,7 @@ async function sendButton(buttons,text,footer,message){
     const Config = require('../config');
     const config = require('../config');
     const {getCommands} = require('./commands');
-    const {HEROKU} = require('../config');
+    const {HEROKU, settingsMenu,ADMIN_ACCESS} = require('../config');
     const Heroku = require('heroku-client');
     const fs = require('fs');
     const got = require('got');
@@ -143,6 +163,13 @@ fs.writeFileSync('./config.env', lines.join('\n'));
         await heroku.delete(baseURI + '/dynos').catch(async (error) => {
             await message.send(error.message)
         });
+    }));
+    Module({
+        pattern: 'platform',
+        fromMe: true,
+        use: 'owner'
+    }, (async (message, match) => {
+      return await message.sendReply(`_Bot is running on ${config.PLATFORM}_`)
     }));
     Module({
         pattern: 'shutdown$',
@@ -299,15 +326,7 @@ fs.writeFileSync('./config.env', lines.join('\n'));
         desc: "Bot settings to enable extra options related to WhatsApp bot functionality.",
         use: 'owner'
     }, (async (message, match) => {
-            let configs = [
-                    {title: "Auto read all messages", env_var: "READ_MESSAGES"},
-                    {title: "Auto read command messages", env_var: "READ_COMMAND"},
-                    {title: "Auto read status updates", env_var: "AUTO_READ_STATUS"},
-                    {title: "Auto reject calls", env_var: "REJECT_CALLS"},
-                    {title: "Always online", env_var: "ALWAYS_ONLINE"},
-                    {title: "PM Auto blocker", env_var: "PMB_VAR"},
-                    {title: "Disable bot in PM", env_var: "DIS_PM"}
-                ]
+            let configs = settingsMenu
         let msgToBeSent = "_*Settings configuration menu*_\n\n"+configs.map(e=>configs.indexOf(e)+1+'. _*'+e.title+'*_').join('\n')+'\n\n_Reply the number to continue_'
         return await message.sendReply(msgToBeSent)
         }));
@@ -329,7 +348,7 @@ fs.writeFileSync('./config.env', lines.join('\n'));
         use: 'owner'
     }, (async (message, mm) => {
    var m = message;
-        var newSudo = ( m.reply_message ? m.reply_message.jid : '' || m.mention[0] || match[1]).split("@")[0]
+        var newSudo = ( m.reply_message ? m.reply_message.jid : '' || m.mention[0] || mm[1]).split("@")[0]
 if (!newSudo) return await m.sendReply("*Need reply/mention/number*")
 const oldSudo = config.SUDO?.split(",")
     var newSudo = ( m.reply_message ? m.reply_message.jid : '' || m.mention[0] || mm[1]).split("@")[0]
@@ -392,10 +411,12 @@ const oldSudo = config.SUDO?.split(",")
     }));
     Module({
         pattern: 'antibot ?(.*)',
-        fromMe: true,
+        fromMe: false,
         desc: "Detects other bot's messages and kicks.",
         use: 'group'
     }, (async (message, match) => {
+        let adminAccesValidated = ADMIN_ACCESS ? await isAdmin(message,message.sender) : false;
+        if (message.fromOwner || adminAccesValidated) {
         match[1]=match[1]?match[1].toLowerCase():""
         var db = await antibot.get();
         const jids = []
@@ -415,13 +436,15 @@ const oldSudo = config.SUDO?.split(",")
         return await message.sendReply(`_Antibot menu of ${subject}_`+"\n\n_Antibot is currently turned *"+status+"*_\n\n_Use .antibot on/off_")
         }
         await message.sendReply(match[1] === "on" ? "_Antibot activated!_" : "_Antibot turned off!_");
-    }));
+    }}));
     Module({
         pattern: 'antispam ?(.*)',
-        fromMe: true,
+        fromMe: false,
         desc: "Detects spam messages and kicks user.",
         use: 'group'
     }, (async (message, match) => {
+        let adminAccesValidated = ADMIN_ACCESS ? await isAdmin(message,message.sender) : false;
+        if (message.fromOwner || adminAccesValidated) {
         match[1]=match[1]?match[1].toLowerCase():""
         var db = await antispam.get();
         const jids = []
@@ -441,13 +464,15 @@ const oldSudo = config.SUDO?.split(",")
         return await message.sendReply(`_Anti spam menu of ${subject}_`+"\n\n_Antispam is currently turned *"+status+"*_\n\n_Use .antispam on/off_")
         }
         await message.sendReply(match[1] === "on" ? "_Antispam activated!_" : "_Antispam turned off!_");
-    }));
+    }}));
     Module({
         pattern: 'pdm ?(.*)',
-        fromMe: true,
+        fromMe: false,
         desc: "Detects promote/demote and sends alert.",
         use: 'group'
     }, (async (message, match) => {
+        let adminAccesValidated = ADMIN_ACCESS ? await isAdmin(message,message.sender) : false;
+        if (message.fromOwner || adminAccesValidated) {
         match[1]=match[1]?match[1].toLowerCase():""
         var db = await pdm.get();
         const jids = []
@@ -455,7 +480,6 @@ const oldSudo = config.SUDO?.split(",")
             jids.push(data.jid)
         });
         if (match[1] === "on"){
-            if (!(await isAdmin(message))) return await message.sendReply("_I'm not an admin!_")
             await pdm.set(message.jid) 
         }
         if (match[1] === "off"){
@@ -467,6 +491,56 @@ const oldSudo = config.SUDO?.split(",")
         return await message.sendReply(`_Promote|demote alert message menu of ${subject}_`+"\n\n_PDM alert is currently turned *"+status+"*_\n\n_Use .pdm on/off_")
         }
         await message.sendReply(match[1] === "on" ? "_Pdm activated!_" : "_Pdm turned off!_");
+    }}));
+    Module({
+        pattern: 'antidemote ?(.*)',
+        fromMe: true,
+        desc: "Detects demote and automatically promotes demoted one and demotes person who demoted.",
+        use: 'group'
+    }, (async (message, match) => {
+        match[1]=match[1]?match[1].toLowerCase():""
+        var db = await antidemote.get();
+        const jids = []
+        db.map(data => {
+            jids.push(data.jid)
+        });
+        if (match[1] === "on"){
+            await antidemote.set(message.jid) 
+        }
+        if (match[1] === "off"){
+            await antidemote.delete(message.jid)  
+        }
+        if (match[1]!=="on" && match[1]!=="off"){
+        var status = jids.includes(message.jid) ? 'on' : 'off';
+        var {subject} = await message.client.groupMetadata(message.jid)
+        return await message.sendReply(`_Anti demote menu of ${subject}_`+"\n\n_This feature is currently turned *"+status+"*_\n\n_Use .antidemote on/off_")
+        }
+        await message.sendReply(match[1] === "on" ? "_Antidemote activated!_" : "_Antidemote turned off!_");
+    }));
+    Module({
+        pattern: 'antipromote ?(.*)',
+        fromMe: true,
+        desc: "Detects promote and automatically demotes promoted one and demotes person who promoted.",
+        use: 'group'
+    }, (async (message, match) => {
+        match[1]=match[1]?match[1].toLowerCase():""
+        var db = await antipromote.get();
+        const jids = []
+        db.map(data => {
+            jids.push(data.jid)
+        });
+        if (match[1] === "on"){
+            await antipromote.set(message.jid) 
+        }
+        if (match[1] === "off"){
+            await antipromote.delete(message.jid)  
+        }
+        if (match[1]!=="on" && match[1]!=="off"){
+        var status = jids.includes(message.jid) ? 'on' : 'off';
+        var {subject} = await message.client.groupMetadata(message.jid)
+        return await message.sendReply(`_Anti promote menu of ${subject}_`+"\n\n_This feature is currently turned *"+status+"*_\n\n_Use .antipromote on/off_")
+        }
+        await message.sendReply(match[1] === "on" ? "_Antipromote activated!_" : "_Antipromote turned off!_");
     }));
     Module({
         pattern: 'antilink ?(.*)',
@@ -474,6 +548,8 @@ const oldSudo = config.SUDO?.split(",")
         desc: "Activates antilink, kicks if user sends link",
         use: 'group'
     }, (async (message, match) => {
+        let adminAccesValidated = ADMIN_ACCESS ? await isAdmin(message,message.sender) : false;
+        if (message.fromOwner || adminAccesValidated) {
         match[1]=match[1]?match[1].toLowerCase():""
         var db = await antilink.get();
         const jids = []
@@ -493,7 +569,7 @@ const oldSudo = config.SUDO?.split(",")
         return await message.sendReply(`_Antilink menu of ${subject}_`+"\n\n_Antilink is currently turned *"+status+"*_\n\n_Use .antilink on/off_")
         }
         await message.sendReply(match[1] === "on" ? "_Antilink activated!_" : "_Antilink turned off!_");
-    }));
+   }}));
     Module({
         on: 'text',
         fromMe: false
@@ -508,10 +584,9 @@ const oldSudo = config.SUDO?.split(",")
             jids.push(data.jid)
         });
         if (jids.includes(message.jid)) {
-        var allowed = process.env.ALLOWED_LINKS || "gist,instagram,youtu";
-        var checker = [];
-        allowed.split(",").map(e=> checker.push(message.message.includes(e)))
-        if (!checker.includes(true)){
+        let allowed = (process.env.ALLOWED_LINKS || "gist,instagram,youtu").split(",");
+        let linksInMsg = message.message.match(/\bhttps?:\/\/\S+/gi)
+        if (checkLinks(linksInMsg,allowed)) {
         if (!(await isAdmin(message,message.sender))) {
         var usr = message.sender.includes(":") ? message.sender.split(":")[0]+"@s.whatsapp.net" : message.sender
         await message.client.sendMessage(message.jid, { delete: message.data.key })

@@ -7,11 +7,13 @@ const {
     getString
 } = require('./misc/lang');
 const Lang = getString('group');
+const {delay} = require('@whiskeysockets/baileys');
 const {
     isAdmin,
     isNumeric,
     mentionjid
 } = require('./misc/misc');
+const {ADMIN_ACCESS} = require('../config');
 const {
     Module
 } = require('../main')
@@ -45,11 +47,13 @@ Module({
 }));
     Module({
     pattern: 'kick ?(.*)',
-    fromMe: true,
+    fromMe: false,
     desc: Lang.KICK_DESC,
     use: 'group'
 }, (async (message, match) => {
     if (!message.isGroup) return await message.sendReply(Lang.GROUP_COMMAND)
+    let adminAccesValidated = ADMIN_ACCESS ? await isAdmin(message,message.sender) : false;
+    if (message.fromOwner || adminAccesValidated) {
     var {
         participants, subject
     } = await message.client.groupMetadata(message.jid)
@@ -88,6 +92,7 @@ Module({
         mentions: [user]
     })
     await message.client.groupParticipantsUpdate(message.jid, [user], "remove")
+}
 }))
 Module({
     pattern: 'add ?(.*)',
@@ -107,10 +112,12 @@ Module({
 }))
 Module({
     pattern: 'promote ?(.*)',
-    fromMe: true,
+    fromMe: false,
     use: 'group',
     desc: Lang.PROMOTE_DESC
 }, (async (message, match) => {
+    let adminAccesValidated = ADMIN_ACCESS ? await isAdmin(message,message.sender) : false;
+    if (message.fromOwner || adminAccesValidated) {
     const user = message.mention[0] || message.reply_message.jid
     if (!user) return await message.sendReply(Lang.NEED_USER)
     if (!message.isGroup) return await message.sendReply(Lang.GROUP_COMMAND)
@@ -121,7 +128,58 @@ Module({
         mentions: [user]
     })
     await message.client.groupParticipantsUpdate(message.jid, [user], "promote")
-}))
+}}))
+Module({
+    pattern: 'requests ?(.*)',
+    fromMe: false,
+    use: 'group',
+    usage: '.requests approve all or reject all',
+    desc: "Get list of pending join requests"
+}, (async (message, match) => {
+    if (!message.isGroup) return await message.sendReply(Lang.GROUP_COMMAND)
+    let adminAccesValidated = ADMIN_ACCESS ? await isAdmin(message,message.sender) : false;
+    if (message.fromOwner || adminAccesValidated) {
+    var admin = await isAdmin(message);
+    if (!admin) return await message.sendReply(Lang.NOT_ADMIN)
+    let approvalList = await message.client.groupRequestParticipantsList(message.jid)
+    if (!approvalList.length) return await message.sendReply("_No pending requests!_")
+    let approvalJids = approvalList.map(x=>x.jid)
+    if (match[1]){
+        match = match[1].toLowerCase()
+        switch(match){
+            case 'approve all':{
+                for (let x of approvalJids){
+                    await message.client.groupRequestParticipantsUpdate(message.jid,[x],"approve")
+                    await delay(1000)
+                }
+                break;
+            }
+            case 'reject all':{
+                for (let x of approvalJids){
+                    await message.client.groupRequestParticipantsUpdate(message.jid,[x],"reject")
+                    await delay(1000)    
+                }
+                break;
+            }
+            default:{
+                return await message.sendReply("_Invalid input_\n_Eg: .requests approve all_\n_.requests reject all_")
+            }
+        }  
+        return;  
+    }
+    let msg = '*_Group join requests_*\n\n_(Use .requests approve|reject all)_\n\n'
+    const requestType = (type_,requestor) => {
+        switch(type_){
+            case 'linked_group_join' : return 'community'
+            case 'invite_link' : return 'invite link'
+            case 'non_admin_add' : return `added by +${requestor.split("@")[0]}`
+        }
+    }
+    for (let x in approvalList){
+        msg+=`*_${(parseInt(x)+1)}. @${approvalList[x].jid.split("@")[0]}_*\n  _• via: ${requestType(approvalList[x].request_method,approvalList[x].requestor)}_\n  _• at: ${new Date(parseInt(approvalList[x].request_time)*1000).toLocaleString()}_\n\n`
+    }
+    return await message.client.sendMessage(message.jid,{text:msg,mentions:approvalJids},{quoted:message.data})
+}}))
 Module({
     pattern: 'leave',
     fromMe: true,
@@ -133,23 +191,27 @@ Module({
 // QUOTED - COPYRIGHT: souravkl11/raganork
 Module({
     pattern: 'quoted',
-    fromMe: true,
+    fromMe: false,
     desc:"Sends replied message's replied message. Useful for recovering deleted messages."
 }, (async (message, match) => {
+    let adminAccesValidated = ADMIN_ACCESS ? await isAdmin(message,message.sender) : false;
+    if (message.fromOwner || adminAccesValidated) {
     try {
     var msg = await message.client.store.toJSON()?.messages[message.jid]?.toJSON().filter(e=>e.key.id===message.reply_message.id)
     var quoted = msg[0].message[Object.keys(msg[0].message)].contextInfo;
     var quoted2 = await message.client.store.toJSON()?.messages[message.jid]?.toJSON().filter(e=>e.key.id===quoted.stanzaId)
     if (quoted2.length) return await message.forwardMessage(message.jid,quoted2[0]);
-    var obj = {key: {remoteJid: message.jid,fromMe: true,id: quoted.stanzaId,participant: quoted.participant},message: quoted.quotedMessage}
+    var obj = {key: {remoteJid: message.jid,fromMe: false,id: quoted.stanzaId,participant: quoted.participant},message: quoted.quotedMessage}
     return await message.forwardMessage(message.jid,obj);
     } catch { return await message.sendReply("_Failed to load message!_") }
-})) 
+}})) 
 Module({
     pattern: 'msgs ?(.*)',
-    fromMe: true,
+    fromMe: false,
     desc:"Shows number of messages sent by each member. (Only from when bot was set up)"
 }, (async (message, match) => {
+    let adminAccesValidated = ADMIN_ACCESS ? await isAdmin(message,message.sender) : false;
+    if (message.fromOwner || adminAccesValidated) {
     if (!message.isGroup) return await message.sendReply(Lang.GROUP_COMMAND)
     var m = message; var conn = message.client;
     let msgs = await conn.getMessages(m.jid);
@@ -181,15 +243,17 @@ Module({
 }
 }
 return await m.sendReply(final_msg)
-
+    }
 }))
 Module({
     pattern: 'demote ?(.*)',
-    fromMe: true,
+    fromMe: false,
     use: 'group',
     desc: Lang.DEMOTE_DESC
 }, (async (message, match) => {
     if (!message.isGroup) return await message.sendReply(Lang.GROUP_COMMAND)
+    let adminAccesValidated = ADMIN_ACCESS ? await isAdmin(message,message.sender) : false;
+    if (message.fromOwner || adminAccesValidated) {
     const user = message.mention[0] || message.reply_message.jid
     if (!user) return await message.sendReply(Lang.NEED_USER)
     var admin = await isAdmin(message);
@@ -199,15 +263,17 @@ Module({
         mentions: [user]
     })
     await message.client.groupParticipantsUpdate(message.jid, [message.reply_message.jid], "demote")
-}))
+}}))
 Module({
     pattern: 'mute ?(.*)',
     use: 'group',
-    fromMe: true,
+    fromMe: false,
     desc: Lang.MUTE_DESC,
     usage:'mute 1h\nmute 5m'
 }, (async (message, match) => {
     if (!message.isGroup) return await message.sendReply(Lang.GROUP_COMMAND)
+    let adminAccesValidated = ADMIN_ACCESS ? await isAdmin(message,message.sender) : false;
+    if (message.fromOwner || adminAccesValidated) {
     var admin = await isAdmin(message);
     if (!admin) return await message.sendReply(Lang.NOT_ADMIN)
     if (match[1]){
@@ -223,107 +289,125 @@ Module({
 }
     await message.client.groupSettingUpdate(message.jid, 'announcement')
     await message.send(Lang.MUTED)
-}))
+}}))
 Module({
     pattern: 'unmute',
     use: 'group',
-    fromMe: true,
+    fromMe: false,
     desc: Lang.UNMUTE_DESC
 }, (async (message, match) => {
     if (!message.isGroup) return await message.sendReply(Lang.GROUP_COMMAND)
+    let adminAccesValidated = ADMIN_ACCESS ? await isAdmin(message,message.sender) : false;
+    if (message.fromOwner || adminAccesValidated) {
     var admin = await isAdmin(message);
     if (!admin) return await message.sendReply(Lang.NOT_ADMIN)
     await message.client.groupSettingUpdate(message.jid, 'not_announcement')
     await message.send(Lang.UNMUTED)
-}))
+}}))
 Module({
     pattern: 'jid',
     use: 'group',
-    fromMe: true,
+    fromMe: false,
     desc: Lang.JID_DESC
 }, (async (message, match) => {
+    let adminAccesValidated = ADMIN_ACCESS && message.isGroup ? await isAdmin(message,message.sender) : false;
+    if (message.fromOwner || adminAccesValidated) {
     var jid = message.reply_message.jid || message.jid
     await message.sendReply(jid)
-}))
+}}))
 Module({
     pattern: 'invite',
-    fromMe: true,
+    fromMe: false,
     use: 'group',
     desc: Lang.INVITE_DESC
 }, (async (message, match) => {
     if (!message.isGroup) return await message.sendReply(Lang.GROUP_COMMAND)
+    let adminAccesValidated = ADMIN_ACCESS ? await isAdmin(message,message.sender) : false;
+    if (message.fromOwner || adminAccesValidated) {
     var admin = await isAdmin(message);
     if (!admin) return await message.sendReply(Lang.NOT_ADMIN)
     var code = await message.client.groupInviteCode(message.jid)
     await message.client.sendMessage(message.jid, {
         text: "https://chat.whatsapp.com/" + code,detectLinks: true
     },{detectLinks: true})
-}))
+}}))
 Module({
     pattern: 'revoke',
-    fromMe: true,
+    fromMe: false,
     use: 'group',
     desc: Lang.REVOKE_DESC
 }, (async (message, match) => {
     if (!message.isGroup) return await message.sendReply(Lang.GROUP_COMMAND)
+    let adminAccesValidated = ADMIN_ACCESS ? await isAdmin(message,message.sender) : false;
+    if (message.fromOwner || adminAccesValidated) {
     var admin = await isAdmin(message);
     if (!admin) return await message.sendReply(Lang.NOT_ADMIN)
     await message.client.groupRevokeInvite(message.jid)
     await message.send(Lang.REVOKED)
-}))
+}}))
 Module({
     pattern: 'glock ?(.*)',
-    fromMe: true,
+    fromMe: false,
     use: 'group',
     desc: "Change group settings to allow only admins to edit group's info!"
 }, (async (message, match) => {
     if (!message.isGroup) return await message.sendReply(Lang.GROUP_COMMAND)
+    let adminAccesValidated = ADMIN_ACCESS ? await isAdmin(message,message.sender) : false;
+    if (message.fromOwner || adminAccesValidated) {
     if (!(await isAdmin(message))) return await message.sendReply(Lang.NOT_ADMIN)
     return await message.client.groupSettingUpdate(message.jid,"locked")
-}))
+}}))
 Module({
     pattern: 'gunlock ?(.*)',
-    fromMe: true,
+    fromMe: false,
     use: 'group',
     desc: "Change group settings to allow everyone to edit group's info!"
 }, (async (message, match) => {
     if (!message.isGroup) return await message.sendReply(Lang.GROUP_COMMAND)
+    let adminAccesValidated = ADMIN_ACCESS ? await isAdmin(message,message.sender) : false;
+    if (message.fromOwner || adminAccesValidated) {
     if (!(await isAdmin(message))) return await message.sendReply(Lang.NOT_ADMIN)
     return await message.client.groupSettingUpdate(message.jid,"unlocked")
-}))
+}}))
 Module({
     pattern: 'gname ?(.*)',
-    fromMe: true,
+    fromMe: false,
     use: 'group',
     desc: "Change group subject"
 }, (async (message, match) => {
     if (!message.isGroup) return await message.sendReply(Lang.GROUP_COMMAND)
+    let adminAccesValidated = ADMIN_ACCESS ? await isAdmin(message,message.sender) : false;
+    if (message.fromOwner || adminAccesValidated) {
     let newName = match[1] || message.reply_message?.text
     if (!newName) return await message.sendReply("_Need text!_")
     var {restrict} = await message.client.groupMetadata(message.jid);
     if (restrict && !(await isAdmin(message))) return await message.sendReply(Lang.NOT_ADMIN)
     return await message.client.groupUpdateSubject(message.jid,(match[1] || message.reply_message?.text).slice(0,25))
-}))
+}}))
 Module({
     pattern: 'gdesc ?(.*)',
-    fromMe: true,
+    fromMe: false,
     use: 'group',
     desc: "Change group description"
 }, (async (message, match) => {
     if (!message.isGroup) return await message.sendReply(Lang.GROUP_COMMAND)
+    let adminAccesValidated = ADMIN_ACCESS ? await isAdmin(message,message.sender) : false;
+    if (message.fromOwner || adminAccesValidated) {
     let newName = match[1] || message.reply_message?.text
     if (!newName) return await message.sendReply("_Need text!_")
     var {restrict} = await message.client.groupMetadata(message.jid);
     if (restrict && !(await isAdmin(message))) return await message.sendReply(Lang.NOT_ADMIN)
     try { return await message.client.groupUpdateDescription(message.jid,(match[1] || message.reply_message?.text).slice(0,512)) } catch { return await message.sendReply("_Failed to change!_")}
-}))
+}}))
 Module({
     pattern: 'common ?(.*)',
-    fromMe: true,
+    fromMe: false,
     use: 'group',
     desc: "Get common participants in two groups, and kick using .common kick jid"
 }, (async (message, match) => {
-if (!match[1]) return await message.sendReply("*Need jids*\n*.common jid1,jid2*\n _OR_ \n*.common kick group_jid*")
+    let adminAccesValidated = ADMIN_ACCESS ? await isAdmin(message,message.sender) : false;
+    if (message.fromOwner || adminAccesValidated) {
+    if (!match[1]) return await message.sendReply("*Need jids*\n*.common jid1,jid2*\n _OR_ \n*.common kick group_jid*")
 if (match[1].includes("kick")) {
 var co = match[1].split(" ")[1]
 var g1 = (await message.client.groupMetadata(co))
@@ -359,14 +443,16 @@ await message.client.sendMessage(message.jid, {
         text: msg,
         mentions: jids
     })
-}));
+}}));
 Module({
     pattern: 'diff ?(.*)',
-    fromMe: true,
+    fromMe: false,
     use: 'utility',
     desc: "Get difference of participants in two groups"
 }, (async (message, match) => {
-if (!match[1]) return await message.sendReply("*Need jids*\n*.diff jid1,jid2*")
+    let adminAccesValidated = ADMIN_ACCESS ? await isAdmin(message,message.sender) : false;
+    if (message.fromOwner || adminAccesValidated) {
+    if (!match[1]) return await message.sendReply("*Need jids*\n*.diff jid1,jid2*")
 var co = match[1].split(",")
 var g1 = (await message.client.groupMetadata(co[0])).participants
 var g2 = (await message.client.groupMetadata(co[1])).participants 
@@ -376,14 +462,16 @@ common.map(async s => {
 msg += "```"+s.id.split("@")[0]+"``` \n"
 })    
 return await message.sendReply(msg)
-}));
+}}));
 Module({
     pattern: 'tagall',
-    fromMe: true,
+    fromMe: false,
     desc: Lang.TAGALL_DESC,
     use: 'group'
 }, (async (message, match) => {
     if (!message.isGroup) return await message.sendReply(Lang.GROUP_COMMAND)
+    let adminAccesValidated = ADMIN_ACCESS ? await isAdmin(message,message.sender) : false;
+    if (message.fromOwner || adminAccesValidated) {
     var {participants} = await message.client.groupMetadata(message.jid)
     var jids = [];
     var mn = '';
@@ -396,7 +484,7 @@ Module({
         text: '```'+msg+'```',
         mentions: jids
     })
-}))
+}}))
 Module({
     pattern: 'block ?(.*)',
     fromMe: true,
@@ -444,10 +532,12 @@ if (message.reply_message && !message.reply_message.image) {
 }));
 Module({
     pattern: 'gpp ?(.*)',
-    fromMe: true,
+    fromMe: false,
     use: 'owner',
     desc: "Change/Get group icon (full screen supported) with replied message"
 }, (async (message, match) => {
+    let adminAccesValidated = ADMIN_ACCESS ? await isAdmin(message,message.sender) : false;
+    if (message.fromOwner || adminAccesValidated) {
     if (message.reply_message && message.reply_message.image) {
     var image = await message.reply_message.download()
     await message.client.setProfilePicture(message.jid,{url: image});
@@ -457,4 +547,4 @@ if (!message.reply_message.image) {
    try { var image = await message.client.profilePictureUrl(message.jid,'image') } catch {return await message.sendReply("Profile pic not found!")}
    return await message.sendReply({url:image},"image")
 }
-}));
+}}));

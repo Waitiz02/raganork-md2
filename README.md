@@ -1,5 +1,6 @@
 # _Raganork-multi-device_
 ## _Multi device whatsapp bot created with [@adiwajshing/baileys](https://github.com/adiwajshing/Baileys)_
+## _Support this project: [Buy Me A Coffee](https://www.buymeacoffee.com/souravkl11) 💖_
   
 <div align="center">
    
@@ -20,6 +21,15 @@
 ## Deploy to Koyeb ↓
 
 <a href="https://raganork.souravkl11.xyz/deploy" target="blank"><img align="center" src="https://i.imgur.com/PNoLtFq.png" alt="Deploy bot" height="112" width="310" /></a>
+  <div>
+<br>
+<div>
+  <br>
+
+
+## Deploy to Railway ↓
+#### (No setvar command, must set vars manually from settings)
+<a href="https://railway.app/template/Mt-g4a" target="blank"><img align="center" src="https://railway.app/button.svg" alt="Deploy bot" height="" width="" /></a>
   <div>
 <br>
 <div>

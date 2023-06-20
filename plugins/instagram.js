@@ -99,7 +99,7 @@ Module({
     try { var res = await igStalk(encodeURIComponent(match[1])) } catch { return await message.sendReply("_Server busy!_")}
     await message.client.sendMessage(message.jid, {
         image: {url: res.profile_pic},
-        caption: '_*Name:*_ ' + `${res.full_name}` + '\n _*Followers:*_ ' + `${res.followers}` + '\n _*Following:*_ ' +res.following+ '\n _*Bio:*_ ' + `${res.bio}` + '\n _*Private account:*_ ' + `${res.is_private?"Yes":"No"} ` + '\n _*Posts:*_ ' + `${res.posts}`
+        caption: '_*Name:*_ ' + `${res.full_name}` + '\n_*Followers:*_ ' + `${res.followers}` + '\n_*Following:*_ ' +res.following+ '\n_*Bio:*_ ' + `${res.bio}` + '\n_*Private account:*_ ' + `${res.is_private?"Yes":"No"} ` + '\n_*Posts:*_ ' + `${res.posts}`
     }, {
         quoted: message.data
     });
@@ -146,19 +146,32 @@ Module({
 }
 }));
 Module({
-    pattern: 'pin ?(.*)',
+    pattern: 'pinterest ?(.*)',
     fromMe: sourav,
     desc: 'Pinterest downloader',
-    usage: '.pin reply or link',
+    usage: '.pinterest reply or link',
     use: 'download'
 }, (async (msg, query) => {
     var user = query[1] !== '' ? query[1] : msg.reply_message.text;
     if (user === 'g') return;
     if (!user) return await msg.sendReply("*Need url*");
-    if (/\bhttps?:\/\/\S+/gi.test(user)) user = user.match(/\bhttps?:\/\/\S+/gi)[0]
+    if (/\bhttps?:\/\/\S+/gi.test(user)) {
+        user = user.match(/\bhttps?:\/\/\S+/gi)[0]
     try { var res = await pin(user) } catch {return await msg.sendReply("*Server error*")}
     var quoted = msg.reply_message ? msg.quoted : msg.data
     await msg.client.sendMessage(msg.jid,{[res.endsWith('jpg')?'image':'video']:{url:res}},{quoted})
+    }
+}));
+Module({
+    pattern: 'pin ?(.*)',
+    fromMe: sourav,
+    use: 'download'
+}, (async (msg, query) => {
+    var user = query[1] !== '' ? query[1] : msg.reply_message.text;
+    if (user === 'g') return;
+    if (/\bhttps?:\/\/\S+/gi.test(user)) {
+    await msg.sendReply("_Use .pinterest command for downloading content from this link!_")   
+    }
 }));
 Module({
     pattern: 'tiktok ?(.*)',

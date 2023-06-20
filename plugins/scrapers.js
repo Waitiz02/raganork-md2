@@ -18,6 +18,7 @@ const {
     gtts
 } = require('./misc/misc');
 const gis = require('./misc/gis');
+const cheerio = require('cheerio');
 const axios = require('axios');
 const fs = require('fs');
 const Lang = getString('scrapers');
@@ -209,6 +210,20 @@ Module({
     if (mime.includes("video")) return await message.send(file,"video",{quoted})
     await message.client.sendMessage(message.jid,{document:file,mimetype:mime,fileName:"Content from "+match.split("/")[2]},{quoted});
 }));
+Module({pattern:'drive ?(.*)', fromMe: true}, async (message, match) => {     
+    if (match[1] || message.reply_message?.text){
+    match = match[1] ? match[1] : message.reply_message.text
+    match = match.match(/\bhttps?:\/\/\S+/gi).filter(e=>e.includes("drive"))
+    for (var i in match){
+    const {data} = await axios(match[i])
+    var $ = cheerio.load(data);
+    var title = $("title").text().split(" - ")[0];
+    const fileBuffer = await skbuffer(`https://drive.google.com/uc?export=download&id=${match[i].split('/')[5]}`)
+    const {mime} = await fromBuffer(fileBuffer) 
+    await message.client.sendMessage(message.jid,{document:fileBuffer, mimetype:mime,fileName:title},{quoted:message.quoted || message.data})
+    }
+    }
+    })
 Module({
     pattern: 'doc ?(.*)',
     fromMe: w,
@@ -216,9 +231,14 @@ Module({
     use: 'utility'
 }, (async (message, match) => {
     if (!message.reply_message) return await message.sendReply("_Need a file!_");
-    match = match[1] ? match[1] : "file"
+    match = match[1] ? match[1] : "file-"+Date.now()
     let file = fs.readFileSync(await message.reply_message.download())
-    let {mime, ext} = await fromBuffer(file)
+    let analysedBuffer = await fromBuffer(file)
+    let mime = analysedBuffer.mime, ext = analysedBuffer.ext;
+    if (('documentMessage' in message.quoted.message) && !mime){
+        mime = message.quoted.message.documentMessage.mimetype
+        ext = message.quoted.message.documentMessage.fileName.split('.')[1] || ''
+    } 
     await message.client.sendMessage(message.jid,{document:file,mimetype:mime,fileName:match+"."+ext},{quoted: message.quoted});
 }));
 Module({

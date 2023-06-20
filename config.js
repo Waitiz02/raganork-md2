@@ -8,14 +8,28 @@ if (fs.existsSync('config.env')) require('dotenv').config({ path: './config.env'
 function convertToBool(text, fault = 'true',fault2='on') {
     return ((text === fault) || (text === fault2));
 }
+const settingsMenu = [
+    {title: "PM antispam block", env_var: "PM_ANTISPAM"},
+    {title: "Auto read all messages", env_var: "READ_MESSAGES"},
+    {title: "Auto read command messages", env_var: "READ_COMMAND"},
+    {title: "Auto read status updates", env_var: "AUTO_READ_STATUS"},
+    {title: "Admin sudo acces mode (group commands only)", env_var: "ADMIN_ACCESS"},
+    {title: "With & without handler mode", env_var: "MULTI_HANDLERS"},
+    {title: "Auto reject calls", env_var: "REJECT_CALLS"},
+    {title: "Always online", env_var: "ALWAYS_ONLINE"},
+    {title: "PM Auto blocker", env_var: "PMB_VAR"},
+    {title: "Disable bot in PM", env_var: "DIS_PM"}
+  ]
 DATABASE_URL = process.env.DATABASE_URL === undefined ? './bot.db' : process.env.DATABASE_URL;
 DEBUG = process.env.DEBUG === undefined ? false : convertToBool(process.env.DEBUG);
 if (!(process.env.SESSION || process.env.SESSION_ID)) throw new Error("No session found, add session before starting bot")
 module.exports = {
-    VERSION: 'v3.0.0',
+    VERSION: 'v4.0.0',
     ALIVE: process.env.ALIVE || "https://i.imgur.com/KCnoMM2.jpg Hey {sender}, I'm alive \n Uptime: {uptime}",
     BLOCK_CHAT: process.env.BLOCK_CHAT || '',
+    PM_ANTISPAM: convertToBool(process.env.PM_ANTISPAM) || '',
     ALWAYS_ONLINE: convertToBool(process.env.ALWAYS_ONLINE) || false,
+    ADMIN_ACCESS: convertToBool(process.env.ADMIN_ACCESS) || false,
     PLATFORM:isHeroku?"Heroku":isRailway?"Railway":isKoyeb?"Koyeb":"Other server",isHeroku,isKoyeb,isVPS,isRailway,
     AUTOMUTE_MSG: process.env.AUTOMUTE_MSG || '_Group automuted!_\n_(edit AUTOMUTE_MSG)_',
     ANTI_SPAM: process.env.ANTI_SPAM || '919074309534-1632403322@g.us',
@@ -58,5 +72,6 @@ module.exports = {
     LANGUAGE: process.env.LANGUAGE || 'english',
     DEBUG: DEBUG,
     ACR_A: "ff489a0160188cf5f0750eaf486eee74",
-    ACR_S: "ytu3AdkCu7fkRVuENhXxs9jsOW4YJtDXimAWMpJp"
+    ACR_S: "ytu3AdkCu7fkRVuENhXxs9jsOW4YJtDXimAWMpJp",
+    settingsMenu
 };
