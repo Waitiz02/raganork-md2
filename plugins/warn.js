@@ -5,7 +5,6 @@ Raganork MD - Sourav KL11
 */
 let {Module} = require('../main');
 let {ADMIN_ACCESS,WARN,ANTILINK_WARN} = require('../config');
-const {isAdmin} = require('./misc/misc');
 let {getString} = require('./misc/lang');
 const {Fancy} = require('raganork-bot')
 let {isAdmin} = require('./misc/misc');
