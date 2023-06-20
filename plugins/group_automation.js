@@ -24,7 +24,8 @@ const {
 } = require('../main')
 const {
     ALLOWED,
-    HANDLERS
+    HANDLERS,
+    SUDO
 } = require('../config');
 var handler = HANDLERS !== 'false'? HANDLERS.split("")[0]:""
 
@@ -189,6 +190,7 @@ Module({
 }, async (message, match) => {
     message.myjid = message.client.user.id.split(':')[0]
     var db = await antifake.get();
+    let sudos = SUDO.split(",")
     const jids = []
     db.map(data => {
         jids.push(data.jid)
@@ -214,7 +216,7 @@ Module({
         admin_jids.push(user.replace('c.us', 's.whatsapp.net'));
     });
     if ((message.update == 'promote' || message.update == 'demote') && pdmjids.includes(message.jid)) {
-        if (message.from.split("@")[0] == message.myjid) return;
+        if (message.from.split("@")[0] == message.myjid || sudos.includes(message.from.split("@")[0])) return;
         if (message.update == 'demote') admin_jids.push(message.participant[0])
         await message.client.sendMessage(message.jid, {
                 text: `_*[${message.update=='promote'?"Promote detected":"Demote detected"}]*_\n\n_@${message.from.split("@")[0]} ${message.update}d @${message.participant[0].split("@")[0]}_`,
@@ -222,14 +224,14 @@ Module({
             });
     }
     if (message.update == 'promote' && apjids.includes(message.jid)) {
-        if (message.from.split("@")[0] == message.myjid || message.participant[0].split("@")[0] == message.myjid) return;
+        if (message.from.split("@")[0] == message.myjid || sudos.includes(message.from.split("@")[0]) || message.participant[0].split("@")[0] == message.myjid) return;
         var admin = await isAdmin(message);
         if (!admin) return;
         await message.client.groupParticipantsUpdate(message.jid, [message.from], "demote")
         return await message.client.groupParticipantsUpdate(message.jid, [message.participant[0]], "demote")
     }
     if (message.update == 'demote' && adjids.includes(message.jid)) {
-        if (message.from.split("@")[0] == message.myjid) return;
+        if (message.from.split("@")[0] == message.myjid || sudos.includes(message.from.split("@")[0])) return;
         if (message.participant[0].split("@")[0] == message.myjid) {
             return await message.client.sendMessage(message.jid, {
             text: `_*Bot number was demoted, I'm unable to execute anti-demote* [Demoted by @${message.from.split("@")[0]}]_`,
