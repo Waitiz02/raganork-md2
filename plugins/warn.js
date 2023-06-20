@@ -4,13 +4,16 @@ you may not use this file except in compliance with the License.
 Raganork MD - Sourav KL11
 */
 let {Module} = require('../main');
-let {WARN,ANTILINK_WARN} = require('../config');
+let {ADMIN_ACCESS,WARN,ANTILINK_WARN} = require('../config');
+const {isAdmin} = require('./misc/misc');
 let {getString} = require('./misc/lang');
 const {Fancy} = require('raganork-bot')
 let {isAdmin} = require('./misc/misc');
 let Lang = getString('group');
 let {setWarn,resetWarn,mentionjid} = require('./misc/misc');
 Module({pattern: 'warn ?(.*)', fromMe: true,use: 'group', desc:Lang.WARN_DESC}, (async (m, mat) => { 
+let adminAccesValidated = ADMIN_ACCESS ? await isAdmin(m,m.sender) : false;
+if (m.fromOwner || adminAccesValidated) {
 if (mat[1] === "reset") return await m.sendReply("*Wrong command! Use _.reset warn_*")
 if (m.message.includes(Lang.REMAINING)) return;
 var user = m.mention[0] || m.reply_message.jid
@@ -35,14 +38,16 @@ if (warn !== 0) {
     await m.client.sendMessage(m.jid,{text: Lang.WARN_OVER.format(mentionjid(user)), mentions: [user] })
     await m.client.groupParticipantsUpdate(m.jid, [user], "remove")
  }
-}));
+}}));
 Module({pattern: 'reset warn',use: 'group',fromMe: true, desc:'Resets the warn count of the user'}, (async (m, mat) => { 
+let adminAccesValidated = ADMIN_ACCESS ? await isAdmin(m,m.sender) : false;
+if (m.fromOwner || adminAccesValidated) {
 var user = m.mention[0] || m.reply_message.jid
 if (!user) return await m.sendReply(Lang.NEED_USER)
 if (!m.jid.endsWith('@g.us')) return await m.sendReply(Lang.GROUP_COMMAND)
 try { await resetWarn(m.jid,user) } catch { return await m.sendReply("error")}
 return await m.client.sendMessage(m.jid,{text:Lang.WARN_RESET.format(mentionjid(user)), mentions: [user] })
-}));
+}}));
 Module({on: 'text', fromMe: false}, (async (m, mat) => { 
     if (!ANTILINK_WARN.split(",").includes(m.jid)) return;
     var matches = m.message.match(/\bhttps?:\/\/\S+/gi);

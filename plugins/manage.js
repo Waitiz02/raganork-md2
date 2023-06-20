@@ -52,7 +52,7 @@ async function sendButton(buttons,text,footer,message){
     const Config = require('../config');
     const config = require('../config');
     const {getCommands} = require('./commands');
-    const {HEROKU, settingsMenu} = require('../config');
+    const {HEROKU, settingsMenu,ADMIN_ACCESS} = require('../config');
     const Heroku = require('heroku-client');
     const fs = require('fs');
     const got = require('got');
@@ -411,10 +411,12 @@ const oldSudo = config.SUDO?.split(",")
     }));
     Module({
         pattern: 'antibot ?(.*)',
-        fromMe: true,
+        fromMe: false,
         desc: "Detects other bot's messages and kicks.",
         use: 'group'
     }, (async (message, match) => {
+        let adminAccesValidated = ADMIN_ACCESS ? await isAdmin(message,message.sender) : false;
+        if (message.fromOwner || adminAccesValidated) {
         match[1]=match[1]?match[1].toLowerCase():""
         var db = await antibot.get();
         const jids = []
@@ -434,13 +436,15 @@ const oldSudo = config.SUDO?.split(",")
         return await message.sendReply(`_Antibot menu of ${subject}_`+"\n\n_Antibot is currently turned *"+status+"*_\n\n_Use .antibot on/off_")
         }
         await message.sendReply(match[1] === "on" ? "_Antibot activated!_" : "_Antibot turned off!_");
-    }));
+    }}));
     Module({
         pattern: 'antispam ?(.*)',
-        fromMe: true,
+        fromMe: false,
         desc: "Detects spam messages and kicks user.",
         use: 'group'
     }, (async (message, match) => {
+        let adminAccesValidated = ADMIN_ACCESS ? await isAdmin(message,message.sender) : false;
+        if (message.fromOwner || adminAccesValidated) {
         match[1]=match[1]?match[1].toLowerCase():""
         var db = await antispam.get();
         const jids = []
@@ -460,13 +464,15 @@ const oldSudo = config.SUDO?.split(",")
         return await message.sendReply(`_Anti spam menu of ${subject}_`+"\n\n_Antispam is currently turned *"+status+"*_\n\n_Use .antispam on/off_")
         }
         await message.sendReply(match[1] === "on" ? "_Antispam activated!_" : "_Antispam turned off!_");
-    }));
+    }}));
     Module({
         pattern: 'pdm ?(.*)',
-        fromMe: true,
+        fromMe: false,
         desc: "Detects promote/demote and sends alert.",
         use: 'group'
     }, (async (message, match) => {
+        let adminAccesValidated = ADMIN_ACCESS ? await isAdmin(message,message.sender) : false;
+        if (message.fromOwner || adminAccesValidated) {
         match[1]=match[1]?match[1].toLowerCase():""
         var db = await pdm.get();
         const jids = []
@@ -485,7 +491,7 @@ const oldSudo = config.SUDO?.split(",")
         return await message.sendReply(`_Promote|demote alert message menu of ${subject}_`+"\n\n_PDM alert is currently turned *"+status+"*_\n\n_Use .pdm on/off_")
         }
         await message.sendReply(match[1] === "on" ? "_Pdm activated!_" : "_Pdm turned off!_");
-    }));
+    }}));
     Module({
         pattern: 'antidemote ?(.*)',
         fromMe: true,
@@ -542,6 +548,8 @@ const oldSudo = config.SUDO?.split(",")
         desc: "Activates antilink, kicks if user sends link",
         use: 'group'
     }, (async (message, match) => {
+        let adminAccesValidated = ADMIN_ACCESS ? await isAdmin(message,message.sender) : false;
+        if (message.fromOwner || adminAccesValidated) {
         match[1]=match[1]?match[1].toLowerCase():""
         var db = await antilink.get();
         const jids = []
@@ -561,7 +569,7 @@ const oldSudo = config.SUDO?.split(",")
         return await message.sendReply(`_Antilink menu of ${subject}_`+"\n\n_Antilink is currently turned *"+status+"*_\n\n_Use .antilink on/off_")
         }
         await message.sendReply(match[1] === "on" ? "_Antilink activated!_" : "_Antilink turned off!_");
-    }));
+   }}));
     Module({
         on: 'text',
         fromMe: false
