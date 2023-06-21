@@ -13,7 +13,7 @@ const {
     isNumeric,
     mentionjid
 } = require('./misc/misc');
-const {ADMIN_ACCESS} = require('../config');
+const {ADMIN_ACCESS,isVPS} = require('../config');
 const {
     Module
 } = require('../main')
@@ -136,6 +136,7 @@ Module({
     usage: '.requests approve all or reject all',
     desc: "Get list of pending join requests"
 }, (async (message, match) => {
+    if (!isVPS) return await message.sendReply("_Command currently unavailable_")
     if (!message.isGroup) return await message.sendReply(Lang.GROUP_COMMAND)
     let adminAccesValidated = ADMIN_ACCESS ? await isAdmin(message,message.sender) : false;
     if (message.fromOwner || adminAccesValidated) {
