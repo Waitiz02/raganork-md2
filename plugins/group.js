@@ -136,7 +136,6 @@ Module({
     usage: '.requests approve all or reject all',
     desc: "Get list of pending join requests"
 }, (async (message, match) => {
-    if (!isVPS) return await message.sendReply("_Command currently unavailable_")
     if (!message.isGroup) return await message.sendReply(Lang.GROUP_COMMAND)
     let adminAccesValidated = ADMIN_ACCESS ? await isAdmin(message,message.sender) : false;
     if (message.fromOwner || adminAccesValidated) {
