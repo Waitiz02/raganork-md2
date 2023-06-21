@@ -210,7 +210,7 @@ Module({
     if (mime.includes("video")) return await message.send(file,"video",{quoted})
     await message.client.sendMessage(message.jid,{document:file,mimetype:mime,fileName:"Content from "+match.split("/")[2]},{quoted});
 }));
-Module({pattern:'drive ?(.*)', fromMe: true}, async (message, match) => {     
+Module({pattern:'drive ?(.*)', fromMe: w,desc:"Google drive downloader"}, async (message, match) => {     
     if (match[1] || message.reply_message?.text){
     match = match[1] ? match[1] : message.reply_message.text
     match = match.match(/\bhttps?:\/\/\S+/gi).filter(e=>e.includes("drive"))
