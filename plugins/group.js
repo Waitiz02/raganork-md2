@@ -185,7 +185,7 @@ Module({
     fromMe: true,
     desc: Lang.LEAVE_DESC
 }, (async (message, match) => {
-    
+    if (!message.isGroup) return await message.sendReply("_Leave from where? This is a group command bruh!_")
     return await message.client.groupLeave(message.jid);
 }))
 // QUOTED - COPYRIGHT: souravkl11/raganork
