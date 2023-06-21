@@ -204,7 +204,6 @@ Module({
     fromMe: false
 }, async (message, match) => {
     message.myjid = message.client.user.id.split(':')[0]
-    console.log(message.update)
     var db = await antifake.get();
     let sudos = SUDO.split(",")
     const jids = []
