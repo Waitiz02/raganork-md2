@@ -52,7 +52,7 @@ var msg = Lang.WARNING + '\n' +
 if (warn !== 0) {
     return await m.client.sendMessage(m.jid, { text:msg,mentions:[user]},{ quoted: m.quoted || m.data })
 } else {
-    await m.client.sendMessage(m.jid,{text: Lang.WARN_OVER.format(mentionjid(user)), mentions: [user] })
+    await m.client.sendMessage(m.jid,{text: Lang.WARN_OVER.format(WARN,mentionjid(user)), mentions: [user] })
     await m.client.groupParticipantsUpdate(m.jid, [user], "remove")
  }
 }}));
@@ -63,7 +63,7 @@ var user = m.mention[0] || m.reply_message.jid
 if (!user) return await m.sendReply(Lang.NEED_USER)
 if (!m.jid.endsWith('@g.us')) return await m.sendReply(Lang.GROUP_COMMAND)
 try { await resetWarn(m.jid,user) } catch { return await m.sendReply("error")}
-return await m.client.sendMessage(m.jid,{text:Lang.WARN_RESET.format(mentionjid(user)), mentions: [user] })
+return await m.client.sendMessage(m.jid,{text:Lang.WARN_RESET.format(WARN,mentionjid(user)), mentions: [user] })
 }}));
 Module({on: 'text', fromMe: false}, (async (m, mat) => { 
     if (!ANTILINK_WARN.split(",").includes(m.jid)) return;
@@ -87,8 +87,7 @@ Module({on: 'text', fromMe: false}, (async (m, mat) => {
         return await m.client.sendMessage(m.jid, { text: msg ,mentions:[user]},{ quoted: m.data })
     } else {
         var admin = await isAdmin(m,m.sender);
-        await m.sendMessage(Lang.WARN_OVER.format(WARN,mentionjid(user).replace("@","")))
-        await m.client.sendMessage(m.jid,{text: mentionjid(user)+Lang.KICKED, mentions: [user] })
+        await m.client.sendMessage(m.jid,{text: Lang.WARN_OVER.format(WARN,mentionjid(user)), mentions: [user] })
         await m.client.groupParticipantsUpdate(m.jid, [user], "remove")
           }
         }   

@@ -167,9 +167,18 @@ fs.writeFileSync('./config.env', lines.join('\n'));
     Module({
         pattern: 'platform',
         fromMe: true,
-        use: 'owner'
+        use: 'settings'
     }, (async (message, match) => {
       return await message.sendReply(`_Bot is running on ${config.PLATFORM}_`)
+    }));
+    Module({
+        pattern: 'language ?(.*)',
+        fromMe: true,
+        desc: "Change bot's language for some commands",
+        use: 'settings'
+    }, (async (message, match) => {
+      if (!match[1] || !["english","manglish","turkish"].includes(match[1].toLowerCase())) return await message.sendReply("_Invalid language! Available languages are English, Manglish and Turkish_");
+        return await setVar("LANGUAGE",match[1].toLowerCase())
     }));
     Module({
         pattern: 'shutdown$',
@@ -334,7 +343,7 @@ fs.writeFileSync('./config.env', lines.join('\n'));
         pattern: 'mode ?(.*)',
         fromMe: true,
         desc: "Change bot mode to public & private",
-        use: 'config'
+        use: 'settings'
     }, (async (message, match) => {
         if (match[1]?.toLowerCase() == "public" || match[1]?.toLowerCase() == "private"){
             return await setVar("MODE",match[1],message)
