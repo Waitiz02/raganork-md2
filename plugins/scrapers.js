@@ -222,8 +222,14 @@ Module({pattern:'drive ?(.*)', fromMe: w,desc:"Google drive downloader"}, async 
     const {mime} = await fromBuffer(fileBuffer) 
     await message.client.sendMessage(message.jid,{document:fileBuffer, mimetype:mime,fileName:title},{quoted:message.quoted || message.data})
     }
-    }
+    } else return await message.sendReply("_Need a google drive link!_")
     })
+Module({pattern:'emoji ?(.*)', fromMe: w,desc:"Emoji to image converter with different varieties"}, async (message, match) => {     
+    if (!match[1]) return await message.sendReply("_Need an emoji!_")
+    let {data} = await axios("https://raganork.ml/api/emoji?emoji="+encodeURIComponent(match[1].trim()))
+    if (!data.length) return await message.sendReply("_Invalid emoji!_")
+    return await message.sendReply(data.map(e=>result.indexOf(e)+1+". "+e.name+": "+e.url+"\n\n"))
+})
 Module({
     pattern: 'doc ?(.*)',
     fromMe: w,
