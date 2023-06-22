@@ -79,9 +79,9 @@ Module({on: 'text', fromMe: false}, (async (m, mat) => {
     var warn = await setWarn(m.jid,user,parseInt(WARN))
     var reason = linksInMsg.join(", ");
     var msg = "Antilink "+Lang.WARNING + '\n' +
-    Lang.USER+mentionjid(user)+ '\n' +
-    Lang.REASON+ reason+ '\n' +
-    Lang.REMAINING+ warn + '\n'; 
+    Lang.USER.format(mentionjid(user))+ '\n' +
+    Lang.REASON.format(reason)+ '\n' +
+    Lang.REMAINING.format(warn) + '\n'; 
     await m.client.sendMessage(m.jid, { delete: m.data.key })
     if (warn !== 0) {
         return await m.client.sendMessage(m.jid, { text: msg ,mentions:[user]},{ quoted: m.data })
