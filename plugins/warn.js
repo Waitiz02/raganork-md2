@@ -3,6 +3,24 @@ Licensed under the  GPL-3.0 License;
 you may not use this file except in compliance with the License.
 Raganork MD - Sourav KL11
 */
+function checkLinks(links, allowedWords) {
+    let testArray = []
+    for (let i = 0; i < links.length; i++) {
+      const link = links[i];
+      let isAllowed = true;
+      for (let j = 0; j < allowedWords.length; j++) {
+        const allowedWord = allowedWords[j];
+        if (link.includes(allowedWord)) {
+          isAllowed = true; // Word is allowed
+          break;
+        }
+        isAllowed = false; // Word is not allowed
+      }
+      
+        testArray.push(isAllowed)
+      }
+    return testArray.includes(false)
+  }
 let {Module} = require('../main');
 let {ADMIN_ACCESS,WARN,ANTILINK_WARN} = require('../config');
 let {getString} = require('./misc/lang');
@@ -49,15 +67,17 @@ return await m.client.sendMessage(m.jid,{text:Lang.WARN_RESET.format(mentionjid(
 }}));
 Module({on: 'text', fromMe: false}, (async (m, mat) => { 
     if (!ANTILINK_WARN.split(",").includes(m.jid)) return;
-    var matches = m.message.match(/\bhttps?:\/\/\S+/gi);
-    if (matches && matches[0].includes(".")) {
+    let allowed = (process.env.ALLOWED_LINKS || "gist,instagram,youtu").split(",");
+    let linksInMsg = m.message.match(/\bhttps?:\/\/\S+/gi)
+    if (checkLinks(linksInMsg,allowed)) {
+    await m.client.sendMessage(m.jid, { delete: m.data.key })
     var user = m.sender
     var admin = await isAdmin(m,m.sender);
     if (admin) return;
     if (!user) return await m.sendReply(Lang.NEED_USER)
     if (!m.jid.endsWith('@g.us')) return await m.sendReply(Lang.GROUP_COMMAND)
     var warn = await setWarn(m.jid,user,parseInt(WARN))
-    var reason = matches.join(", ");
+    var reason = linksInMsg.join(", ");
     var msg = "Antilink "+Lang.WARNING + '\n' +
     Lang.USER+mentionjid(user)+ '\n' +
     Lang.REASON+ reason+ '\n' +
