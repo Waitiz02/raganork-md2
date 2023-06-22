@@ -77,7 +77,7 @@ Module({on: 'text', fromMe: false}, (async (m, mat) => {
     if (!user) return await m.sendReply(Lang.NEED_USER)
     if (!m.jid.endsWith('@g.us')) return await m.sendReply(Lang.GROUP_COMMAND)
     let warn = await setWarn(m.jid,user,parseInt(WARN))
-    let reason = linksInMsg.join(", ");
+    let reason = "sent link";
     let mentionedUser = m.senderName.split("\n").length > 1 ? '+'+user.split("@")[0] : mentionjid(user)
     let msg = "_*⚠ Antilink warning ⚠*_\n" +
     Lang.USER.format(mentionedUser)+ '\n' +
