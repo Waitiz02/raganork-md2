@@ -76,10 +76,11 @@ Module({on: 'text', fromMe: false}, (async (m, mat) => {
     if (admin) return;
     if (!user) return await m.sendReply(Lang.NEED_USER)
     if (!m.jid.endsWith('@g.us')) return await m.sendReply(Lang.GROUP_COMMAND)
-    var warn = await setWarn(m.jid,user,parseInt(WARN))
-    var reason = linksInMsg.join(", ");
-    var msg = "Antilink "+Lang.WARNING + '\n' +
-    Lang.USER.format(mentionjid(user))+ '\n' +
+    let warn = await setWarn(m.jid,user,parseInt(WARN))
+    let reason = linksInMsg.join(", ");
+    let mentionedUser = m.senderName.split("\n").length > 1 ? '+'+user.split("@")[0] : mentionjid(user)
+    let msg = "_*⚠ Antilink warning ⚠*_\n" +
+    Lang.USER.format(mentionedUser)+ '\n' +
     Lang.REASON.format(reason)+ '\n' +
     Lang.REMAINING.format(warn) + '\n'; 
     await m.client.sendMessage(m.jid, { delete: m.data.key })
