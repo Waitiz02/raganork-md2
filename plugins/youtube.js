@@ -370,10 +370,10 @@ Module({
     if (reply!==undefined && !!reply && (message.quoted.key.id.startsWith("RGNK") || message.quoted.key.id.startsWith("BAE")) && message.quoted.key.participant.includes(message.myjid)){
       let no_ = /\d+/.test(message.message) ? message.message.match(/\d+/)[0] : false
       let onOrOff = (message.message.toLowerCase().includes('on') || message.message.toLowerCase().includes('off')) ? message.message.toLowerCase().trim() : false
-      if (onOrOff){
+      if (onOrOff && message.fromOwner){
         let action = onOrOff == 'on'?'true':'false';
-      let set_action = reply.split('\n')[0].replace(/(\*\_|_\*)/g,"")
-      if (configs.map(e=>e.title).includes(set_action)){
+        let set_action = reply.split('\n')[0].replace(/(\*\_|_\*)/g,"")
+        if (configs.map(e=>e.title).includes(set_action)){
         let {env_var} = configs.filter(e=>e.title==set_action)[0]
         await message.sendReply(`*${set_action} ${(onOrOff == 'on'?"enabled ✅":"disabled ❌")}*`)
         await setVar(env_var.trim(),action)
