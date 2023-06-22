@@ -71,7 +71,6 @@ Module({on: 'text', fromMe: false}, (async (m, mat) => {
     let allowed = (process.env.ALLOWED_LINKS || "gist,instagram,youtu").split(",");
     let linksInMsg = m.message.match(/\bhttps?:\/\/\S+/gi)
     if (checkLinks(linksInMsg,allowed)) {
-    await m.client.sendMessage(m.jid, { delete: m.data.key })
     var user = m.sender
     var admin = await isAdmin(m,m.sender);
     if (admin) return;
@@ -82,7 +81,8 @@ Module({on: 'text', fromMe: false}, (async (m, mat) => {
     var msg = "Antilink "+Lang.WARNING + '\n' +
     Lang.USER+mentionjid(user)+ '\n' +
     Lang.REASON+ reason+ '\n' +
-    Lang.REMAINING+ warn + '\n' 
+    Lang.REMAINING+ warn + '\n'; 
+    await m.client.sendMessage(m.jid, { delete: m.data.key })
     if (warn !== 0) {
         return await m.client.sendMessage(m.jid, { text: msg ,mentions:[user]},{ quoted: m.data })
     } else {
