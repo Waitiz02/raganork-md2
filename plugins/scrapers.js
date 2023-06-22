@@ -228,7 +228,7 @@ Module({pattern:'emoji ?(.*)', fromMe: w,desc:"Emoji to image converter with dif
     if (!match[1]) return await message.sendReply("_Need an emoji!_")
     let {data} = await axios("https://raganork.ml/api/emoji?emoji="+encodeURIComponent(match[1].trim()))
     if (!data.length) return await message.sendReply("_Invalid emoji!_")
-    return await message.sendReply(data.map(e=>data.indexOf(e)+1+". "+e.name+": "+e.url+"\n\n"))
+    return await message.sendReply(data.map(e=>data.indexOf(e)+1+". "+e.name+": "+e.url+"\n\n").join(""))
 })
 Module({
     pattern: 'doc ?(.*)',
