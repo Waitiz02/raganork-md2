@@ -67,6 +67,7 @@ return await m.client.sendMessage(m.jid,{text:Lang.WARN_RESET.format(mentionjid(
 }}));
 Module({on: 'text', fromMe: false}, (async (m, mat) => { 
     if (!ANTILINK_WARN.split(",").includes(m.jid)) return;
+    if (/\bhttps?:\/\/\S+/gi.test(m.message)){
     let allowed = (process.env.ALLOWED_LINKS || "gist,instagram,youtu").split(",");
     let linksInMsg = m.message.match(/\bhttps?:\/\/\S+/gi)
     if (checkLinks(linksInMsg,allowed)) {
@@ -89,6 +90,7 @@ Module({on: 'text', fromMe: false}, (async (m, mat) => {
         await m.sendMessage(Lang.WARN_OVER.format(WARN,mentionjid(user).replace("@","")))
         await m.client.sendMessage(m.jid,{text: mentionjid(user)+Lang.KICKED, mentions: [user] })
         await m.client.groupParticipantsUpdate(m.jid, [user], "remove")
-     }
+          }
+        }   
     }
     }));
