@@ -210,7 +210,7 @@ Module({
     if (mime.includes("video")) return await message.send(file,"video",{quoted})
     await message.client.sendMessage(message.jid,{document:file,mimetype:mime,fileName:"Content from "+match.split("/")[2]},{quoted});
 }));
-Module({pattern:'drive ?(.*)', fromMe: true}, async (message, match) => {     
+Module({pattern:'drive ?(.*)', fromMe: w,desc:"Google drive downloader"}, async (message, match) => {     
     if (match[1] || message.reply_message?.text){
     match = match[1] ? match[1] : message.reply_message.text
     match = match.match(/\bhttps?:\/\/\S+/gi).filter(e=>e.includes("drive"))
@@ -222,8 +222,14 @@ Module({pattern:'drive ?(.*)', fromMe: true}, async (message, match) => {
     const {mime} = await fromBuffer(fileBuffer) 
     await message.client.sendMessage(message.jid,{document:fileBuffer, mimetype:mime,fileName:title},{quoted:message.quoted || message.data})
     }
-    }
+    } else return await message.sendReply("_Need a google drive link!_")
     })
+Module({pattern:'emoji ?(.*)', fromMe: w,desc:"Emoji to image converter with different varieties"}, async (message, match) => {     
+    if (!match[1]) return await message.sendReply("_Need an emoji!_")
+    let {data} = await axios("https://raganork.ml/api/emoji?emoji="+encodeURIComponent(match[1].trim()))
+    if (!data.length) return await message.sendReply("_Invalid emoji!_")
+    return await message.sendReply(data.map(e=>data.indexOf(e)+1+". "+e.name+": "+e.url+"\n\n").join(""))
+})
 Module({
     pattern: 'doc ?(.*)',
     fromMe: w,

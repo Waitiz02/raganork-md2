@@ -55,8 +55,8 @@
             "USER": "*Member:* ```{}```",
             "REMAINING": "*Sheshikunna warns:* ```{}```",
             "REASON": "*Kaaranam:* ```{}```",
-            "WARN_RESET": "_Mm, {} warnings und ini ninak_ _{}_ 😁",
-            "WARN_OVER": "_Ninte njan maximum warnings thannu, {} Kicked_"
+            "WARN_RESET": "_Mm, {} warnings und ini ninak {}_ 😁",
+            "WARN_OVER": "_Ninakk njan maximum warnings thannu, ini illa! {} kicked!_"
         },
         "media": {
             "TRIM_DESC": "Video or Audio cut cheyyum",

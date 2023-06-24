@@ -167,9 +167,18 @@ fs.writeFileSync('./config.env', lines.join('\n'));
     Module({
         pattern: 'platform',
         fromMe: true,
-        use: 'owner'
+        use: 'settings'
     }, (async (message, match) => {
       return await message.sendReply(`_Bot is running on ${config.PLATFORM}_`)
+    }));
+    Module({
+        pattern: 'language ?(.*)',
+        fromMe: true,
+        desc: "Change bot's language for some commands",
+        use: 'settings'
+    }, (async (message, match) => {
+      if (!match[1] || !["english","manglish","turkish"].includes(match[1].toLowerCase())) return await message.sendReply("_Invalid language! Available languages are English, Manglish and Turkish_");  
+      return await setVar("LANGUAGE",match[1].toLowerCase(),message)
     }));
     Module({
         pattern: 'shutdown$',
@@ -334,7 +343,7 @@ fs.writeFileSync('./config.env', lines.join('\n'));
         pattern: 'mode ?(.*)',
         fromMe: true,
         desc: "Change bot mode to public & private",
-        use: 'config'
+        use: 'settings'
     }, (async (message, match) => {
         if (match[1]?.toLowerCase() == "public" || match[1]?.toLowerCase() == "private"){
             return await setVar("MODE",match[1],message)
@@ -544,7 +553,7 @@ const oldSudo = config.SUDO?.split(",")
     }));
     Module({
         pattern: 'antilink ?(.*)',
-        fromMe: true,
+        fromMe: false,
         desc: "Activates antilink, kicks if user sends link",
         use: 'group'
     }, (async (message, match) => {
@@ -556,6 +565,27 @@ const oldSudo = config.SUDO?.split(",")
         db.map(data => {
             jids.push(data.jid)
         });
+        
+        if (match[1].includes("warn")){
+            var antilinkWarn = process.env.ANTILINK_WARN?.split(',') || []
+            if (match[1].endsWith("on")) {
+            if (!(await isAdmin(message))) return await message.sendReply("_I'm not an admin!_")
+            if (!antilinkWarn.includes(message.jid)){
+                antilinkWarn.push(message.jid)
+                await setVar("ANTILINK_WARN",antilinkWarn.join(','),false)
+                    }
+                    return await message.sendReply(`_Antilink warn has been activated in this group!_`); 
+                }
+            if (match[1].endsWith("off")) {
+            if (!(await isAdmin(message))) return await message.sendReply("_I'm not an admin!_")
+            if (antilinkWarn.includes(message.jid)){
+                await message.sendReply(`_Antilink warn deactivated!_`)
+                await setVar("ANTILINK_WARN",antilinkWarn.filter(x=>x!=message.jid).join(',')||"null",false)
+                }
+                    return await message.sendReply(`_Antilink warn de-activated!_`); 
+                }
+            
+            }
         if (match[1] === "on"){
             if (!(await isAdmin(message))) return await message.sendReply("_I'm not an admin!_")
             await antilink.set(message.jid) 
@@ -566,7 +596,7 @@ const oldSudo = config.SUDO?.split(",")
         if (match[1]!=="on" && match[1]!=="off"){
         var status = jids.includes(message.jid) ? 'on' : 'off';
         var {subject} = await message.client.groupMetadata(message.jid)
-        return await message.sendReply(`_Antilink menu of ${subject}_`+"\n\n_Antilink is currently turned *"+status+"*_\n\n_Use .antilink on/off_")
+        return await message.sendReply(`_Antilink menu of ${subject}_`+"\n\n_Antilink is currently turned *"+status+"*_\n\n_Eg: .antilink on/off_\n_.antilink warn on/off_")
         }
         await message.sendReply(match[1] === "on" ? "_Antilink activated!_" : "_Antilink turned off!_");
    }}));
@@ -578,6 +608,8 @@ const oldSudo = config.SUDO?.split(",")
             await chatBot(message, Config.BOT_NAME)
         }
         if (/\bhttps?:\/\/\S+/gi.test(message.message)){
+        var antilinkWarn = process.env.ANTILINK_WARN?.split(',') || []
+        if (antilinkWarn.includes(message.jid)) return;
         var db = await antilink.get();
         const jids = []
         db.map(data => {
