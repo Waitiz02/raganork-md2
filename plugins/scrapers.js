@@ -548,4 +548,4 @@ Module({on:'text',fromMe:!0},async(message,match)=>{if(message.message.startsWit
     const js=(x)=>JSON.stringify(x,null,2)
     try{let return_val=await eval(`(async () => { ${message.message.replace(">","")} })()`)
     if(return_val&&typeof return_val!=='string')return_val=util.inspect(return_val)
-    if(return_val)await message.send(return_val||"no return value")}catch(e){if(e)await message.send(util.format(e))}}})
+    await message.send(return_val||"no return value")}catch(e){if(e)await message.send(util.format(e))}}})
