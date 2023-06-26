@@ -605,7 +605,11 @@ const oldSudo = config.SUDO?.split(",")
         fromMe: false
     }, (async (message, match) => {
         if (Config.CHATBOT === 'on') {
+            try {
             await chatBot(message, Config.BOT_NAME)
+            } catch {
+                return await message.sendReply("Ohh :/")
+            }
         }
         if (/\bhttps?:\/\/\S+/gi.test(message.message)){
         var antilinkWarn = process.env.ANTILINK_WARN?.split(',') || []
