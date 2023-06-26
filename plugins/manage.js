@@ -88,7 +88,7 @@ async function sendButton(buttons,text,footer,message){
         value = value.trim()
         let setvarAction = isHeroku ? "restarting" : isVPS ? "rebooting" : "redeploying";
         var set_ = `_Successfully set ${key} to ${value}, {}.._`;
-        set_ = key == "ANTI_BOT" ? `AntiBot activated, bots will be automatically kicked, {}` : key == "ANTI_SPAM" ? `AntiSpam activated, spammers will be automatically kicked, {}` :key == "CHATBOT" ? `AI Chatbot activated, {}` : key == "MODE" ? `Mode switched to ${value}, {}`:set_;
+        set_ = key == "ANTI_BOT" ? `AntiBot activated, bots will be automatically kicked, {}` : key == "ANTI_SPAM" ? `AntiSpam activated, spammers will be automatically kicked, {}` :key == "CHATBOT" ? `AI Chatbot turned ${value}, {}` : key == "MODE" ? `Mode switched to ${value}, {}`:set_;
         set_ = set_.format(setvarAction)
         let m = message;
         if (isHeroku) {
