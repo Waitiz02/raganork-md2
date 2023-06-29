@@ -686,8 +686,8 @@ const oldSudo = config.SUDO?.split(",")
             let thatWord = containsDisallowedWords(message.message,disallowedWords)
             if (thatWord){
                 await message.sendReply(`_The word ${thatWord} is not allowed in this chat!_`);
-                await message.client.sendMessage(message.jid, { delete: message.data.key })
-                return await message.client.groupParticipantsUpdate(message.jid, [message.sender], "remove")
+                await message.client.groupParticipantsUpdate(message.jid, [message.sender], "remove")
+                return await message.client.sendMessage(message.jid, { delete: message.data.key })
                                 
             }
         }
