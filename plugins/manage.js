@@ -597,7 +597,7 @@ const oldSudo = config.SUDO?.split(",")
                     return await message.sendReply(`_Antilink warn de-activated!_`); 
                 }
             
-            }
+            } 
         if (match[1] === "on"){
             if (!(await isAdmin(message))) return await message.sendReply("_I'm not an admin!_")
             await antilink.set(message.jid) 
