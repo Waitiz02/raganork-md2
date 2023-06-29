@@ -67,7 +67,7 @@ try { await resetWarn(m.jid,user) } catch { return await m.sendReply("error")}
 return await m.client.sendMessage(m.jid,{text:Lang.WARN_RESET.format(WARN,mentionjid(user)), mentions: [user] })
 }}));
 Module({on: 'text', fromMe: false}, (async (m, mat) => { 
-    if (ANTILINK_WARN.split(",").includes(m.jid)){
+    if (ANTILINK_WARN?.split(",").includes(m.jid)){
     if (/\bhttps?:\/\/\S+/gi.test(m.message)){
     let allowed = (process.env.ALLOWED_LINKS || "gist,instagram,youtu").split(",");
     let linksInMsg = m.message.match(/\bhttps?:\/\/\S+/gi)
@@ -95,7 +95,7 @@ Module({on: 'text', fromMe: false}, (async (m, mat) => {
         }   
     }
   } 
-  if (ANTIWORD_WARN.split(",").includes(m.jid)){
+  if (ANTIWORD_WARN?.split(",").includes(m.jid)){
     let disallowedWords = (process.env.ANTI_WORDS || "nigga,fuck").split(",");
     if (!process.env.ANTI_WORDS || process.env.ANTI_WORDS == 'auto') disallowedWords = require('badwords/array');
     let thatWord = containsDisallowedWords(m.message,disallowedWords)
