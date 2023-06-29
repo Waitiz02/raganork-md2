@@ -681,6 +681,8 @@ const oldSudo = config.SUDO?.split(",")
             antiwordjids.push(data.jid)
         });
         if (antiwordjids.includes(message.jid)) {
+            var antiwordWarn = process.env.ANTIWORD_WARN?.split(',') || []
+            if (antiwordWarn.includes(message.jid)) return;
             let disallowedWords = (process.env.ANTI_WORDS || "nigga,fuck").split(",");
             if (process.env.ANTI_WORDS == 'auto') disallowedWords = require('badwords/array');
             let thatWord = containsDisallowedWords(message.message,disallowedWords)
