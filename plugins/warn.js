@@ -22,10 +22,11 @@ function checkLinks(links, allowedWords) {
     return testArray.includes(false)
   }
 let {Module} = require('../main');
-let {ADMIN_ACCESS,WARN,ANTILINK_WARN} = require('../config');
+let {ADMIN_ACCESS,WARN,ANTILINK_WARN,ANTIWORD_WARN} = require('../config');
 let {getString} = require('./misc/lang');
 const {Fancy} = require('raganork-bot')
 let {isAdmin} = require('./misc/misc');
+let {containsDisallowedWords} = require('./manage');
 let Lang = getString('group');
 let {setWarn,resetWarn,mentionjid} = require('./misc/misc');
 Module({pattern: 'warn ?(.*)', fromMe: false,use: 'group', desc:Lang.WARN_DESC}, (async (m, mat) => { 
@@ -66,7 +67,7 @@ try { await resetWarn(m.jid,user) } catch { return await m.sendReply("error")}
 return await m.client.sendMessage(m.jid,{text:Lang.WARN_RESET.format(WARN,mentionjid(user)), mentions: [user] })
 }}));
 Module({on: 'text', fromMe: false}, (async (m, mat) => { 
-    if (!ANTILINK_WARN.split(",").includes(m.jid)) return;
+    if (ANTILINK_WARN?.split(",").includes(m.jid)){
     if (/\bhttps?:\/\/\S+/gi.test(m.message)){
     let allowed = (process.env.ALLOWED_LINKS || "gist,instagram,youtu").split(",");
     let linksInMsg = m.message.match(/\bhttps?:\/\/\S+/gi)
@@ -93,4 +94,33 @@ Module({on: 'text', fromMe: false}, (async (m, mat) => {
           }
         }   
     }
-    }));
+  } 
+  if (ANTIWORD_WARN?.split(",").includes(m.jid)){
+    let disallowedWords = (process.env.ANTI_WORDS || "nigga,fuck").split(",");
+    if (!process.env.ANTI_WORDS || process.env.ANTI_WORDS == 'auto') disallowedWords = require('badwords/array');
+    let thatWord = containsDisallowedWords(m.message,disallowedWords)
+    if (thatWord){
+      var user = m.sender
+      var admin = await isAdmin(m,m.sender);
+      if (admin) return;
+      if (!user) return await m.sendReply(Lang.NEED_USER)
+      if (!m.jid.endsWith('@g.us')) return await m.sendReply(Lang.GROUP_COMMAND)
+      let warn = await setWarn(m.jid,user,parseInt(WARN))
+      let reason = `"${thatWord}"`
+      let mentionedUser = m.senderName.split("\n").length > 1 ? '+'+user.split("@")[0] : mentionjid(user)
+      let msg = "_*⚠ Antiword warning ⚠*_\n" +
+      Lang.USER.format(mentionedUser)+ '\n' +
+      Lang.REASON.format(reason)+ '\n' +
+      Lang.REMAINING.format(warn) + '\n'; 
+      await m.client.sendMessage(m.jid, { delete: m.data.key })
+      if (warn !== 0) {
+          return await m.client.sendMessage(m.jid, { text: msg ,mentions:[user]},{ quoted: m.data })
+      } else {
+          var admin = await isAdmin(m,m.sender);
+          await m.client.sendMessage(m.jid,{text: Lang.WARN_OVER.format(WARN,mentionjid(user)), mentions: [user] })
+          await m.client.groupParticipantsUpdate(m.jid, [user], "remove")
+            }                 
+    }
+
+  } 
+ }));

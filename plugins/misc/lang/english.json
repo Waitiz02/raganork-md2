@@ -52,10 +52,10 @@
             "GROUP_COMMAND": "_Group command!_",
             "WARN_DESC": "Gives warning. Kicks member if limit is over",
             "WARNING": "     *⚠️ WARNING  ⚠️*",
-            "USER": "_User: {}_",
+            "USER": "_User:_ {}",
             "REMAINING": "_Remaining: {}_",
             "REASON": "_Reason: {}_",
-            "WARN_RESET": "_Reset warns, {} more remaining for {}_",
+            "WARN_RESET": "_Reset warns, {} more remaining for_ {}",
             "WARN_OVER": "_Max warns ({}) reached, {} kicked out!_"
         },
         "afk": {

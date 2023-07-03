@@ -14,9 +14,9 @@ Module({
     desc: 'Deletes message for everyone. Supports admin deletion'
 }, (async (m, t) => {
     let adminAccesValidated = ADMIN_ACCESS ? await isAdmin(m,m.sender) : false;
+    if (!m.reply_message) return;
     if (m.fromOwner || adminAccesValidated) {
     m.jid = m.quoted.key.remoteJid
-    if (!m.reply_message) return;
     if (m.quoted.key.fromMe) return await m.client.sendMessage(m.jid, { delete: m.quoted.key })
     if (!m.quoted.key.fromMe) {
     var admin = await isAdmin(m);
