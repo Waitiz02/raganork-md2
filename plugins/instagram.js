@@ -180,7 +180,7 @@ Module({
     use: 'download'
 }, (async (msg, query) => {
     var user = query[1] !== '' ? query[1] : msg.reply_message.text;
-    if (!user || user === 'g') return;
+    if (!user || user === 'g' || user.startsWith('terest')) return;
     //if (/\bhttps?:\/\/\S+/gi.test(user)) {
     await msg.sendReply("_Use .pinterest command for downloading content from this query!_")   
     //}
