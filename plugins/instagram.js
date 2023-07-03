@@ -164,7 +164,7 @@ Module({
     } else {
         var count = parseInt(user.split(",")[1]) || 5, query = user.split(",")[0] || user;
         const results = await pinSearch(query,count);
-        await msg.sendReply(Lang.IMG.format(results.length, query))
+        await msg.sendReply("_Downloading {} results for {} from pinterest_".format(results.length, query))
         for (var i = 0; i < (results.length < count ? results.length : count); i++) {
          try { var buff = await skbuffer(results[i]); } catch {
 		 count++
