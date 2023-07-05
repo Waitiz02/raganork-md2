@@ -11,6 +11,7 @@ const {
 } = require('@adiwajshing/baileys');
 const fs = require('fs');
 const got = require("got");
+const {pinSearch} = require("./misc/gis");
 const { fromBuffer } = require('file-type');
 const axios = require('axios');
 const setting = require('../config');
@@ -154,12 +155,23 @@ Module({
 }, (async (msg, query) => {
     var user = query[1] !== '' ? query[1] : msg.reply_message.text;
     if (user === 'g') return;
-    if (!user) return await msg.sendReply("*Need url*");
+    if (!user) return await msg.sendReply("*Need text or pinterest url*");
     if (/\bhttps?:\/\/\S+/gi.test(user)) {
         user = user.match(/\bhttps?:\/\/\S+/gi)[0]
     try { var res = await pin(user) } catch {return await msg.sendReply("*Server error*")}
     var quoted = msg.reply_message ? msg.quoted : msg.data
     await msg.client.sendMessage(msg.jid,{[res.endsWith('jpg')?'image':'video']:{url:res}},{quoted})
+    } else {
+        var count = parseInt(user.split(",")[1]) || 5, query = user.split(",")[0] || user;
+        const results = await pinSearch(query,count);
+        await msg.sendReply("_Downloading {} results for {} from pinterest_".format(results.length, query))
+        for (var i = 0; i < (results.length < count ? results.length : count); i++) {
+         try { var buff = await skbuffer(results[i]); } catch {
+		 count++
+	        var buff = false
+	 }
+         if (buff) await msg.send(buff, 'image');
+        }
     }
 }));
 Module({
@@ -168,10 +180,10 @@ Module({
     use: 'download'
 }, (async (msg, query) => {
     var user = query[1] !== '' ? query[1] : msg.reply_message.text;
-    if (user === 'g') return;
-    if (/\bhttps?:\/\/\S+/gi.test(user)) {
-    await msg.sendReply("_Use .pinterest command for downloading content from this link!_")   
-    }
+    if (!user || user === 'g' || user.startsWith('terest')) return;
+    //if (/\bhttps?:\/\/\S+/gi.test(user)) {
+    await msg.sendReply("_Use .pinterest command for downloading content from this query!_")   
+    //}
 }));
 Module({
     pattern: 'tiktok ?(.*)',

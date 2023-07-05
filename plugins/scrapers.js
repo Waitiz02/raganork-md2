@@ -17,7 +17,7 @@ const {
     getJson,
     gtts
 } = require('./misc/misc');
-const gis = require('./misc/gis');
+const {gis} = require('./misc/gis');
 const cheerio = require('cheerio');
 const axios = require('axios');
 const fs = require('fs');
