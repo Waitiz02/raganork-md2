@@ -37,6 +37,7 @@ if (m.message.includes(Lang.REMAINING)) return;
 var user = m.mention[0] || m.reply_message.jid
 if (!user) return await m.sendReply(Lang.NEED_USER)
 if (!m.jid.endsWith('@g.us')) return await m.sendReply(Lang.GROUP_COMMAND)
+await m.client.sendMessage(m.jid, { delete: m.quoted.key })
 var warn = await setWarn(m.jid,user,parseInt(WARN))
 var ms = 'Replied message';
 if (m.mention[0]) ms = 'Not defined'
@@ -88,7 +89,6 @@ Module({on: 'text', fromMe: false}, (async (m, mat) => {
     if (warn !== 0) {
         return await m.client.sendMessage(m.jid, { text: msg ,mentions:[user]},{ quoted: m.data })
     } else {
-        var admin = await isAdmin(m,m.sender);
         await m.client.sendMessage(m.jid,{text: Lang.WARN_OVER.format(WARN,mentionjid(user)), mentions: [user] })
         await m.client.groupParticipantsUpdate(m.jid, [user], "remove")
           }
@@ -116,7 +116,6 @@ Module({on: 'text', fromMe: false}, (async (m, mat) => {
       if (warn !== 0) {
           return await m.client.sendMessage(m.jid, { text: msg ,mentions:[user]},{ quoted: m.data })
       } else {
-          var admin = await isAdmin(m,m.sender);
           await m.client.sendMessage(m.jid,{text: Lang.WARN_OVER.format(WARN,mentionjid(user)), mentions: [user] })
           await m.client.groupParticipantsUpdate(m.jid, [user], "remove")
             }                 
