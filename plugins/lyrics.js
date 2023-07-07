@@ -1,7 +1,7 @@
 const {
     Module
 } = require('../main');
-const { getJson } = require("raganork-bot");
+const { getJson } = require("./misc/misc");
 const {MODE} = require('../config');
 let fromMe = MODE == 'public' ? false : true
 Module({
