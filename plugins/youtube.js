@@ -406,13 +406,13 @@ Module({
           }
           if (reply?.includes("Subtitles matching")){
               let query = await parseReply(reply,no_);
-              let res = (await require("axios")(`https://raganork.ml/api/subtitles?query=${query}`)).data
+              let res = (await require("axios")(`https://raganork.tk/api/subtitles?query=${query}`)).data
               if (res.length) res = res.filter(x=>x.title == query)
-              res = (await require("axios")(`https://raganork.ml/api/subtitles?query=${res[0].url}`)).data
+              res = (await require("axios")(`https://raganork.tk/api/subtitles?query=${res[0].url}`)).data
               if (res.length && !('dl_url' in res)) 
               {
                 res = res.filter(x=>x.title == query)
-                res = (await require("axios")(`https://raganork.ml/api/subtitles?query=${res[0].url}`)).data
+                res = (await require("axios")(`https://raganork.tk/api/subtitles?query=${res[0].url}`)).data
               }
               if ('dl_url' in res) {
                 return await message.client.sendMessage(message.jid,{document: {url: res.dl_url},fileName:res.title+'.srt',caption:'_*Here\'s your subtitle file!*_',mimetype:'application/x-subrip'},{quoted:message.data})
