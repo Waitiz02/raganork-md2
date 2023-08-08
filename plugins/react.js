@@ -34,6 +34,15 @@ Module({
 }
 }));
 Module({
+    pattern: 'retry ?(.*)',
+    fromMe: false,
+    desc: 'Retries replied command to run the command again',
+    use: 'misc'
+}, (async (m, t) => {
+    if (!m.reply_message) return await m.sendReply('_Reply to a command message_')
+    await m.client.ev.emit('messages.upsert',{messages: [m.quoted],type: 'notify'})
+}));
+Module({
     pattern: 'vv ?(.*)',
     fromMe: true,
     desc: "Anti view once",
