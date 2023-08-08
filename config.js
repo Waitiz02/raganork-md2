@@ -36,6 +36,7 @@ module.exports = {
     ANTIWORD_WARN: process.env.ANTIWORD_WARN || '',
     ANTI_SPAM: process.env.ANTI_SPAM || '919074309534-1632403322@g.us',
     MULTI_HANDLERS: convertToBool(process.env.MULTI_HANDLERS) || false,
+    NOLOG: process.env.NOLOG || false,
     DISABLED_COMMANDS: (process.env.DISABLED_COMMANDS ? process.env.DISABLED_COMMANDS.split(",") : undefined) || [],
     ANTI_BOT: process.env.ANTI_BOT || '',
     ANTISPAM_COUNT: process.env.ANTISPAM_COUNT || '6/10', // msgs/sec
