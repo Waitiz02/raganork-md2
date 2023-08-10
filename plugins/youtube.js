@@ -246,8 +246,8 @@ Module({
   desc: Lang.SONG_DESC,
   use: 'download'
 }, (async (message, match) => {
-  if (!match[1]) return message.sendReply(Lang.NEED_TEXT_SONG)
-  var link = match[1].match(/\bhttps?:\/\/\S+/gi)
+  if (!match[1] && !message.reply_message?.text) return message.sendReply(Lang.NEED_TEXT_SONG)
+  var link = (match[1] || message.reply_message?.text).match(/\bhttps?:\/\/\S+/gi)
   if (link !== null && getID.test(link[0])) {
   let v_id = link[0].match(getID)[1]
   const title = await ytTitle(v_id);
