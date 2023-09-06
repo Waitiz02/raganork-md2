@@ -20,7 +20,7 @@
   "homepage": "https://github.com/souravkl11/raganork#readme",
   "dependencies": {
     "@adiwajshing/baileys": "git+https://github.com/souravkl11/Baileys.git",
-    "@whiskeysockets/baileys": "6.3.0",
+    "@whiskeysockets/baileys": "6.4.0",
     "@adiwajshing/keyed-db": "0.2.4",
     "acrcloud": "1.4.0",
     "awesome-phonenumber": "5.3.0",

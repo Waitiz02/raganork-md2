@@ -148,16 +148,18 @@ Module({
         match = match[1].toLowerCase()
         switch(match){
             case 'approve all':{
+                await message.sendReply(`_Approving ${approvalJids.length} participants._`)
                 for (let x of approvalJids){
                     await message.client.groupRequestParticipantsUpdate(message.jid,[x],"approve")
-                    await delay(1000)
+                    await delay(900)
                 }
                 break;
             }
             case 'reject all':{
+                await message.sendReply(`_Rejecting ${approvalJids.length} participants._`)
                 for (let x of approvalJids){
                     await message.client.groupRequestParticipantsUpdate(message.jid,[x],"reject")
-                    await delay(1000)    
+                    await delay(900)    
                 }
                 break;
             }

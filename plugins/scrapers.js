@@ -226,7 +226,7 @@ Module({pattern:'drive ?(.*)', fromMe: w,desc:"Google drive downloader"}, async 
     })
 Module({pattern:'emoji ?(.*)', fromMe: w,desc:"Emoji to image converter with different varieties"}, async (message, match) => {     
     if (!match[1]) return await message.sendReply("_Need an emoji!_")
-    let {data} = await axios("https://raganork.ml/api/emoji?emoji="+encodeURIComponent(match[1].trim()))
+    let {data} = await axios("https://raganork.tk/api/emoji?emoji="+encodeURIComponent(match[1].trim()))
     if (!data.length) return await message.sendReply("_Invalid emoji!_")
     return await message.sendReply(data.map(e=>data.indexOf(e)+1+". "+e.name+": "+e.url+"\n\n").join(""))
 })
@@ -389,7 +389,7 @@ Module({
 }, async (message, match) => {
     if (!match[1]) return await message.sendReply("_Need a movie/series name_");
     var news = [];
-    var res = (await axios(`https://raganork.ml/api/subtitles?query=${match[1]}`)).data
+    var res = (await axios(`https://raganork.tk/api/subtitles?query=${match[1]}`)).data
 	if (!res) return await message.sendReply('_No results!_');
     if (res?.length && !('dl_url' in res)){
     var list = `_*Subtitles matching "${match[1]}":*_\n\n`
