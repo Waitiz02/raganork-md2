@@ -21,7 +21,7 @@
 
 ## Deploy to Koyeb ↓
 
-<a href="https://raganork.souravkl11.xyz/deploy" target="blank"><img align="center" src="https://i.imgur.com/PNoLtFq.png" alt="Deploy bot" height="112" width="310" /></a>
+<a href="https://qr.raganork.tk/deploy" target="blank"><img align="center" src="https://i.imgur.com/PNoLtFq.png" alt="Deploy bot" height="112" width="310" /></a>
   <div>
 <br>
 <div>
