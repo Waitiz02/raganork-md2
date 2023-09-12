@@ -1,6 +1,6 @@
 FROM quay.io/souravkl11/rgnk-v3:latest
 
-RUN git clone https://github.com/souravkl11/raganork-md /railway/Raganork
+RUN git clone https://github.com/missnora07/raganork-md /railway/Raganork
 WORKDIR /railway/Raganork
 ENV TZ=Asia/Kolkata
 RUN yarn install --network-concurrency 1
